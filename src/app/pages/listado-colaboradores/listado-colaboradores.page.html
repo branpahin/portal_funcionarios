@@ -1,0 +1,92 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Listado Colaboradores</ion-title>
+    <ion-button color="success" (click)="abrirModalCrearFuncionario()" slot="end"><ion-icon name="add"></ion-icon> 
+      <span class="texto-boton">Registrar Colaborador</span>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+  <ion-header collapse="condense" color="primary">
+    <ion-toolbar>
+      <ion-title size="large">Listado Colaboradores</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <div class="table-desktop">
+    <ion-grid>
+      <ion-row class="header-row">
+        <ion-col>Nombre</ion-col>
+        <ion-col>Cedula</ion-col>
+        <ion-col>Teléfono</ion-col>
+        <ion-col>Sede</ion-col>
+        <ion-col>Cargo</ion-col>
+        <ion-col>Empresa</ion-col>
+        <ion-col>Gerencia</ion-col>
+        <ion-col>Correo Corporativo</ion-col>
+        <ion-col>Estado</ion-col>
+        <ion-col>Acciones</ion-col>
+      </ion-row>
+      <ion-row class="data-row" *ngFor="let datos of paginatedFuncionarios">
+        <ion-col>{{datos.nombres}} {{datos.apellidos}}</ion-col>
+        <ion-col>{{datos.identificacion}}</ion-col>
+        <ion-col>{{datos.telefonO_CELULAR}}</ion-col>
+        <ion-col>{{datos.sede}}</ion-col>
+        <ion-col>{{datos.cargo}}</ion-col>
+        <ion-col>{{datos.empresa}}</ion-col>
+        <ion-col>{{datos.gerencia}}</ion-col>
+        <ion-col>{{datos.correO_CORPORATIVO}}</ion-col>
+        <ion-col>{{datos.estadO_PROCESO}}</ion-col>
+        <ion-col> <ion-button class="btn-accion" color="warning" (click)="abrirModalEditarFuncionario(datos.id,true)"><ion-icon name="pencil"></ion-icon></ion-button>
+          <ion-button class="btn-accion" color="success" (click)="abrirModalEditarFuncionario(datos.id,false)"><ion-icon name="eye"></ion-icon></ion-button>
+          <ion-button class="btn-accion" color="danger"><ion-icon name="close"></ion-icon></ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+  <div class="list-mobile">
+    <ion-list>
+      <ion-item-sliding *ngFor="let datos of paginatedFuncionarios">
+        <ion-item >
+          <ion-label>
+              <strong>{{datos.nombres}} {{datos.apellidos}}</strong>
+              <br />
+              <ion-text><strong>Cédula:</strong>{{datos.identificacion}}</ion-text>
+              <br />
+              <ion-text><strong>Teléfono:</strong>{{datos.telefonO_CELULAR}}</ion-text>
+              <br />
+              <ion-text><strong>Sede:</strong>{{datos.sede}}</ion-text>
+              <br />
+              <ion-text><strong>Cargo:</strong>{{datos.cargo}}</ion-text>
+              <br />
+              <ion-text><strong>Empresa:</strong>{{datos.cargo}}</ion-text>
+              <br />
+              <ion-note>{{datos.correO_CORPORATIVO}}</ion-note>
+              <br />
+              <ion-badge >{{datos.estadO_PROCESO}}</ion-badge>
+            
+          </ion-label>
+        </ion-item>
+        <ion-item-options side="end" >
+          <div class="botones_opcion">
+            <ion-button class="btn-accion" color="warning"><ion-icon name="pencil"></ion-icon></ion-button>
+            <ion-button class="btn-accion" color="success"><ion-icon name="eye"></ion-icon></ion-button>
+            <ion-button class="btn-accion" color="danger"><ion-icon name="close"></ion-icon></ion-button>
+          </div>
+        </ion-item-options>
+      </ion-item-sliding>
+      
+    </ion-list>
+  </div>
+
+  <div class="pagination">
+    <ion-button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+      Anterior
+    </ion-button>
+    
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    
+    <ion-button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+      Siguiente
+    </ion-button>
+  </div>
+

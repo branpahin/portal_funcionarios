@@ -1,0 +1,24 @@
+<ion-content>
+  <form id="frmLogin" class="ion-padding" [formGroup]="form" (ngSubmit)="login(form.value)">
+    <div class="login">
+      <ion-header color="primary">
+        <ion-toolbar color="primary">
+          <ion-title>Inicio sesión</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-card class="ion-padding list" >
+        <ion-card-content>
+          <ion-item>
+            <ion-input formControlName="usuario_equipo" label="Usuario" labelPlacement="floating" placeholder="Digitar usuario" required></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input formControlName="password" label="Contraseña" labelPlacement="floating" placeholder="Digitar contraseña" type="password" required></ion-input>
+          </ion-item>
+          <ion-button class="btn"  expand="block" type="submit">Acceder</ion-button>
+        </ion-card-content>
+       
+      </ion-card>
+    </div>
+      
+  </form>
+</ion-content>

@@ -1,0 +1,7 @@
+{
+  "name": "portal_funcionarios",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

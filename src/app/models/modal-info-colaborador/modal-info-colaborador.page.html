@@ -1,0 +1,60 @@
+<ion-header [translucent]="true" color="primary">
+  <ion-toolbar color="primary">
+    <ion-title>Información Colaborador</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+
+  <ion-card class="tarjeta-colaborador" color="primary">
+    <ion-card-header class="ion-text-center" color="primary">
+      <!-- Imagen (opcional en el futuro) -->
+      <img *ngIf="colaborador?.fotoUrl" [src]="colaborador.fotoUrl" alt="Foto del colaborador" class="foto-colaborador" />
+      <div *ngIf="!colaborador?.fotoUrl" class="foto-placeholder">
+        <ion-icon name="person" size="large"></ion-icon>
+      </div>
+
+      <ion-card-title>{{ colaborador?.nombres }} {{ colaborador?.apellidos }}</ion-card-title>
+      <ion-card-subtitle>{{ colaborador?.cargo }}</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-label><strong>Identificación:</strong></ion-label>
+          <ion-text>{{ colaborador?.identificacion }}</ion-text>
+        </ion-item>
+
+        <ion-item>
+          <ion-label><strong>Correo Corporativo:</strong></ion-label>
+          <ion-text>{{ colaborador?.correO_CORPORATIVO }}</ion-text>
+        </ion-item>
+
+        <ion-item>
+          <ion-label><strong>Teléfono Celular:</strong></ion-label>
+          <ion-text>{{ colaborador?.telefonO_CELULAR }}</ion-text>
+        </ion-item>
+
+        <ion-item>
+          <ion-label><strong>Empresa:</strong></ion-label>
+          <ion-text>{{ colaborador?.empresa }}</ion-text>
+        </ion-item>
+
+        <ion-item>
+          <ion-label><strong>Sede:</strong></ion-label>
+          <ion-text>{{ colaborador?.sede }}</ion-text>
+        </ion-item>
+
+        <ion-item>
+          <ion-label><strong>Gerencia:</strong></ion-label>
+          <ion-text>{{ colaborador?.gerencia }}</ion-text>
+        </ion-item>
+
+        <ion-item *ngIf="colaborador?.estadO_PROCESO">
+          <ion-label><strong>Estado del Proceso:</strong></ion-label>
+          <ion-text>{{ colaborador?.estadO_PROCESO }}</ion-text>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

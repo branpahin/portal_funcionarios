@@ -1,0 +1,160 @@
+ion-row {
+  display: flex;
+  flex-wrap: nowrap; /* Evita que las filas se rompan */
+}
+
+  .header-row ion-col{
+    font-weight: bold;
+    border: 1px solid black;
+    background-color: #e48f0f;
+    color:#fff;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    align-items: center; 
+    justify-content: center; 
+    text-align: center;
+   
+   }
+
+  .data-row ion-col {
+    font-size: 15px;
+    text-align: center;
+    border: 1px solid black;
+    padding: 8px;
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word; 
+    flex-wrap: wrap; 
+  }
+
+  .custom-toolbar {
+    position: relative; /* Asegura que el posicionamiento absoluto del badge sea relativo al toolbar */
+  }
+  
+  .status-badge {
+    position: absolute; /* Posiciona el badge de manera absoluta dentro del toolbar */
+    bottom: 0; /* Lo coloca en la parte inferior */
+    right: 0; /* Lo coloca en la parte derecha */
+    margin: 8px; /* Añade un pequeño margen para que no esté pegado al borde */
+  }
+
+  .botones_opcion {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrar botones */
+    gap: 10px; /* Espacio entre botones */
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .pagination ion-button {
+    margin: 0 5px;
+  }
+
+  .texto-boton {
+    display: none;
+  }
+
+  @media (max-width: 1670px) {
+    .actions {
+      display: flex;
+      flex-direction: column; /* Acomoda los botones en una columna */
+      align-items: center;
+    }
+  
+    .btn-accion {
+      --padding-start: 10px;
+      --padding-end: 10px;
+      height: 30px;
+    }
+  }
+
+  @media (max-width: 1524px) {
+  
+    .btn-accion {
+      --padding-start: 8px;
+      --padding-end: 8px;
+      height: 30px;
+    }
+  }
+
+  @media (max-width: 1463px) {
+  
+    .btn-accion {
+      --padding-start: 5px;
+      --padding-end: 5px;
+      height: 30px;
+    }
+  }
+
+  @media (max-width: 1224px) {
+  
+    .btn-accion {
+      --padding-start: 4px;
+      --padding-end: 4px;
+      height: 30px;
+    }
+  }
+
+  @media (max-width: 1162px) {
+  
+    .btn-accion {
+      --padding-start: 3px;
+      --padding-end: 3px;
+      height: 30px;
+    }
+  }
+
+  @media (max-width: 1104px) {
+  
+    .btn-accion {
+      --padding-start: 2px;
+      --padding-end: 2px;
+      height: 30px;
+    }
+  }
+
+  @media (max-width: 1045px) {
+  
+    .btn-accion {
+      --padding-start: 0px;
+      --padding-end: 0px;
+      height: 30px;
+    }
+  }
+
+  @media (max-width: 924px) {
+    .btn-accion {
+      --padding-start: 10px;
+      --padding-end: 10px;
+      height: 30px;
+    }
+  
+  }
+
+  @media (max-width: 770px) {
+    .table-desktop { display: none; } /* Oculta la tabla en móviles */
+    .list-mobile { display: block; }  /* Muestra la lista en móviles */
+  }
+  
+  @media (min-width: 771px) {
+    .table-desktop { display: block; }
+    .list-mobile { display: none; }
+  }
+
+  @media (min-width: 1070px) {
+    .texto-boton {
+      display: inline;
+    }
+  }
+
+  
