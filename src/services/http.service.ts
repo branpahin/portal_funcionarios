@@ -7,13 +7,6 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 
-@Component({
-	selector: 'app-login',
-	templateUrl: './login.page.html',
-	styleUrls: ['./login.page.scss'],
-	standalone: true,
-	
-  })
 export class HttpService {
   private _baseApiUrl = environment.server
   private token = localStorage.getItem('token');
@@ -75,6 +68,18 @@ export class HttpService {
 		return this.http.get<any>(APIREST, this.getHttpOptions()).pipe(tap((resp) => {of(resp)}))
 	}
 
+	PutJsonCore(body: any, rutaApi: string): Observable<any> {
+		const APIREST = `${this._baseApiUrl}${rutaApi}`;
+		const headers = new HttpHeaders({
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${this.token}`
+		});
+		return this.http.put<any>(APIREST, JSON.stringify(body), {
+			headers,
+			observe: 'response'
+		});
+	}
+
 	PutFormDataCore(body: FormData, rutaApi: string): Observable<any> {
 		const APIREST = `${this._baseApiUrl}${rutaApi}`
 		const headers = new HttpHeaders({
@@ -85,4 +90,5 @@ export class HttpService {
 			observe: 'response' 
 		});
 	}
+	
 }

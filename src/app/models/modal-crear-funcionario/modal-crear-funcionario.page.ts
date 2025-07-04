@@ -43,6 +43,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
   rh: any[] = [];
   ciudadTrabajo: any[] = [];
   arl: any[] = [];
+  jefes: any[] = [];
   constructor(private fb: FormBuilder, private moduleService:ModuleService, private service:PortalService,) {}
 
   hijoForm(): FormGroup {
@@ -73,7 +74,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
   }
 
   ngOnInit() {
-    console.log("fomrlulario: ", this.empleadoForm.value)
     this.empleadoForm.get('TIENE_HIJOS')?.valueChanges.subscribe(value => {
       if (value === 1) { // Suponiendo que "1" significa "Sí, tiene hijos"
         this.agregarHijo(); // Llamamos a la función para agregar el formulario de hijos
@@ -149,13 +149,26 @@ export class ModalCrearFuncionarioPage implements OnInit {
         if (
           this.empleadoForm.value[key] !== null &&
           this.empleadoForm.value[key] !== undefined &&
-          key !== 'HIJOS_COLABORADOR_JSON'
+          key !== 'HIJOS_COLABORADOR_JSON' &&
+          key !== 'ID_PROFESION' &&
+          key !== 'ID_POSTGRADO'
         ) {
-          formData.append(`${key}`, this.empleadoForm.value[key]);
+          formData.append(key, this.empleadoForm.value[key]);
         }
       });
+
+      // HIJOS_COLABORADOR_JSON
       const hijosJson = JSON.stringify(this.HIJOS_COLABORADOR_JSON.value);
       formData.append('HIJOS_COLABORADOR_JSON', hijosJson);
+      const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
+      profesionesSeleccionadas.forEach((id: number) => {
+        formData.append('ID_PROFESION', id.toString());
+      });
+
+      const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
+      postgradoSeleccionadas.forEach((id: number) => {
+        formData.append('ID_POSTGRADO', id.toString());
+      });
 
       if (this.imagenSeleccionada) {
         const reader = new FileReader();
@@ -244,8 +257,8 @@ export class ModalCrearFuncionarioPage implements OnInit {
       this.tipoDotacion = this.param[lista] || [];
     } else if (lista === 'nivelDotacion') {
       this.nivelDotacion = this.param[lista] || [];
-    } else if (lista === 'estados') {
-      this.estados = this.param[lista] || [];
+    } else if (lista === 'jefes') {
+      this.jefes = this.param[lista] || [];
     } else if (lista === 'tipoRegistro') {
       this.tipoRegistro = this.param[lista] || [];
     } else if (lista === 'estadoCivil') {

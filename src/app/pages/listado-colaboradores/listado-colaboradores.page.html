@@ -38,7 +38,7 @@
         <ion-col>{{datos.estadO_PROCESO}}</ion-col>
         <ion-col> <ion-button class="btn-accion" color="warning" (click)="abrirModalEditarFuncionario(datos.id,true)"><ion-icon name="pencil"></ion-icon></ion-button>
           <ion-button class="btn-accion" color="success" (click)="abrirModalEditarFuncionario(datos.id,false)"><ion-icon name="eye"></ion-icon></ion-button>
-          <ion-button class="btn-accion" color="danger"><ion-icon name="close"></ion-icon></ion-button>
+          <ion-button class="btn-accion" color="danger" (click)="Inactivar(datos)"><ion-icon name="close"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -68,8 +68,8 @@
         </ion-item>
         <ion-item-options side="end" >
           <div class="botones_opcion">
-            <ion-button class="btn-accion" color="warning"><ion-icon name="pencil"></ion-icon></ion-button>
-            <ion-button class="btn-accion" color="success"><ion-icon name="eye"></ion-icon></ion-button>
+            <ion-button class="btn-accion" color="warning" (click)="abrirModalEditarFuncionario(datos.id,true)"><ion-icon name="pencil"></ion-icon></ion-button>
+            <ion-button class="btn-accion" color="success" (click)="abrirModalEditarFuncionario(datos.id,false)"><ion-icon name="eye"></ion-icon></ion-button>
             <ion-button class="btn-accion" color="danger"><ion-icon name="close"></ion-icon></ion-button>
           </div>
         </ion-item-options>

@@ -35,9 +35,9 @@ export class ListadoColaboradoresPage implements OnInit {
   
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.param=this.moduleService.getParam();
-    this.colaboradores()
+    await this.colaboradores()
   }
 
   async colaboradores() {
@@ -113,6 +113,7 @@ export class ListadoColaboradoresPage implements OnInit {
       ESTADO: [],
       ARL : ['', Validators.required],
       ID_ESTADO_CIVIL : [, Validators.required],
+      ID_JEFE : [, Validators.required],
       HIJOS_COLABORADOR_JSON: this.fb.array([]) // Para agregar hijos dinámicamente
     });
   }
@@ -147,6 +148,29 @@ export class ListadoColaboradoresPage implements OnInit {
     --border-radius: 10px;
   `;
     return await modal.present();
+  }
+
+  async Inactivar(data:any){
+    const datos = {
+      IDENTIFICACION: Number(data.identificacion),
+      RESPONSABLE:Number(this.param.identificacion),
+      ID_USUARIO: data.id,
+      OBSERVACION: "prueba"
+    }
+    this.service.putInactivarUsuario(datos).subscribe({
+      next: async (resp) => {
+        try {
+          console.log("Respuesta:", resp);
+          await this.colaboradores()
+        } catch (error) {
+          console.error("Error al procesar respuesta:", error);
+        }
+      },
+      error: (err) => {
+        console.error("Error al enviar formulario:", err);
+      }
+    });
+
   }
 
 }

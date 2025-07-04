@@ -45,7 +45,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
   rh: any[] = [];
   ciudadTrabajo: any[] = [];
   arl: any[] = [];
-
+  jefes: any[] = [];
   constructor(private cdRef: ChangeDetectorRef, private fb: FormBuilder, private moduleService:ModuleService, private service:PortalService,
   ) { 
     this.empleadoForm = this.fb.group({
@@ -91,6 +91,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
       ESTADO: [],
       ARL : ['', Validators.required],
       ID_ESTADO_CIVIL : [, Validators.required],
+      ID_JEFE : [, Validators.required],
       HIJOS_COLABORADOR_JSON: this.fb.array([]) // Para agregar hijos dinámicamente
     });
   }
@@ -104,17 +105,17 @@ export class ModalEditarFuncionarioPage implements OnInit {
   }
 
   async ngOnInit() {
+    
+    await this.actualizarEstadoFormulario()
     await this.colaboradores();
     this.cdRef.detectChanges();
-    this.actualizarEstadoFormulario()
   }
 
   ngAfterViewInit() {
-    // Forzar la detección de cambios después de que la vista se haya renderizado
     this.cdRef.detectChanges();
   }
 
-  actualizarEstadoFormulario() {
+  async actualizarEstadoFormulario() {
     if (this.editar) {
       this.empleadoForm.enable();
     } else {
@@ -127,11 +128,26 @@ export class ModalEditarFuncionarioPage implements OnInit {
       this.service.getInfoColaboradores(this.idColaborador).subscribe({
         next:async(resp)=>{
           try{
-            this.empleadoForm.patchValue(this.convertirClavesMayus(resp.data.datos));
-            const hijosFormArray = this.empleadoForm.get('HIJOS_COLABORADOR_JSON') as FormArray;
+            console.log("datos: ",resp.data.datos)
 
-            resp.data.datos.hijoS_COLABORADOR.forEach((hijo:any) => {
-              hijosFormArray.push(this.fb.group({
+            // Llena el FormArray de hijos
+            const datos = resp.data.datos;
+            
+            if(datos.foto){
+              console.log("entro")
+            }
+
+// Asegúrate de convertir los campos que son arrays en string
+            datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
+            datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
+
+            // Luego aplicas patchValue con las claves en mayúscula si es necesario
+            this.empleadoForm.patchValue(this.convertirClavesMayus(datos));
+            const hijosFormArray = this.empleadoForm.get('HIJOS_COLABORADOR_JSON') as FormArray;
+            hijosFormArray.clear();
+
+            (resp.data.datos.hijoS_COLABORADOR || []).forEach((hijo: any) => {
+              const hijoFormGroup = this.fb.group({
                 ID: [hijo.id],
                 ID_COLABORADOR: [hijo.iD_COLABORADOR],
                 NOMBRE_COMPLETO: [hijo.nombrE_COMPLETO],
@@ -145,30 +161,54 @@ export class ModalEditarFuncionarioPage implements OnInit {
                 ID_PARENTESCO: [hijo.iD_PARENTESCO],
                 DOCUMENTO: [hijo.documento],
                 ID_TP_DOCUMENTO: [hijo.iD_TP_DOCUMENTO],
-              }));
+              });
+
+              // ✅ Deshabilitar todo el grupo hijo
+              hijoFormGroup.disable();
+
+              hijosFormArray.push(hijoFormGroup);
             });
+
+            // ✅ Mostrar formulario completo (incluye campos deshabilitados)
+            console.log("form2 (raw): ", this.empleadoForm.getRawValue());
+
+            // Obtener claves de hijos (opcional)
             const clavesHijos = Object.keys(hijosFormArray.controls[0]?.value || {});
-            Object.keys(this.empleadoForm.value).forEach((key) => {
-        
-                this.selec(key, 'idPadre');
 
+            // ✅ Usa getRawValue() también aquí si necesitas recorrer el formulario completo
+            const formCompleto = this.empleadoForm.getRawValue();
+            Object.keys(formCompleto).forEach((key) => {
+              if (key !== 'HIJOS_COLABORADOR_JSON') {
+                this.selec(key, 'idPadre');
+              }
             });
 
-            for(let hijo of hijosFormArray.value){
+            // Recorrer hijos normalmente
+            for (let hijo of formCompleto.HIJOS_COLABORADOR_JSON || []) {
               Object.keys(hijo).forEach((key) => {
                 this.selec(key);
-                  console.log("Hijo: ",key)
-                  this.selec(key);
+                console.log("Hijo: ", key);
+                this.selec(key);
               });
             }
 
-
-            console.log("form: ",this.empleadoForm.value)
           }catch(error){
             console.error("Respuesta Login: ", error)
           }
         }
       })
+    }
+  }
+
+  convertirStringArray(cadena: any): number[] {
+    try {
+      if (typeof cadena === 'string') {
+        const arr = JSON.parse(cadena);
+        return Array.isArray(arr) ? arr.map(Number) : [];
+      }
+      return Array.isArray(cadena) ? cadena : [];
+    } catch {
+      return [];
     }
   }
 
@@ -261,7 +301,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
     } else if (lista === 'CIUDAD_TRABAJO') {
       lista = 'ciudadTrabajo'
       this.ciudadTrabajo = this.param[lista] || [];
-    } 
+    } else if (lista === 'jefes') {
+      this.jefes = this.param[lista] || [];
+    }
     
   }
 
@@ -358,17 +400,34 @@ export class ModalEditarFuncionarioPage implements OnInit {
         FECHA_ACTUALIZACION: fechaFormateada
       });
       const formData = new FormData();
+
       Object.keys(this.empleadoForm.value).forEach((key) => {
         if (
           this.empleadoForm.value[key] !== null &&
           this.empleadoForm.value[key] !== undefined &&
-          key !== 'HIJOS_COLABORADOR_JSON'
+          key !== 'HIJOS_COLABORADOR_JSON' &&
+          key !== 'ID_PROFESION' &&
+          key !== 'ID_POSTGRADO'
         ) {
-          formData.append(`${key}`, this.empleadoForm.value[key]);
+          formData.append(key, this.empleadoForm.value[key]);
         }
       });
+
+      // HIJOS_COLABORADOR_JSON
       const hijosJson = JSON.stringify(this.HIJOS_COLABORADOR_JSON.value);
       formData.append('HIJOS_COLABORADOR_JSON', hijosJson);
+
+      // ID_PROFESION uno por uno
+      const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
+      profesionesSeleccionadas.forEach((id: number) => {
+        formData.append('ID_PROFESION', id.toString());
+      });
+
+      const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
+      postgradoSeleccionadas.forEach((id: number) => {
+        formData.append('ID_POSTGRADO', id.toString());
+      });
+
 
       if (this.imagenSeleccionada) {
         const reader = new FileReader();

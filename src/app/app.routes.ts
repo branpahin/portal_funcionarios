@@ -34,5 +34,9 @@ export const routes: Routes = [
     path: 'modal-editar-funcionario',
     loadComponent: () => import('./models/modal-editar-funcionario/modal-editar-funcionario.page').then( m => m.ModalEditarFuncionarioPage),
     canActivate: [authGuard]
+  },
+  {
+    path: 'modal-search',
+    loadComponent: () => import('./models/modal-search/modal-search.page').then( m => m.ModalSearchPage)
   }
 ];

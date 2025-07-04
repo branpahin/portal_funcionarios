@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registro de Usuario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="empleadoForm" (ngSubmit)="guardarUsuario()">
+    <ion-grid>
+      <ion-row >
+        <ion-col>
+          <h3 class="subtitulos">Información</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-row>
+            <ion-col>
+              <ion-item (click)="abrirSelectorCedula()">
+                <ion-label position="floating">Cédula</ion-label>
+                <ion-input
+                  formControlName="IDENTIFICACION"
+                  readonly
+                  placeholder="Seleccione una cédula"
+                ></ion-input>
+              </ion-item>
+              <app-error-mensaje [control]="empleadoForm.get('IDENTIFICACION') ?? undefined"></app-error-mensaje>
+            </ion-col>
+            <ion-col>
+              <ion-item>
+                <ion-select label="Ciudad de Trabajo" label-placement="floating" formControlName="CIUDAD" (click)="selec('ciudadTrabajo')">
+                  <ion-select-option *ngFor="let nivel of ciudadTrabajo" [value]="nivel.id">
+                    {{ nivel.descripcion }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <app-error-mensaje [control]="empleadoForm.get('CIUDAD') ?? undefined"></app-error-mensaje>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item>
+                <ion-input label="Nombre" labelPlacement="floating"></ion-input>
+              </ion-item>
+              <app-error-mensaje ></app-error-mensaje>
+            </ion-col>
+            <ion-col>
+              <ion-item>
+                <ion-input label="Apellido" labelPlacement="floating"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-item>
+                <ion-select label="Empresa" label-placement="floating" formControlName="ID_EMPRESA" (click)="selec('empresas')">
+                  <ion-select-option *ngFor="let nivel of empresas" [value]="nivel.id">
+                    {{ nivel.descripcion }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <app-error-mensaje [control]="empleadoForm.get('ID_EMPRESA') ?? undefined"></app-error-mensaje>
+            </ion-col>
+            <ion-col>
+              <ion-item>
+                <ion-select label="Rol" label-placement="floating" formControlName="ROL">
+                  <ion-select-option>
+                    prueba
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <app-error-mensaje [control]="empleadoForm.get('ROL') ?? undefined"></app-error-mensaje>
+            </ion-col>
+            <ion-col>
+              <ion-item>
+                <ion-select label="Permisos de Proceso" label-placement="floating" formControlName="ESTADO_PROCESO">
+                  <ion-select-option>
+                    prueba
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <app-error-mensaje [control]="empleadoForm.get('ESTADO_PROCESO') ?? undefined"></app-error-mensaje>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-button expand="full" type="submit" >Guardar</ion-button>
+  </form>
+</ion-content>

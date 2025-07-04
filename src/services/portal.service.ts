@@ -17,7 +17,13 @@ export class PortalService {
   private consultarColaboradores = TypeServicio.consultarColaboradores
   private consultarColaborador = TypeServicio.consultarColaborador
   private getInfoColaborador = TypeServicio.getInfoColaborador
+  private ActualizarEstadoColaborador = TypeServicio.ActualizarEstadoColaborador
   private putInfoColaborador = TypeServicio.putInfoColaborador
+  private InactivarUsuario = TypeServicio.PutInactivarUsuario
+  private getUsuarios =TypeServicio.getUsuarios
+  private CrearUsuario =TypeServicio.CrearUsuario
+  private GetUsuarioSistema =TypeServicio.GetUsuarioSistema
+  private ActualizarUsuario =TypeServicio.ActualizarUsuario
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -33,12 +39,20 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.colaboradores+"?estados="+estado+"&ciudad="+ciudad);
   }
 
-  getInfoColaboradores(idColaborador:number): Observable<any>{
-    return this.httpService.GetParamsCore(this.getInfoColaborador+"?id_colaborador="+idColaborador);
+  getConsultatUsuarios(): Observable<any>{
+    return this.httpService.GetParamsCore(this.getUsuarios);
   }
 
   getConsultarColaboradores(): Observable<any>{
     return this.httpService.GetCore(this.consultarColaboradores);
+  }
+
+  getInfoColaboradores(idColaborador:number): Observable<any>{
+    return this.httpService.GetParamsCore(this.getInfoColaborador+"?id_colaborador="+idColaborador);
+  }
+
+  getUsuarioSistema(IdUser:number,): Observable<any>{
+    return this.httpService.GetParamsCore(this.GetUsuarioSistema+"?idUser="+IdUser);
   }
 
   postCrearColaborador(data: any): Observable<any>{
@@ -49,8 +63,25 @@ export class PortalService {
     return this.httpService.PostCore(data,this.consultarColaborador);
   }
 
+  postActualizarEstadoColaborador(data: any): Observable<any>{
+    return this.httpService.PostCore(data,this.ActualizarEstadoColaborador);
+  }
+
+  postCrearUsuario(data: any): Observable<any>{
+    return this.httpService.PostCore(data,this.CrearUsuario);
+  }
+
   putActualizarColaborador(data: any): Observable<any>{
     return this.httpService.PutFormDataCore(data,this.putInfoColaborador);
   }
+
+  putInactivarUsuario(data: any): Observable<any>{
+    return this.httpService.PutJsonCore(data,this.InactivarUsuario);
+  }
+
+  putActualizarUsuario(data: any): Observable<any>{
+    return this.httpService.PutJsonCore(data,this.ActualizarUsuario);
+  }
+
 
 }

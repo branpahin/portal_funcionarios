@@ -1,6 +1,7 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Modificación de Empleado</ion-title>
+    <ion-title *ngIf="editar">Modificación de Empleado</ion-title>
+    <ion-title *ngIf="!editar">Información de Empleado</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -73,11 +74,12 @@
               ></ion-img>
             </div>
         
-            <div class="botones-imagen">
-              <ion-button size="small" fill="outline" (click)="triggerFileInput()">
+            <div class="botones-imagen" >
+              <ion-button size="small" fill="outline" (click)="triggerFileInput()" *ngIf="editar">
                 {{ imagenPreview ? 'Editar Imagen' : 'Agregar Imagen' }}
               </ion-button>
-              <ion-button
+              <ion-button 
+                *ngIf="editar"
                 size="small"
                 fill="outline"
                 color="danger"
@@ -379,6 +381,14 @@
             </ion-select>
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('ID_SEDE') ?? undefined"></app-error-mensaje>
+          <ion-item>
+            <ion-select label="Jefe" label-placement="floating" formControlName="ID_JEFE" (click)="selec('jefes')">
+              <ion-select-option *ngFor="let nivel of jefes" [value]="nivel.id">
+                {{ nivel.descripcion }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+          <app-error-mensaje [control]="empleadoForm.get('ID_JEFE ') ?? undefined"></app-error-mensaje>
         </ion-col>
         <ion-col>
           <ion-item>
@@ -519,6 +529,6 @@
       <ion-input type="email" formControlName="correoPersonal"></ion-input>
     </ion-item> -->
 
-    <ion-button expand="full" type="submit" >Guardar</ion-button>
+    <ion-button *ngIf="editar" expand="full" type="submit" >Guardar</ion-button>
   </form>
 </ion-content>

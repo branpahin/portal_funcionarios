@@ -378,6 +378,14 @@
             </ion-select>
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('ID_SEDE') ?? undefined"></app-error-mensaje>
+          <ion-item>
+            <ion-select label="Jefe" label-placement="floating" formControlName="ID_JEFE" (click)="selec('jefes')">
+              <ion-select-option *ngFor="let nivel of jefes" [value]="nivel.id">
+                {{ nivel.descripcion }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+          <app-error-mensaje [control]="empleadoForm.get('ID_JEFE ') ?? undefined"></app-error-mensaje>
         </ion-col>
         <ion-col>
           <ion-item>

@@ -10,5 +10,11 @@ export enum TypeServicio{
     consultarColaboradores = 'Funcionario/GetNombresColaboradores',
     consultarColaborador = 'Funcionario/ObtenerInfoColaborador',
     getInfoColaborador = 'Colaboradores/GetInfoColaborador',
-    putInfoColaborador = 'Colaboradores/UpdateInfoColaborador'
+    ActualizarEstadoColaborador = 'Colaboradores/ActualizarEstadoColaborador',
+    putInfoColaborador = 'Colaboradores/UpdateInfoColaborador',
+    PutInactivarUsuario = 'Colaboradores/PutInactivarUsuario',
+    getUsuarios ='Usuario/GetListarUsuarios',
+    CrearUsuario ='Usuario/CrearUsuario',
+    GetUsuarioSistema ='Usuario/GetUsuarioSistema',
+    ActualizarUsuario ='Usuario/ActualizarUsuario'
 }

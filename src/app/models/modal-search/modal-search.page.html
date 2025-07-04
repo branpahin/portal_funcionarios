@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Buscar Cédula</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrar()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar (ionInput)="filtrarCedulas($event)" placeholder="Buscar cédula..."></ion-searchbar>
+
+  <ion-list>
+    <ion-item *ngFor="let user of cedulasFiltradas" (click)="seleccionar(user)">
+      <ion-label slot="end" class="proceso-label">
+        <ion-text>
+          <strong>Cargo:</strong> {{ user.cargo }}
+        </ion-text>
+      </ion-label>
+
+      <!-- Parte principal -->
+      <ion-label>
+        <h2>{{ user.identificacion }}</h2>
+        <p>
+          <strong>Nombre:</strong> {{ user.nombres }}<br>
+          <strong>Empresa:</strong> {{ user.empresa }}<br>
+          <strong>Email:</strong> {{ user.correO_CORPORATIVO }}<br>
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
