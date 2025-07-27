@@ -1,0 +1,13 @@
+ion-item {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  border-radius: 20px;
+}
+
+.custom-modal {
+  width: 80%;  /* Ancho personalizado */
+  height: 70%; /* Altura personalizada */
+  max-height:60%;
+  border-radius: 16px; /* Bordes redondeados */
+  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Sombra */
+}

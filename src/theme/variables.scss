@@ -4,7 +4,7 @@
 /** Ionic CSS Variables **/
 :root {
     /** primary **/
-    --ion-color-primary: #ff8138;
+    --ion-color-primary: #e2650f;
     --ion-color-primary-rgb: 56, 128, 255;
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255, 255, 255;
@@ -28,7 +28,7 @@
     --ion-color-tertiary-tint: #6370ff;
   
     /** success **/
-    --ion-color-success: #2dd36f;
+    --ion-color-success: #86a41e;
     --ion-color-success-rgb: 45, 211, 111;
     --ion-color-success-contrast: #ffffff;
     --ion-color-success-contrast-rgb: 255, 255, 255;
@@ -44,7 +44,7 @@
     --ion-color-warning-tint: #ffca22;
   
     /** danger **/
-    --ion-color-danger: #eb445a;
+    --ion-color-danger: #dc0d15;
     --ion-color-danger-rgb: 235, 68, 90;
     --ion-color-danger-contrast: #ffffff;
     --ion-color-danger-contrast-rgb: 255, 255, 255;
@@ -60,7 +60,7 @@
     --ion-color-dark-tint: #383a3e;
   
     /** medium **/
-    --ion-color-medium: #92949c;
+    --ion-color-medium: #6b6b6a;
     --ion-color-medium-rgb: 146, 148, 156;
     --ion-color-medium-contrast: #ffffff;
     --ion-color-medium-contrast-rgb: 255, 255, 255;
@@ -76,12 +76,16 @@
     --ion-color-light-tint: #f5f6f9;
   
     /** mycolor **/
-  --ion-color-mycolor: #f58224;
-  --ion-color-mycolor-rgb: 245,130,36;
-  --ion-color-mycolor-contrast: #000000;
-  --ion-color-mycolor-contrast-rgb: 0,0,0;
-  --ion-color-mycolor-shade: #d87220;
-  --ion-color-mycolor-tint: #f68f3a;
+    --ion-color-mycolor: #e2650f;
+    --ion-color-mycolor-rgb: 245,130,36;
+    --ion-color-mycolor-contrast: #000000;
+    --ion-color-mycolor-contrast-rgb: 0,0,0;
+    --ion-color-mycolor-shade: #d87220;
+    --ion-color-mycolor-tint: #f68f3a;
+
+    --ion-font-family: 'Personalizado';
+
+    --ion-toolbar-background: #6b6b6a;
   }
   
   
@@ -94,7 +98,7 @@
      */
   
     body {
-      --ion-color-primary: #f58224;
+      --ion-color-primary: #e2650f;
       --ion-color-primary-rgb: 66,140,255;
       --ion-color-primary-contrast: #ffffff;
       --ion-color-primary-contrast-rgb: 255,255,255;
@@ -129,7 +133,7 @@
       --ion-color-warning-shade: #e0bb2e;
       --ion-color-warning-tint: #ffd948;
   
-      --ion-color-danger: #ff4961;
+      --ion-color-danger: #dc0d15;
       --ion-color-danger-rgb: 255,73,97;
       --ion-color-danger-contrast: #ffffff;
       --ion-color-danger-contrast-rgb: 255,255,255;
@@ -156,6 +160,8 @@
       --ion-color-light-contrast-rgb: 255,255,255;
       --ion-color-light-shade: #aaaaaa;
       --ion-color-light-tint: #383a3e;
+
+      --ion-toolbar-background: #6b6b6a;
     }
   
     /*
@@ -238,7 +244,7 @@
   
       --ion-item-background: #ffffff;
   
-      --ion-toolbar-background: #d1d1d1;
+      --ion-toolbar-background: #7a7979;
   
       --ion-tab-bar-background: #c7c7c7;
   
@@ -255,4 +261,18 @@
   }
   html, body {
     cursor: url('/assets/icon/cursor.png'), auto; // Puedes cambiarlo a lo que necesites
+  }
+
+
+
+  @font-face {
+    font-family: 'Personalizado';
+    src: url('../assets/static/Montserrat/Montserrat-SemiBold.ttf');
+    font-weight: 600; // SemiBold
+  }
+
+  @font-face {
+    font-family: 'Personalizado';
+    src: url('../assets/static/Montserrat/Montserrat-Bold.ttf');
+    font-weight: 700; // Bold
   }

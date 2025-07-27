@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { PortalService } from 'src/services/portal.service';
 import { ModuleService } from 'src/services/modulos/module.service';
 import { HttpClient } from '@angular/common/http';
+import { UserInteractionService } from 'src/services/user-interaction-service.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,7 +20,7 @@ import { Router } from '@angular/router';
 export class LoginPage implements OnInit {
   form: FormGroup;
   private router = inject(Router)
-  constructor(private fb: FormBuilder, private service:PortalService, private moduleService:ModuleService) { 
+  constructor(private fb: FormBuilder, private service:PortalService, private moduleService:ModuleService, private UserInteractionService: UserInteractionService) { 
     this.form = this.fb.group({
       usuario_equipo: ['', [Validators.required]],
       password: ['', [Validators.required]],
@@ -29,6 +30,7 @@ export class LoginPage implements OnInit {
   ngOnInit() {}
   
   async login(credentials: any) {
+    this.UserInteractionService.showLoading('Ingresando...');
     this.service.postLogin(credentials).subscribe({
       next:async(resp)=>{
         try{
@@ -40,10 +42,20 @@ export class LoginPage implements OnInit {
             localStorage.setItem('token', token); // Guardar el token en localStorage
             await this.router.navigate(['/layout']); // Redirigir al módulo home
           }
+          this.UserInteractionService.dismissLoading()
         }catch(error){
           console.error("Respuesta Login: ", error)
+          this.UserInteractionService.dismissLoading()
+          this.UserInteractionService.presentToast('problemas al ingresar')
         }
-      }
+      },
+      error: async (error) => {
+          console.error('Error al crear la transacción:', error);
+          await this.UserInteractionService.dismissLoading();
+          
+          const mensaje = error?.error?.mensaje|| 'Ocurrió un error inesperado.';
+          await this.UserInteractionService.presentToast( mensaje);
+      },
     })
   }
 

@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IONIC_COMPONENTS } from 'src/app/imports/ionic-imports';
@@ -7,6 +7,10 @@ import { ModalController } from '@ionic/angular';
 import { ModalSearchPage } from 'src/app/models/modal-search/modal-search.page';
 import { PortalService } from 'src/services/portal.service';
 import { ModuleService } from 'src/services/modulos/module.service';
+import { addIcons } from 'ionicons';
+import { add, eye, pencil, close } from 'ionicons/icons';
+import { UserInteractionService } from 'src/services/user-interaction-service.service';
+import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
 
 @Component({
   selector: 'app-creacion-usuario',
@@ -17,14 +21,21 @@ import { ModuleService } from 'src/services/modulos/module.service';
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class CreacionUsuarioPage implements OnInit {
-
+  @Input() usuario: any;
+  @Input() editar: boolean|undefined;
   empleadoForm: FormGroup = new FormGroup({});
   funcionarios:any[]=[];
   param:any;
   ciudadTrabajo: any[] = [];
   empresas: any[] = [];
+  roles_Usuario: any[] = [];
+  estados_Proceso: any[] = [];
   cedulaSeleccionada: string = '';
-  constructor(private service:PortalService, private modalCtrl: ModalController, private fb: FormBuilder, private moduleService:ModuleService) {
+  nombre: string ='';
+  apellido: string ='';
+  constructor(private service:PortalService, private modalCtrl: ModalController, 
+    private fb: FormBuilder, private moduleService:ModuleService, private UserInteractionService: UserInteractionService) {
+    addIcons({ pencil, eye, close, add}); 
     this.formulario();
    }
 
@@ -36,6 +47,26 @@ export class CreacionUsuarioPage implements OnInit {
     this.empleadoForm.get('CIUDAD')?.valueChanges.subscribe(value => {
       this.selec('ciudadTrabajo');
     });
+    this.empleadoForm.get('ROL')?.valueChanges.subscribe(value => {
+      this.selec('roles_Usuario');
+    });
+    this.empleadoForm.get('ESTADO_PROCESO')?.valueChanges.subscribe(value => {
+      this.selec('estados_Proceso');
+    });
+    console.log("usuario: ",this.usuario)
+    if(this.usuario){
+      this.empleadoForm.patchValue({
+        ID_EMPRESA: Number(this.usuario.empresa),
+        IDENTIFICACION: this.usuario.identificacion,
+        CIUDAD: this.usuario.ciudad,
+        ROL: Number(this.usuario.rol),
+        ESTADO_PROCESO: this.usuario.estadO_PROCESO
+        ? this.usuario.estadO_PROCESO.split(',').map((e:any) => +e.trim())
+        : []
+      })
+      this.listarUsuarios()
+      
+    }
   }
 
   formulario(){
@@ -61,14 +92,42 @@ export class CreacionUsuarioPage implements OnInit {
     if (data) {
       this.cedulaSeleccionada = data;
       console.log("datos: ",data)
+      this.nombre=data.nombres
+      this.apellido=data.apellidos
       this.empleadoForm.patchValue({
-        ID_EMPRESA: Number(data.empresa),
+        ID_EMPRESA: Number(data.iD_EMPRESA),
         IDENTIFICACION: data.identificacion,
-        CIUDAD: data.ciudad,
+        CIUDAD: Number(data.ciudaD_TRABAJO),
         ROL: data.rol,
         ESTADO_PROCESO: data.estadO_PROCESO,
       });
     }
+  }
+
+  listarUsuarios(){
+    this.service.getListarUsuariosAgregar().subscribe({
+      next:async(data)=>{
+        try {
+          const resp=data.data.datos.listadoColaboradores
+          console.log("resp: ",resp)
+          // Buscar coincidencia por cedula (identificacion)
+          const coincidencia = resp.find((item: any) => item.identificacion === String(this.usuario.identificacion));
+
+          if (coincidencia) {
+            this.nombre = coincidencia.nombres;
+            this.apellido = coincidencia.apellidos;
+          } else {
+            console.warn('⚠️ No se encontró coincidencia con la identificación:', this.usuario.identificacion);
+          }
+
+        } catch (error) {
+          console.error("Error en listarUsuarios:", error);
+        }
+      },
+      error: (err) => {
+        console.error("Error al obtener usuarios:", err);
+      }
+    })
   }
 
   selec(lista:string, dato?:string){
@@ -77,11 +136,68 @@ export class CreacionUsuarioPage implements OnInit {
       this.ciudadTrabajo = this.param[lista] || [];
     } else if (lista === 'empresas') {
       this.empresas = this.param[lista] || [];
+    } else if (lista === 'roles_Usuario') {
+      this.roles_Usuario = this.param[lista] || [];
+    } else if (lista === 'estados_Proceso') {
+      this.estados_Proceso = this.param[lista] || [];
     }
     
   }
 
   guardarUsuario(){
+    this.UserInteractionService.showLoading('Guardando...');
+    const formValue = this.empleadoForm.value;
+    const payload = {
+      ...formValue,
+      ESTADO_PROCESO: formValue.ESTADO_PROCESO.join(','),
+      ROL: String(formValue.ROL),
+    };
+    if(!this.editar){
+      this.service.postCrearUsuario(payload).subscribe({
+        next: async (resp) => {
+          try {
+            console.log("Respuesta:", resp);
+            this.UserInteractionService.dismissLoading()
+            this.UserInteractionService.presentToast('Información guardada',TypeThemeColor.SUCCESS)
+            this.cerrarModal();
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading()
+            this.cerrarModal();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err);
+          this.UserInteractionService.dismissLoading()
+          this.UserInteractionService.presentToast(err)
+          this.cerrarModal();
+        }
+      });
+    }else{
+      this.service.putActualizarUsuario(payload).subscribe({
+        next: async (resp) => {
+          try {
+            console.log("Respuesta:", resp);
+            this.UserInteractionService.dismissLoading()
+            this.UserInteractionService.presentToast('Actualización realizada',TypeThemeColor.SUCCESS)
+            this.cerrarModal();
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading()
+            this.cerrarModal();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err);
+          this.UserInteractionService.dismissLoading()
+          this.UserInteractionService.presentToast(err)
+          this.cerrarModal();
+        }
+      });
+    }
+  }
 
+  cerrarModal() {
+    this.modalCtrl.dismiss();
   }
 }

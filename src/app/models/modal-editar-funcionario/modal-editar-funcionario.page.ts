@@ -5,6 +5,12 @@ import { PortalService } from 'src/services/portal.service';
 import { ModuleService } from 'src/services/modulos/module.service';
 import { ErrorMensajeComponent } from 'src/common/error-mensaje/error-mensaje.component';
 import { IONIC_COMPONENTS } from 'src/app/imports/ionic-imports';
+import { addIcons } from 'ionicons';
+import { add, eye, pencil, close } from 'ionicons/icons';
+import { ModalController } from '@ionic/angular';
+import { UserInteractionService } from 'src/services/user-interaction-service.service';
+import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
+import { ComponenteBusquedaComponent } from 'src/app/components/componente-busqueda/componente-busqueda.component';
 
 @Component({
   selector: 'app-modal-editar-funcionario',
@@ -46,8 +52,12 @@ export class ModalEditarFuncionarioPage implements OnInit {
   ciudadTrabajo: any[] = [];
   arl: any[] = [];
   jefes: any[] = [];
-  constructor(private cdRef: ChangeDetectorRef, private fb: FormBuilder, private moduleService:ModuleService, private service:PortalService,
+  isModalOpen = false;
+  
+  constructor(private cdRef: ChangeDetectorRef, private fb: FormBuilder, private moduleService:ModuleService, 
+    private service:PortalService, private modalCtrl: ModalController, private UserInteractionService: UserInteractionService
   ) { 
+    addIcons({ pencil, eye, close, add}); 
     this.empleadoForm = this.fb.group({
       ID: [0, Validators.required],
       ID_TIPO_REGISTRO: [, Validators.required],
@@ -106,13 +116,90 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
   async ngOnInit() {
     
-    await this.actualizarEstadoFormulario()
     await this.colaboradores();
     this.cdRef.detectChanges();
   }
 
   ngAfterViewInit() {
     this.cdRef.detectChanges();
+  }
+
+  async abrirModal(label:string, options:any, displayProperty:string, multiple:boolean) {
+    const datos = await this.getDataSeleccion(label, options);
+    const modal = await this.modalCtrl.create({
+      component: ComponenteBusquedaComponent,
+      componentProps: {
+        label: label,
+        options: options,
+        selec:datos,
+        displayProperty: displayProperty,
+        multiple: multiple,
+      },
+    });
+
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    console.log(data)
+    if (data) {
+      if (multiple) {
+        const idsSeleccionados = data.map((item: any) => item.id);
+        this.empleadoForm.get(label)?.setValue(idsSeleccionados);
+      } else {
+        if (label === 'RH') {
+          this.empleadoForm.get(label)?.setValue(data.descripcion);
+        } else {
+          this.empleadoForm.get(label)?.setValue(data.id);
+        }
+      }
+    }
+
+    this.isModalOpen = false;
+  }
+  
+  async getDataSeleccion(label:string, opcion:any) {
+    const id = this.empleadoForm.get(label)?.value;
+    if(label=='RH'){
+      const data = opcion.find((g:any) => g.descripcion === id);
+      return data || '';
+    } else if(Array.isArray(id)) {
+      const descripciones = id
+        .map((id: number) => opcion.find((o: any) => o.id === id))
+        .filter(desc => !!desc); // Elimina undefined si no encuentra alguna
+      return descripciones;
+    }
+    else{
+      const data = opcion.find((g:any) => g.id === id);
+      return data || '';
+    }
+  }
+
+  getGeneroDescripcion(label:string, opcion:any): string {
+    const id = this.empleadoForm.get(label)?.value;
+    if(label=='RH'){
+      const data = opcion.find((g:any) => g.descripcion === id);
+      return data?.descripcion || '';
+    } else if(Array.isArray(id)) {
+      const descripciones = id
+        .map((id: number) => opcion.find((o: any) => o.id === id)?.descripcion)
+        .filter(desc => !!desc); // Elimina undefined si no encuentra alguna
+      return descripciones.join(', ');
+    } else{
+      const data = opcion.find((g:any) => g.id === id);
+      return data?.descripcion || '';
+    }
+  }
+
+
+
+  getListaSeleccion(label: string, opciones: any[]): string[] {
+    const valor = this.empleadoForm.get(label)?.value;
+
+    if (!Array.isArray(valor)) return [];
+
+    return valor
+      .map((id: number) => opciones.find((o: any) => o.id === id)?.descripcion)
+      .filter(desc => !!desc);
   }
 
   async actualizarEstadoFormulario() {
@@ -125,6 +212,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
   async colaboradores() {
     if(this.idColaborador){
+      this.UserInteractionService.showLoading('Cargando...');
       this.service.getInfoColaboradores(this.idColaborador).subscribe({
         next:async(resp)=>{
           try{
@@ -136,8 +224,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
             if(datos.foto){
               console.log("entro")
             }
-
-// Asegúrate de convertir los campos que son arrays en string
             datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
             datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
 
@@ -191,10 +277,15 @@ export class ModalEditarFuncionarioPage implements OnInit {
                 this.selec(key);
               });
             }
+            this.UserInteractionService.dismissLoading()
 
           }catch(error){
             console.error("Respuesta Login: ", error)
+            this.UserInteractionService.dismissLoading()
           }
+        },error:(err)=>{
+          this.UserInteractionService.dismissLoading()
+          this.UserInteractionService.presentToast(err);
         }
       })
     }
@@ -450,17 +541,25 @@ export class ModalEditarFuncionarioPage implements OnInit {
                   // Agregamos la imagen ya transformada
                   formData.append('foto', jpgFile);
       
-                  // ✅ Importante: el post debe ir AQUÍ
+                  this.UserInteractionService.showLoading('Guardando...');
                   this.service.putActualizarColaborador(formData).subscribe({
                     next: async (resp) => {
                       try {
                         console.log("Respuesta:", resp);
+                        this.UserInteractionService.dismissLoading();
+                        this.UserInteractionService.presentToast('Usuario editado con exito',TypeThemeColor.SUCCESS);
+                        this.cerrarModal();
                       } catch (error) {
                         console.error("Error al procesar respuesta:", error);
+                        this.UserInteractionService.dismissLoading();
+                        this.cerrarModal();
                       }
                     },
                     error: (err) => {
                       console.error("Error al enviar formulario:", err);
+                      this.UserInteractionService.dismissLoading();
+                      this.UserInteractionService.presentToast(err);
+                      this.cerrarModal();
                     }
                   });
                 } else {
@@ -509,6 +608,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
     this.imagenSeleccionada = null;
     this.imagenPreview = null;
     this.fileInput.nativeElement.value = '';
+  }
+  cerrarModal() {
+    this.modalCtrl.dismiss();
   }
 
 

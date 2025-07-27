@@ -5,6 +5,13 @@ import { ModuleService } from 'src/services/modulos/module.service';
 import { IONIC_COMPONENTS } from 'src/app/imports/ionic-imports';
 import { ErrorMensajeComponent } from 'src/common/error-mensaje/error-mensaje.component';
 import { PortalService } from 'src/services/portal.service';
+import { ModalController } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { add, eye, pencil, close } from 'ionicons/icons';
+import { UserInteractionService } from 'src/services/user-interaction-service.service';
+import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
+import { BuscadorSelectWrapperComponent } from 'src/app/components/buscador-select-wrapper/buscador-select-wrapper.component';
+import { ComponenteBusquedaComponent } from 'src/app/components/componente-busqueda/componente-busqueda.component';
 
 @Component({
   selector: 'app-modal-crear-funcionario',
@@ -44,7 +51,13 @@ export class ModalCrearFuncionarioPage implements OnInit {
   ciudadTrabajo: any[] = [];
   arl: any[] = [];
   jefes: any[] = [];
-  constructor(private fb: FormBuilder, private moduleService:ModuleService, private service:PortalService,) {}
+  isModalOpen = false;
+
+  constructor(private fb: FormBuilder, private moduleService:ModuleService, private service:PortalService, 
+    private modalCtrl: ModalController, private UserInteractionService: UserInteractionService) 
+  {
+    addIcons({ pencil, eye, close, add}); 
+  }
 
   hijoForm(): FormGroup {
     return this.fb.group({
@@ -74,6 +87,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
   }
 
   ngOnInit() {
+    this.param=this.moduleService.getFiltros();
     this.empleadoForm.get('TIENE_HIJOS')?.valueChanges.subscribe(value => {
       if (value === 1) { // Suponiendo que "1" significa "Sí, tiene hijos"
         this.agregarHijo(); // Llamamos a la función para agregar el formulario de hijos
@@ -88,7 +102,88 @@ export class ModalCrearFuncionarioPage implements OnInit {
     this.empleadoForm.patchValue({
       FECHA_ACTUALIZACION: fechaFormateada
     });
+    this.cargarTodosLosFiltros();
   }
+
+  
+    async abrirModal(label:string, options:any, displayProperty:string, multiple:boolean) {
+    const datos = await this.getDataSeleccion(label, options);
+    const modal = await this.modalCtrl.create({
+      component: ComponenteBusquedaComponent,
+      componentProps: {
+        label: label,
+        options: options,
+        selec:datos,
+        displayProperty: displayProperty,
+        multiple: multiple,
+      },
+    });
+
+    await modal.present();
+
+    const { data } = await modal.onWillDismiss();
+    console.log(data)
+    if (data) {
+      if (multiple) {
+        const idsSeleccionados = data.map((item: any) => item.id);
+        this.empleadoForm.get(label)?.setValue(idsSeleccionados);
+      } else {
+        if (label === 'RH') {
+          this.empleadoForm.get(label)?.setValue(data.descripcion);
+        } else {
+          this.empleadoForm.get(label)?.setValue(data.id);
+        }
+      }
+    }
+
+    this.isModalOpen = false;
+  }
+  
+  async getDataSeleccion(label:string, opcion:any) {
+    const id = this.empleadoForm.get(label)?.value;
+    if(label=='RH'){
+      const data = opcion.find((g:any) => g.descripcion === id);
+      return data || '';
+    } else if(Array.isArray(id)) {
+      const descripciones = id
+        .map((id: number) => opcion.find((o: any) => o.id === id))
+        .filter(desc => !!desc); // Elimina undefined si no encuentra alguna
+      return descripciones;
+    }
+    else{
+      const data = opcion.find((g:any) => g.id === id);
+      return data || '';
+    }
+  }
+
+
+  getGeneroDescripcion(label:string, opcion:any): string {
+    const id = this.empleadoForm.get(label)?.value;
+    if(label=='RH'){
+      const data = opcion.find((g:any) => g.descripcion === id);
+      return data?.descripcion || '';
+    } else if(Array.isArray(id)) {
+      const descripciones = id
+        .map((id: number) => opcion.find((o: any) => o.id === id)?.descripcion)
+        .filter(desc => !!desc); // Elimina undefined si no encuentra alguna
+      return descripciones.join(', ');
+    } else{
+      const data = opcion.find((g:any) => g.id === id);
+      return data?.descripcion || '';
+    }
+  }
+
+  getListaSeleccion(label: string, opciones: any[]): string[] {
+    const valor = this.empleadoForm.get(label)?.value;
+
+    if (!Array.isArray(valor)) return [];
+
+    return valor
+      .map((id: number) => opciones.find((o: any) => o.id === id)?.descripcion)
+      .filter(desc => !!desc);
+  }
+
+    
 
   onFechaNacimientoChange(event: any) {
     const fechaCompleta = new Date(event.detail.value);
@@ -136,6 +231,8 @@ export class ModalCrearFuncionarioPage implements OnInit {
     this.mostrarHijo=!this.mostrarHijo
     console.log(this.empleadoForm.value)
   }
+
+  
 
   guardarEmpleado() {
     // if (this.empleadoForm.invalid) {
@@ -192,16 +289,25 @@ export class ModalCrearFuncionarioPage implements OnInit {
                   formData.append('foto', jpgFile);
       
                   // ✅ Importante: el post debe ir AQUÍ
+                  this.UserInteractionService.showLoading('Guardando...');
                   this.service.postCrearColaborador(formData).subscribe({
                     next: async (resp) => {
                       try {
                         console.log("Respuesta:", resp);
+                        this.UserInteractionService.dismissLoading();
+                        this.UserInteractionService.presentToast('Usuario creado con exito', TypeThemeColor.SUCCESS);
+                        this.cerrarModal();
                       } catch (error) {
                         console.error("Error al procesar respuesta:", error);
+                        this.UserInteractionService.dismissLoading();
+                        this.cerrarModal();
                       }
                     },
                     error: (err) => {
                       console.error("Error al enviar formulario:", err);
+                      this.UserInteractionService.dismissLoading();
+                      this.UserInteractionService.presentToast(err);
+                      this.cerrarModal();
                     }
                   });
                 } else {
@@ -226,8 +332,39 @@ export class ModalCrearFuncionarioPage implements OnInit {
     // }
   }
 
+  cargarTodosLosFiltros() {
+    const listasSimples = [
+      'nivelEducativo',
+      'profesiones',
+      'postgrado',
+      'generos',
+      'tieneHijos',
+      'empresas',
+      'sedes',
+      'gerencias',
+      'areas',
+      'cargos',
+      'tipoNomnina',
+      'roles',
+      'tipoDotacion',
+      'nivelDotacion',
+      'jefes',
+      'tipoRegistro',
+      'estadoCivil',
+      'parentezco',
+      'arl',
+      'ciudadTrabajo'
+    ];
+
+    listasSimples.forEach(nombre => this.selec(nombre));
+
+    this.selec('tipoIdentificacion', 'idPadre');
+    this.selec('tipoIdentificacion');
+    this.selec('rh', 'idPadre');
+    this.selec('rh');
+  }
+
   selec(lista:string, dato?:string){
-    this.param=this.moduleService.getFiltros();
     if (lista === 'nivelEducativo') {
       this.nivelesEducativos = this.param[lista] || [];
     } else if (lista === 'profesiones') {
@@ -304,6 +441,10 @@ export class ModalCrearFuncionarioPage implements OnInit {
     this.imagenSeleccionada = null;
     this.imagenPreview = null;
     this.fileInput.nativeElement.value = '';
+  }
+
+  cerrarModal() {
+    this.modalCtrl.dismiss();
   }
 
 }

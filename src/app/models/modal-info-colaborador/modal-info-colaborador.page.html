@@ -1,16 +1,21 @@
-<ion-header [translucent]="true" color="primary">
-  <ion-toolbar color="primary">
+<ion-header [translucent]="true" color="medium">
+  <ion-toolbar color="medium">
     <ion-title>Información Colaborador</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarModal()" fill="clear" style="color:white">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
 
-  <ion-card class="tarjeta-colaborador" color="primary">
+  <ion-card class="tarjeta-colaborador" >
     <ion-card-header class="ion-text-center" color="primary">
       <!-- Imagen (opcional en el futuro) -->
-      <img *ngIf="colaborador?.fotoUrl" [src]="colaborador.fotoUrl" alt="Foto del colaborador" class="foto-colaborador" />
-      <div *ngIf="!colaborador?.fotoUrl" class="foto-placeholder">
+      <img *ngIf="colaborador?.foto" [src]="colaborador.foto" alt="Foto del colaborador" class="foto-colaborador" />
+      <div *ngIf="!colaborador?.foto" class="foto-placeholder">
         <ion-icon name="person" size="large"></ion-icon>
       </div>
 

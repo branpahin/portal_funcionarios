@@ -106,6 +106,14 @@ ion-button {
     }
   }
 
+ion-title, h1, h2, h3, th, .header-row, .titulo{
+  font-weight: 700 !important; // Esto usará Montserrat-Bold
+}
+
+body, p, td, .tabla-celda {
+  font-weight: 600 !important; // Esto usará Montserrat-SemiBold
+}
+
 
 
 

@@ -24,6 +24,8 @@ export class PortalService {
   private CrearUsuario =TypeServicio.CrearUsuario
   private GetUsuarioSistema =TypeServicio.GetUsuarioSistema
   private ActualizarUsuario =TypeServicio.ActualizarUsuario
+  private GetListarUsuariosAgregar = TypeServicio.GetListarUsuariosAgregar
+  private ActualizarClave = TypeServicio.ActualizarClave
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -43,6 +45,10 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.getUsuarios);
   }
 
+  getListarUsuariosAgregar(): Observable<any>{
+    return this.httpService.GetParamsCore(this.GetListarUsuariosAgregar);
+  }
+
   getConsultarColaboradores(): Observable<any>{
     return this.httpService.GetCore(this.consultarColaboradores);
   }
@@ -51,8 +57,8 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.getInfoColaborador+"?id_colaborador="+idColaborador);
   }
 
-  getUsuarioSistema(IdUser:number,): Observable<any>{
-    return this.httpService.GetParamsCore(this.GetUsuarioSistema+"?idUser="+IdUser);
+  getUsuariosSistema(): Observable<any>{
+    return this.httpService.GetCore(this.GetUsuarioSistema);
   }
 
   postCrearColaborador(data: any): Observable<any>{
@@ -69,6 +75,10 @@ export class PortalService {
 
   postCrearUsuario(data: any): Observable<any>{
     return this.httpService.PostCore(data,this.CrearUsuario);
+  }
+
+  postActualizarClave(data: any): Observable<any>{
+    return this.httpService.PostCore(data,this.ActualizarClave);
   }
 
   putActualizarColaborador(data: any): Observable<any>{

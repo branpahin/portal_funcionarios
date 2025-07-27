@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Cambiar Clave</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrar()" fill="clear" style="color:white">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="formClave">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Clave Anterior</ion-label>
+            <ion-input type="password" formControlName="claveAnterior"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label position="floating">Clave Nueva</ion-label>
+            <ion-input type="password" formControlName="claveNueva"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>
+<ion-footer>
+  <ion-toolbar class="btn" color="medium">
+    <ion-button style="margin-right: 2%;" (click)="guardar()" [disabled]="formClave.invalid">
+        Guardar
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

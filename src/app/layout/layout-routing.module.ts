@@ -24,10 +24,9 @@ const routes: Routes = [
         loadComponent: () => import('../pages/actualizacion-filtros/actualizacion-filtros.page').then(m => m.ActualizacionFiltrosPage),
         canActivate: [authGuard]
       },
-          
       {
-        path: 'creacion-usuario',
-        loadComponent: () => import('../pages/creacion-usuario/creacion-usuario.page').then( m => m.CreacionUsuarioPage),
+        path: 'listado-usuarios',
+        loadComponent: () => import('../pages/listado-usuarios/listado-usuarios.page').then( m => m.ListadoUsuariosPage),
         canActivate: [authGuard]
       }
     ],

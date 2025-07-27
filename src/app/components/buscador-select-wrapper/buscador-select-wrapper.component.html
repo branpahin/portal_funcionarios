@@ -1,0 +1,11 @@
+<ion-item lines="full" button >
+  <!-- <ion-label position="floating" class="ion-padding-start text-sm font-medium">
+  {{ label }}
+</ion-label>
+  <ion-text  color="medium">
+    {{ displayText }}
+  </ion-text> -->
+   <ion-select interface="popover" [label]="label" label-placement="floating" value="displayText" (click)="abrirModal()">
+    {{displayText}}
+    </ion-select>
+</ion-item>

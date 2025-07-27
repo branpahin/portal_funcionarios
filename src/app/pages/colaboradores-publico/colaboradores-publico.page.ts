@@ -5,6 +5,7 @@ import { ModalController } from '@ionic/angular';
 import { PortalService } from 'src/services/portal.service';
 import { IONIC_COMPONENTS } from 'src/app/imports/ionic-imports';
 import { ModalInfoColaboradorPage } from 'src/app/models/modal-info-colaborador/modal-info-colaborador.page';
+import { UserInteractionService } from 'src/services/user-interaction-service.service';
 
 @Component({
   selector: 'app-colaboradores-publico',
@@ -21,7 +22,8 @@ export class ColaboradoresPublicoPage implements OnInit {
 
   constructor(private fb: FormBuilder, 
     private service:PortalService,
-    private modalController: ModalController,) {
+    private modalController: ModalController,
+    private UserInteractionService: UserInteractionService) {
     this.form = this.fb.group({
       nombre: [''],
       cedula: [],
@@ -51,15 +53,23 @@ export class ColaboradoresPublicoPage implements OnInit {
     if(credentials.cedula==null){
       credentials.cedula=0
     }
+    
+    this.UserInteractionService.showLoading('Consultando...');
     this.service.postConsultarColaborador(credentials).subscribe({
       next:async(resp)=>{
         try{
           console.log("resp: ",resp)
+          this.UserInteractionService.dismissLoading();
           this.abrirModalInfoColaborador(resp.body.data.datos);
         }catch(error){
           console.error("Respuesta Login: ", error)
+          this.UserInteractionService.dismissLoading();
         }
+      },error:(err)=>{
+        this.UserInteractionService.dismissLoading();
+        this.UserInteractionService.presentToast(err);
       }
+
     })
   }
 

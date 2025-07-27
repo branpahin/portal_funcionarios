@@ -1,0 +1,34 @@
+<ion-card>
+    <ion-card-header>
+      <ion-label class="text-base font-bold">{{ label }}</ion-label>
+      
+      <ion-input [(ngModel)]="searchText" [placeholder]="placeholder" debounce="300"></ion-input>
+    </ion-card-header>
+</ion-card>
+
+
+<ion-content class="ion-padding">
+  <main>
+
+   <ion-list>
+          <ion-item
+            button
+            *ngFor="let item of filteredOptions"
+            (click)="toggleSelect(item)"
+            [color]="isSelected(item) ? 'primary' : ''">
+            <ion-label>{{ item[displayProperty] }}</ion-label>
+            <ion-icon
+              *ngIf="isSelected(item)"
+              slot="end"
+              name="checkmark-circle"
+              color="success">
+            </ion-icon>
+          </ion-item>
+        </ion-list>
+  </main>
+</ion-content>
+
+      
+      <ion-button expand="block" (click)="confirmarSeleccion()" *ngIf="multiple">
+        Confirmar selección
+      </ion-button>

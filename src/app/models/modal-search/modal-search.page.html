@@ -14,7 +14,7 @@
     <ion-item *ngFor="let user of cedulasFiltradas" (click)="seleccionar(user)">
       <ion-label slot="end" class="proceso-label">
         <ion-text>
-          <strong>Cargo:</strong> {{ user.cargo }}
+          <strong>Empresa:</strong> {{ user.empresa }}
         </ion-text>
       </ion-label>
 
@@ -23,8 +23,8 @@
         <h2>{{ user.identificacion }}</h2>
         <p>
           <strong>Nombre:</strong> {{ user.nombres }}<br>
-          <strong>Empresa:</strong> {{ user.empresa }}<br>
-          <strong>Email:</strong> {{ user.correO_CORPORATIVO }}<br>
+          <strong>Apellido:</strong> {{ user.apellidos }}<br>
+          <strong>Ciudad:</strong> {{ user.ciudad }}<br>
         </p>
       </ion-label>
     </ion-item>

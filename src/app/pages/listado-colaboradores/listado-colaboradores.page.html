@@ -1,7 +1,8 @@
+<main>
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-title>Listado Colaboradores</ion-title>
-    <ion-button color="success" (click)="abrirModalCrearFuncionario()" slot="end"><ion-icon name="add"></ion-icon> 
+    <ion-button color="success" (click)="abrirModalCrearFuncionario()" slot="end" shape="round"><ion-icon name="add"></ion-icon> 
       <span class="texto-boton">Registrar Colaborador</span>
     </ion-button>
   </ion-toolbar>
@@ -13,20 +14,56 @@
     </ion-toolbar>
   </ion-header>
   <div class="table-desktop">
+    <ion-searchbar
+      [(ngModel)]="searchText"
+      name="searchText"
+      placeholder="Buscar colaborador"
+      debounce="300"
+      showCancelButton="focus">
+    </ion-searchbar>
     <ion-grid>
       <ion-row class="header-row">
-        <ion-col>Nombre</ion-col>
-        <ion-col>Cedula</ion-col>
-        <ion-col>Teléfono</ion-col>
-        <ion-col>Sede</ion-col>
-        <ion-col>Cargo</ion-col>
-        <ion-col>Empresa</ion-col>
-        <ion-col>Gerencia</ion-col>
-        <ion-col>Correo Corporativo</ion-col>
-        <ion-col>Estado</ion-col>
+        <ion-col (click)="sortBy('nombres')" [class.active]="sortColumn === 'nombres'">
+          Nombre
+          <ion-icon [name]="getSortIcon('nombres')" class="sort-icon"></ion-icon>
+        </ion-col>
+        <ion-col (click)="sortBy('identificacion')" [class.active]="sortColumn === 'identificacion'">
+          Cédula
+          <ion-icon [name]="getSortIcon('identificacion')" class="sort-icon"></ion-icon>
+        </ion-col>
+        <ion-col (click)="sortBy('telefonO_CELULAR')" [class.active]="sortColumn === 'telefonO_CELULAR'">
+          Teléfono
+          <ion-icon [name]="getSortIcon('telefonO_CELULAR')" class="sort-icon"></ion-icon>
+        </ion-col>
+        <ion-col (click)="sortBy('sede')" [class.active]="sortColumn === 'sede'">
+          Sede
+          <ion-icon [name]="getSortIcon('sede')" class="sort-icon"></ion-icon>
+        </ion-col>
+        <ion-col (click)="sortBy('cargo')" [class.active]="sortColumn === 'cargo'">
+          Cargo
+          <ion-icon [name]="getSortIcon('cargo')" class="sort-icon"></ion-icon>
+        </ion-col>
+        <ion-col (click)="sortBy('empresa')" [class.active]="sortColumn === 'empresa'">
+          Empresa
+          <ion-icon [name]="getSortIcon('empresa')" class="sort-icon"></ion-icon>
+        </ion-col>
+        <ion-col (click)="sortBy('gerencia')" [class.active]="sortColumn === 'gerencia'">
+          Gerencia
+          <ion-icon [name]="getSortIcon('gerencia')" class="sort-icon"></ion-icon>
+        </ion-col>
+        <ion-col (click)="sortBy('correO_CORPORATIVO')" [class.active]="sortColumn === 'correO_CORPORATIVO'">
+          Correo
+          <ion-icon [name]="getSortIcon('correO_CORPORATIVO')" class="sort-icon"></ion-icon>
+        </ion-col>
+        <ion-col (click)="sortBy('estadO_PROCESO')" [class.active]="sortColumn === 'estadO_PROCESO'">
+          Estado de proceso
+          <ion-icon [name]="getSortIcon('estadO_PROCESO')" class="sort-icon"></ion-icon>
+        </ion-col>
         <ion-col>Acciones</ion-col>
       </ion-row>
-      <ion-row class="data-row" *ngFor="let datos of paginatedFuncionarios">
+      <ion-row class="data-row" 
+        *ngFor="let datos of paginatedFuncionarios; let i = index" 
+        [ngClass]="i % 2 === 0 ? 'even-row' : 'odd-row'">
         <ion-col>{{datos.nombres}} {{datos.apellidos}}</ion-col>
         <ion-col>{{datos.identificacion}}</ion-col>
         <ion-col>{{datos.telefonO_CELULAR}}</ion-col>
@@ -36,7 +73,7 @@
         <ion-col>{{datos.gerencia}}</ion-col>
         <ion-col>{{datos.correO_CORPORATIVO}}</ion-col>
         <ion-col>{{datos.estadO_PROCESO}}</ion-col>
-        <ion-col> <ion-button class="btn-accion" color="warning" (click)="abrirModalEditarFuncionario(datos.id,true)"><ion-icon name="pencil"></ion-icon></ion-button>
+        <ion-col> <ion-button class="btn-accion" color="medium" (click)="abrirModalEditarFuncionario(datos.id,true)"><ion-icon name="pencil"></ion-icon></ion-button>
           <ion-button class="btn-accion" color="success" (click)="abrirModalEditarFuncionario(datos.id,false)"><ion-icon name="eye"></ion-icon></ion-button>
           <ion-button class="btn-accion" color="danger" (click)="Inactivar(datos)"><ion-icon name="close"></ion-icon></ion-button>
         </ion-col>
@@ -48,17 +85,17 @@
       <ion-item-sliding *ngFor="let datos of paginatedFuncionarios">
         <ion-item >
           <ion-label>
-              <strong>{{datos.nombres}} {{datos.apellidos}}</strong>
+              <strong class="titulo">{{datos.nombres}} {{datos.apellidos}}</strong>
               <br />
-              <ion-text><strong>Cédula:</strong>{{datos.identificacion}}</ion-text>
+              <ion-text><strong>Cédula:</strong> {{datos.identificacion}}</ion-text>
               <br />
-              <ion-text><strong>Teléfono:</strong>{{datos.telefonO_CELULAR}}</ion-text>
+              <ion-text><strong>Teléfono:</strong> {{datos.telefonO_CELULAR}}</ion-text>
               <br />
-              <ion-text><strong>Sede:</strong>{{datos.sede}}</ion-text>
+              <ion-text><strong>Sede:</strong> {{datos.sede}}</ion-text>
               <br />
-              <ion-text><strong>Cargo:</strong>{{datos.cargo}}</ion-text>
+              <ion-text><strong>Cargo:</strong> {{datos.cargo}}</ion-text>
               <br />
-              <ion-text><strong>Empresa:</strong>{{datos.cargo}}</ion-text>
+              <ion-text><strong>Empresa:</strong> {{datos.cargo}}</ion-text>
               <br />
               <ion-note>{{datos.correO_CORPORATIVO}}</ion-note>
               <br />
@@ -68,7 +105,7 @@
         </ion-item>
         <ion-item-options side="end" >
           <div class="botones_opcion">
-            <ion-button class="btn-accion" color="warning" (click)="abrirModalEditarFuncionario(datos.id,true)"><ion-icon name="pencil"></ion-icon></ion-button>
+            <ion-button class="btn-accion" color="medium" (click)="abrirModalEditarFuncionario(datos.id,true)"><ion-icon name="pencil"></ion-icon></ion-button>
             <ion-button class="btn-accion" color="success" (click)="abrirModalEditarFuncionario(datos.id,false)"><ion-icon name="eye"></ion-icon></ion-button>
             <ion-button class="btn-accion" color="danger"><ion-icon name="close"></ion-icon></ion-button>
           </div>
@@ -90,3 +127,5 @@
     </ion-button>
   </div>
 
+
+</main>

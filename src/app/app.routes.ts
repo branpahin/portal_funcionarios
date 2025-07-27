@@ -38,5 +38,9 @@ export const routes: Routes = [
   {
     path: 'modal-search',
     loadComponent: () => import('./models/modal-search/modal-search.page').then( m => m.ModalSearchPage)
-  }
+  },
+  {
+    path: 'creacion-usuario',
+    loadComponent: () => import('./pages/creacion-usuario/creacion-usuario.page').then( m => m.CreacionUsuarioPage)
+  },
 ];

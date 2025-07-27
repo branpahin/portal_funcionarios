@@ -16,5 +16,7 @@ export enum TypeServicio{
     getUsuarios ='Usuario/GetListarUsuarios',
     CrearUsuario ='Usuario/CrearUsuario',
     GetUsuarioSistema ='Usuario/GetUsuarioSistema',
-    ActualizarUsuario ='Usuario/ActualizarUsuario'
+    GetListarUsuariosAgregar = 'Usuario/GetListarUsuariosAregar',
+    ActualizarUsuario ='Usuario/ActualizarUsuario',
+    ActualizarClave='Usuario/ActualizarClave'
 }

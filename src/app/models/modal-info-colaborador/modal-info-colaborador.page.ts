@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IONIC_COMPONENTS } from 'src/app/imports/ionic-imports';
 import { addIcons } from 'ionicons';
-import { person, personAddOutline, personCircle, personCircleOutline } from 'ionicons/icons';
+import { close, person} from 'ionicons/icons';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-modal-info-colaborador',
@@ -17,9 +18,12 @@ import { person, personAddOutline, personCircle, personCircleOutline } from 'ion
 export class ModalInfoColaboradorPage implements OnInit {
   @Input() colaborador: any;
 
-  constructor() {addIcons({ person});}
+  constructor(private modalCtrl: ModalController) {addIcons({ person, close} );}
 
   ngOnInit() {
+  }
+  cerrarModal() {
+    this.modalCtrl.dismiss();
   }
 
 }

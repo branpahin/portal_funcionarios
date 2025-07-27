@@ -28,7 +28,7 @@ export class ModalSearchPage implements OnInit {
   
   listarUsuarios(){
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
-    this.service.getColaboradores(this.param.estado_Proceso,this.param.ciudad).subscribe({
+    this.service.getListarUsuariosAgregar().subscribe({
       next:async(resp)=>{
         try{
           console.log("Respuesta Login: ", resp)
@@ -39,18 +39,8 @@ export class ModalSearchPage implements OnInit {
         }
       }
     })
-    // this.service.getConsultatUsuarios().subscribe({
-    //   next:async(resp)=>{
-    //     try{
-    //       console.log("Respuesta Login: ", resp)
-    //       this.funcionarios=resp.data.datos.listadoUsuariosAPP
-    //       this.cedulasFiltradas= this.funcionarios;
-    //     }catch(error){
-    //       console.error("Respuesta Login: ", error)
-    //     }
-    //   }
-    // })
   }
+  
   filtrarCedulas(event: any) {
     const valor = event.detail.value?.toLowerCase() || '';
     this.cedulasFiltradas = this.funcionarios.filter(cedula =>
@@ -58,8 +48,8 @@ export class ModalSearchPage implements OnInit {
     );
   }
 
-  seleccionar(cedula: string) {
-    this.modalCtrl.dismiss(cedula);
+  seleccionar(data: any) {
+    this.modalCtrl.dismiss(data);
   }
 
   cerrar() {
