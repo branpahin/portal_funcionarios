@@ -33,13 +33,14 @@ export class CreacionUsuarioPage implements OnInit {
   cedulaSeleccionada: string = '';
   nombre: string ='';
   apellido: string ='';
+  clave: string = '';
   constructor(private service:PortalService, private modalCtrl: ModalController, 
     private fb: FormBuilder, private moduleService:ModuleService, private UserInteractionService: UserInteractionService) {
     addIcons({ pencil, eye, close, add}); 
     this.formulario();
    }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.param=this.moduleService.getFiltros();
     this.empleadoForm.get('ID_EMPRESA')?.valueChanges.subscribe(value => {
       this.selec('empresas');
@@ -64,7 +65,8 @@ export class CreacionUsuarioPage implements OnInit {
         ? this.usuario.estadO_PROCESO.split(',').map((e:any) => +e.trim())
         : []
       })
-      this.listarUsuarios()
+      await this.listarUsuarios();
+      await this.listarUsuariosSistema();
       
     }
   }
@@ -104,7 +106,7 @@ export class CreacionUsuarioPage implements OnInit {
     }
   }
 
-  listarUsuarios(){
+  async listarUsuarios(){
     this.service.getListarUsuariosAgregar().subscribe({
       next:async(data)=>{
         try {
@@ -119,6 +121,25 @@ export class CreacionUsuarioPage implements OnInit {
           } else {
             console.warn('⚠️ No se encontró coincidencia con la identificación:', this.usuario.identificacion);
           }
+
+        } catch (error) {
+          console.error("Error en listarUsuarios:", error);
+        }
+      },
+      error: (err) => {
+        console.error("Error al obtener usuarios:", err);
+      }
+    })
+  }
+
+  async listarUsuariosSistema(){
+    this.service.getUsuariosSistema(this.usuario.id).subscribe({
+      next:async(data)=>{
+        try {
+          this.clave = data.data.clave
+          this.empleadoForm.patchValue({
+            CLAVE:this.clave
+          })
 
         } catch (error) {
           console.error("Error en listarUsuarios:", error);

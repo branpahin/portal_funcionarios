@@ -1,7 +1,8 @@
-<ion-header [translucent]="true">
+<main>
+  <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-title>Listado Colaboradores</ion-title>
-    <ion-button color="success" (click)="abrirModalCrearFuncionario()" slot="end"><ion-icon name="add"></ion-icon> 
+    <ion-button color="success" (click)="abrirModalCrearFuncionario()" slot="end" shape="round"><ion-icon name="add"></ion-icon> 
       <span class="texto-boton">Registrar Usuario</span>
     </ion-button>
   </ion-toolbar>
@@ -12,17 +13,39 @@
       <ion-title size="large">Listado Colaboradores</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-searchbar
+      [(ngModel)]="searchText"
+      name="searchText"
+      placeholder="Buscar colaborador"
+      debounce="300"
+      showCancelButton="focus">
+    </ion-searchbar>
   <div class="table-desktop">
     <ion-grid>
       <ion-row class="header-row">
-        <ion-col>Cedula</ion-col>
-        <ion-col>Correo Corporativo</ion-col>
-        <ion-col>Rol</ion-col>
-        <ion-col>Empresa</ion-col>
-        <ion-col>Procesos</ion-col>
+        <ion-col (click)="sortBy('identificacion')" [class.active]="sortColumn === 'identificacion'">
+          Cedula
+          <ion-icon [name]="getSortIcon('identificacion')" class="sort-icon"></ion-icon>
+        </ion-col>
+        <ion-col (click)="sortBy('correO_CORPORATIVO')" [class.active]="sortColumn === 'correO_CORPORATIVO'">
+          Correo Corporativo
+          <ion-icon [name]="getSortIcon('correO_CORPORATIVO')" class="sort-icon"></ion-icon>
+        </ion-col>
+        <ion-col (click)="sortBy('descripcioN_ROL')" [class.active]="sortColumn === 'descripcioN_ROL'">
+          Rol
+          <ion-icon [name]="getSortIcon('descripcioN_ROL')" class="sort-icon"></ion-icon>
+        </ion-col>
+        <ion-col (click)="sortBy('descripcioN_EMPRESA')" [class.active]="sortColumn === 'descripcioN_EMPRESA'">
+          Empresa
+          <ion-icon [name]="getSortIcon('descripcioN_EMPRESA')" class="sort-icon"></ion-icon>
+        </ion-col>
+        <ion-col (click)="sortBy('estadO_PROCESO_DESCRIPCIONES')" [class.active]="sortColumn === 'estadO_PROCESO_DESCRIPCIONES'">
+          Procesos
+          <ion-icon [name]="getSortIcon('estadO_PROCESO_DESCRIPCIONES')" class="sort-icon"></ion-icon>
+        </ion-col>
         <ion-col>acciones</ion-col>
       </ion-row>
-      <ion-row class="data-row" *ngFor="let datos of funcionarios let i = index" 
+      <ion-row class="data-row" *ngFor="let datos of paginatedFuncionarios let i = index" 
         [ngClass]="i % 2 === 0 ? 'even-row' : 'odd-row'">
         <ion-col>{{datos.identificacion}}</ion-col>
         <ion-col>{{datos.correO_CORPORATIVO}}</ion-col>
@@ -38,7 +61,7 @@
   </div>
   <div class="list-mobile">
     <ion-list>
-      <ion-item-sliding *ngFor="let datos of funcionarios">
+      <ion-item-sliding *ngFor="let datos of paginatedFuncionarios">
         <ion-item >
           <ion-label>
               <strong>{{datos.identificacion}}</strong>
@@ -76,3 +99,5 @@
       Siguiente
     </ion-button>
   </div>
+
+</main>

@@ -45,12 +45,12 @@ export class ModalCrearFuncionarioPage implements OnInit {
   estados: any[] = [];
   tipoRegistro: any[] = [];
   estadoCivil: any[] = [];
-  parentesco: any[] = [];
   tipoDocumento: any[] = [];
   rh: any[] = [];
   ciudadTrabajo: any[] = [];
   arl: any[] = [];
   jefes: any[] = [];
+  razas: any[] = [];
   isModalOpen = false;
 
   constructor(private fb: FormBuilder, private moduleService:ModuleService, private service:PortalService, 
@@ -71,7 +71,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
       AñO_NACIMIENTO: [''],
       MES_NACIMIENTO: [''],
       DIA_NACIMIENTO: [''],
-      ID_PARENTESCO: [0, Validators.required],
       DOCUMENTO: ['', Validators.required],
       ID_TP_DOCUMENTO: [0, Validators.required]
     });
@@ -351,9 +350,10 @@ export class ModalCrearFuncionarioPage implements OnInit {
       'jefes',
       'tipoRegistro',
       'estadoCivil',
-      'parentezco',
+      // 'parentezco',
       'arl',
-      'ciudadTrabajo'
+      'ciudadTrabajo',
+      'razas'
     ];
 
     listasSimples.forEach(nombre => this.selec(nombre));
@@ -374,6 +374,8 @@ export class ModalCrearFuncionarioPage implements OnInit {
       this.postgrado = this.param[lista] || [];
     } else if (lista === 'generos') {
       this.generos = this.param[lista] || [];
+    } else if (lista === 'razas') {
+      this.razas = this.param[lista] || [];
     } else if (lista === 'tieneHijos') {
       this.tieneHijos = this.param[lista] || [];
     } else if (lista === 'empresas') {
@@ -400,8 +402,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
       this.tipoRegistro = this.param[lista] || [];
     } else if (lista === 'estadoCivil') {
       this.estadoCivil = this.param[lista] || [];
-    } else if (lista === 'parentezco') {
-      this.parentesco = this.param[lista] || [];
     } else if (lista === 'tipoIdentificacion' && dato =='idPadre') {
       this.tipoDocumento = this.param[lista] || [];
     } else if (lista === 'tipoIdentificacion' && dato !='idPadre') {

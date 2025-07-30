@@ -136,12 +136,13 @@ export class ListadoColaboradoresPage implements OnInit {
   formCrear(){
     return this.empleadoForm = this.fb.group({
       ID: [0, Validators.required],
-      ID_TIPO_REGISTRO: [, Validators.required],
+      // ID_TIPO_REGISTRO: [, Validators.required],
       TIPO_IDENTIFICACION : [, [Validators.required, Validators.maxLength(50)]],
       IDENTIFICACION : ['', [Validators.required, Validators.maxLength(50)]],
       NOMBRES : ['', [Validators.required, Validators.maxLength(50)]],
       APELLIDOS : ['', [Validators.required, Validators.maxLength(50)]],
       GENERO : ['', [Validators.required, Validators.maxLength(1)]],
+      ID_RAZA: ['', Validators.required],
       RH : ['', [Validators.required, Validators.maxLength(3)]],
       FECHA_NACIMIENTO : ['', Validators.required],
       ID_NIVEL_EDUCATIVO : [0, Validators.required],

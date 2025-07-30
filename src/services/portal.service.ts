@@ -57,8 +57,8 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.getInfoColaborador+"?id_colaborador="+idColaborador);
   }
 
-  getUsuariosSistema(): Observable<any>{
-    return this.httpService.GetCore(this.GetUsuarioSistema);
+  getUsuariosSistema(id:number): Observable<any>{
+    return this.httpService.GetParamsCore(this.GetUsuarioSistema+"?idUser="+id);
   }
 
   postCrearColaborador(data: any): Observable<any>{

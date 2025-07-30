@@ -32,15 +32,15 @@ export class ColaboradoresPublicoPage implements OnInit {
   }
 
   ngOnInit() {
-    this.service.getConsultarColaboradores().subscribe({
-      next:async(resp)=>{
-        try{
-          this.colaboradores=resp.data.datos.nombres_Colaboradores;
-        }catch(error){
-          console.error("Respuesta Login: ", error)
-        }
-      }
-    })
+    // this.service.getConsultarColaboradores().subscribe({
+    //   next:async(resp)=>{
+    //     try{
+    //       this.colaboradores=resp.data.datos.nombres_Colaboradores;
+    //     }catch(error){
+    //       console.error("Respuesta Login: ", error)
+    //     }
+    //   }
+    // })
   }
 
   selec(dato:string){
@@ -51,26 +51,27 @@ export class ColaboradoresPublicoPage implements OnInit {
 
   async buscar(credentials: any) {
     if(credentials.cedula==null){
-      credentials.cedula=0
-    }
-    
-    this.UserInteractionService.showLoading('Consultando...');
-    this.service.postConsultarColaborador(credentials).subscribe({
-      next:async(resp)=>{
-        try{
-          console.log("resp: ",resp)
+      this.UserInteractionService.showLoading('Consultando...');
+      this.service.postConsultarColaborador(credentials).subscribe({
+        next:async(resp)=>{
+          try{
+            console.log("resp: ",resp)
+            this.UserInteractionService.dismissLoading();
+            this.abrirModalInfoColaborador(resp.body.data.datos);
+          }catch(error){
+            console.error("Respuesta Login: ", error)
+            this.UserInteractionService.dismissLoading();
+          }
+        },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.abrirModalInfoColaborador(resp.body.data.datos);
-        }catch(error){
-          console.error("Respuesta Login: ", error)
-          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err);
         }
-      },error:(err)=>{
-        this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err);
-      }
 
-    })
+      })
+    }else{
+      this.UserInteractionService.presentToast('Campo cedula requerido');
+    }
+
   }
 
     async abrirModalInfoColaborador(data:any) {

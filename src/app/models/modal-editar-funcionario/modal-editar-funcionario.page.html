@@ -611,15 +611,23 @@
             </ion-col>
 
             <ion-col size="12" size-md="6">
+              <ion-item [disabled]='!editar' (mousedown)="abrirModal('ID_RAZA', razas, 'descripcion', false)">
+                <ion-input label="Raza" labelPlacement="floating" [value]="getGeneroDescripcion('ID_RAZA', razas) || 'Seleccione...'" readonly></ion-input>
+                <ion-icon name="caret-down-outline" slot="end"></ion-icon>
+              </ion-item>
+              <app-error-mensaje [control]="empleadoForm.get('ID_RAZA')"></app-error-mensaje>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col size="12" size-md="6">
               <ion-item [disabled]='!editar' (mousedown)="abrirModal('GENERO', generos, 'descripcion', false)">
                 <ion-input label="Género" labelPlacement="floating" [value]="getGeneroDescripcion('GENERO', generos) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
               </ion-item>
               <app-error-mensaje [control]="empleadoForm.get('GENERO')"></app-error-mensaje>
             </ion-col>
-          </ion-row>
 
-          <ion-row>
             <ion-col size="12" size-md="6">
               <ion-item [disabled]='!editar' (mousedown)="abrirModal('RH', rh, 'descripcion', false)">
                 <ion-input label="Rh" labelPlacement="floating" [value]="getGeneroDescripcion('RH', rh) || 'Seleccione...'" readonly></ion-input>
@@ -627,7 +635,8 @@
               </ion-item>
               <app-error-mensaje [control]="empleadoForm.get('RH')"></app-error-mensaje>
             </ion-col>
-
+          </ion-row>
+          <ion-row>
             <ion-col size="12" size-md="6">
               <ion-item [disabled]='!editar' (mousedown)="abrirModal('ID_ESTADO_CIVIL', estadoCivil, 'descripcion', false)">
                 <ion-input label="Estado Civil" labelPlacement="floating" [value]="getGeneroDescripcion('ID_ESTADO_CIVIL', estadoCivil) || 'Seleccione...'" readonly></ion-input>
@@ -876,15 +885,6 @@
                   </ion-select>
                 </ion-item>
                 <app-error-mensaje [control]="hijo.get('RH')"></app-error-mensaje>
-                
-                <ion-item [disabled]='!editar'>
-                  <ion-select label="Parentesco" label-placement="floating" formControlName="ID_PARENTESCO" (click)="selec('parentezco')">
-                    <ion-select-option *ngFor="let nivel of parentesco" [value]="nivel.id">
-                      {{ nivel.descripcion }}
-                    </ion-select-option>
-                  </ion-select>
-                </ion-item>
-                <app-error-mensaje [control]="hijo.get('ID_PARENTESCO')"></app-error-mensaje>
   
                 <ion-item [disabled]='!editar'>
                   <ion-select label="Tipo Documento" label-placement="floating" formControlName="ID_TP_DOCUMENTO" (click)="selec('tipoIdentificacion')">
@@ -1086,13 +1086,13 @@
           <app-error-mensaje [control]="empleadoForm.get('ARL')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="3">
+        <!-- <ion-col size="12" size-md="3">
           <ion-item [disabled]='!editar' (mousedown)="abrirModal('ID_TIPO_REGISTRO', tipoRegistro, 'descripcion', false)">
             <ion-input label="Tipo de registro" labelPlacement="floating" [value]="getGeneroDescripcion('ID_TIPO_REGISTRO', tipoRegistro) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('ID_TIPO_REGISTRO')"></app-error-mensaje>
-        </ion-col>
+        </ion-col> -->
       </ion-row>
     </ion-grid>
   </form>

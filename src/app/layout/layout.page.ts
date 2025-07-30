@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonMenu, IonMenuButton, IonIcon} from '@ionic/angular/standalone';
 import { Router, RouterModule } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { home, person, people, chevronDown, chevronForward, options, filter, close, logOut } from 'ionicons/icons';
+import { home, person, people, chevronDown, chevronForward, options, filter, close, logOut, chevronUp, chevronBack } from 'ionicons/icons';
 import { environment } from 'src/environments/environment';
 import { PortalService } from 'src/services/portal.service';
 import { ModuleService } from 'src/services/modulos/module.service';
@@ -27,7 +27,7 @@ export class LayoutPage implements OnInit {
   constructor(private service:PortalService, 
     private moduleService:ModuleService,
     private router: Router,
-    private cdr: ChangeDetectorRef) {addIcons({ home, people, person, chevronDown, chevronForward, options, filter}); this.params()}
+    private cdr: ChangeDetectorRef) {addIcons({ home, people, person, chevronDown, chevronUp, chevronBack, options, filter}); this.params()}
 
   ngOnInit() {
   }

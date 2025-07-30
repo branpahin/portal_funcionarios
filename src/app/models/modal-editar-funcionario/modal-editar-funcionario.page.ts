@@ -46,12 +46,12 @@ export class ModalEditarFuncionarioPage implements OnInit {
   estados: any[] = [];
   tipoRegistro: any[] = [];
   estadoCivil: any[] = [];
-  parentesco: any[] = [];
   tipoDocumento: any[] = [];
   rh: any[] = [];
   ciudadTrabajo: any[] = [];
   arl: any[] = [];
   jefes: any[] = [];
+  razas: any[] = [];
   isModalOpen = false;
   
   constructor(private cdRef: ChangeDetectorRef, private fb: FormBuilder, private moduleService:ModuleService, 
@@ -60,12 +60,13 @@ export class ModalEditarFuncionarioPage implements OnInit {
     addIcons({ pencil, eye, close, add}); 
     this.empleadoForm = this.fb.group({
       ID: [0, Validators.required],
-      ID_TIPO_REGISTRO: [, Validators.required],
+      // ID_TIPO_REGISTRO: [, Validators.required],
       TIPO_IDENTIFICACION : [, [Validators.required, Validators.maxLength(50)]],
       IDENTIFICACION : ['', [Validators.required, Validators.maxLength(50)]],
       NOMBRES : ['', [Validators.required, Validators.maxLength(50)]],
       APELLIDOS : ['', [Validators.required, Validators.maxLength(50)]],
-      GENERO : ['', [Validators.required, Validators.maxLength(1)]],
+      GENERO : ['', Validators.required],
+      ID_RAZA: ['', Validators.required],
       RH : ['', [Validators.required, Validators.maxLength(3)]],
       FECHA_NACIMIENTO : ['', Validators.required],
       ID_NIVEL_EDUCATIVO : [0, Validators.required],
@@ -93,7 +94,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
       ID_NIVEL_DOTACION : [],
       ENTIDAD_POSTGRADO: [''],
       CORREO_PERSONAL : ['', [Validators.required, Validators.email]],
-      CORREO_CORPORATIVO: ['', Validators.email],
+      CORREO_CORPORATIVO: [''],
       PAZ_SALVO_ACTIVOS: [''],
       ENTREGA_TARJETA_INGRESO: [''],
       CAMBIO_CARGO: [''],
@@ -223,6 +224,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
             
             if(datos.foto){
               console.log("entro")
+              this.imagenPreview = `data:image/png;base64,${datos.foto}`;
             }
             datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
             datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
@@ -244,7 +246,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
                 AñO_NACIMIENTO: [hijo.anO_NACIMIENTO],
                 MES_NACIMIENTO: [hijo.meS_NACIMIENTO],
                 DIA_NACIMIENTO: [hijo.diA_NACIMIENTO],
-                ID_PARENTESCO: [hijo.iD_PARENTESCO],
                 DOCUMENTO: [hijo.documento],
                 ID_TP_DOCUMENTO: [hijo.iD_TP_DOCUMENTO],
               });
@@ -265,6 +266,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
             const formCompleto = this.empleadoForm.getRawValue();
             Object.keys(formCompleto).forEach((key) => {
               if (key !== 'HIJOS_COLABORADOR_JSON') {
+                console.log("raza: ",key)
                 this.selec(key, 'idPadre');
               }
             });
@@ -272,8 +274,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
             // Recorrer hijos normalmente
             for (let hijo of formCompleto.HIJOS_COLABORADOR_JSON || []) {
               Object.keys(hijo).forEach((key) => {
-                this.selec(key);
-                console.log("Hijo: ", key);
                 this.selec(key);
               });
             }
@@ -331,6 +331,10 @@ export class ModalEditarFuncionarioPage implements OnInit {
     } else if (lista === 'GENERO') {
       lista = 'generos'
       this.generos = this.param[lista] || [];
+    } else if (lista === 'ID_RAZA') {
+      lista = 'razas'
+      console.log("raza: ",this.param)
+      this.razas = this.param[lista] || [];
     } else if (lista === 'TIENE_HIJOS') {
       lista = 'tieneHijos'
       this.tieneHijos = this.param[lista] || [];
@@ -369,10 +373,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
     } else if (lista === 'ID_ESTADO_CIVIL') {
       lista = 'estadoCivil'
       this.estadoCivil = this.param[lista] || [];
-    } else if (lista === 'ID_PARENTESCO' && dato !='idPadre') {
-      lista = 'parentezco'
-      this.parentesco = this.param[lista] || [];
-      console.log("parentesco: ",this.parentesco)
     } else if (lista === 'ID_TP_DOCUMENTO' && dato !='idPadre') {
       lista = 'tipoIdentificacion'
       
@@ -392,7 +392,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
     } else if (lista === 'CIUDAD_TRABAJO') {
       lista = 'ciudadTrabajo'
       this.ciudadTrabajo = this.param[lista] || [];
-    } else if (lista === 'jefes') {
+    } else if (lista === 'ID_JEFE') {
+      lista = 'jefes'
       this.jefes = this.param[lista] || [];
     }
     
@@ -411,7 +412,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
       AñO_NACIMIENTO: [''],
       MES_NACIMIENTO: [''],
       DIA_NACIMIENTO: [''],
-      ID_PARENTESCO: [0, Validators.required],
       DOCUMENTO: ['', Validators.required],
       ID_TP_DOCUMENTO: [0, Validators.required]
     });
@@ -477,7 +477,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
     });
   }
 
-  guardarEmpleado() {
+  async guardarEmpleado() {
     // if (this.empleadoForm.invalid) {
     //   this.empleadoForm.markAllAsTouched();
     //   return;
@@ -534,34 +534,14 @@ export class ModalEditarFuncionarioPage implements OnInit {
               ctx.drawImage(img, 0, 0);
       
               // Convertimos a Blob en formato JPEG
-              canvas.toBlob((blob) => {
+              canvas.toBlob(async (blob) => {
                 if (blob) {
                   const jpgFile = new File([blob], 'imagen.jpg', { type: 'image/jpeg' });
       
                   // Agregamos la imagen ya transformada
                   formData.append('foto', jpgFile);
       
-                  this.UserInteractionService.showLoading('Guardando...');
-                  this.service.putActualizarColaborador(formData).subscribe({
-                    next: async (resp) => {
-                      try {
-                        console.log("Respuesta:", resp);
-                        this.UserInteractionService.dismissLoading();
-                        this.UserInteractionService.presentToast('Usuario editado con exito',TypeThemeColor.SUCCESS);
-                        this.cerrarModal();
-                      } catch (error) {
-                        console.error("Error al procesar respuesta:", error);
-                        this.UserInteractionService.dismissLoading();
-                        this.cerrarModal();
-                      }
-                    },
-                    error: (err) => {
-                      console.error("Error al enviar formulario:", err);
-                      this.UserInteractionService.dismissLoading();
-                      this.UserInteractionService.presentToast(err);
-                      this.cerrarModal();
-                    }
-                  });
+                  await this.enviar(formData)
                 } else {
                   console.error("No se pudo convertir la imagen a blob.");
                 }
@@ -575,6 +555,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
       
         // Leer la imagen original como base64
         reader.readAsDataURL(this.imagenSeleccionada);
+      }else{
+        await this.enviar(formData)
       }
 
       console.log(this.empleadoForm.value);
@@ -582,6 +564,30 @@ export class ModalEditarFuncionarioPage implements OnInit {
     //   console.log(this.empleadoForm.value);
     //   console.log('Formulario inválido');
     // }
+  }
+
+  async enviar(formData:any){
+    this.UserInteractionService.showLoading('Guardando...');
+      this.service.putActualizarColaborador(formData).subscribe({
+        next: async (resp) => {
+          try {
+            console.log("Respuesta:", resp);
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast('Usuario editado con exito',TypeThemeColor.SUCCESS);
+            this.cerrarModal();
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading();
+            this.cerrarModal();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err);
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err);
+          this.cerrarModal();
+        }
+      });
   }
 
   

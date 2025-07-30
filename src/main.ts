@@ -8,7 +8,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { IonicModule } from '@ionic/angular';
 import { importProvidersFrom } from '@angular/core';
 import { addIcons } from 'ionicons';
-import { close, card, cog, desktopOutline, documentText, eye, home, lockClosed, logOut, moon, person, phonePortraitOutline, receiptOutline, search, sunny, helpCircle, call, mail, closeCircleOutline, checkmarkCircleOutline, refreshOutline, hourglassOutline, checkmarkOutline, pencil, add, swapVertical, swapVerticalOutline, funnelOutline, chevronUpOutline, chevronDownOutline, checkmarkCircle, caretDownOutline } from 'ionicons/icons';
+import { close, card, cog, desktopOutline, documentText, eye, home, lockClosed, logOut, moon, person, phonePortraitOutline, receiptOutline, search, sunny, helpCircle, call, mail, closeCircleOutline, checkmarkCircleOutline, refreshOutline, hourglassOutline, checkmarkOutline, pencil, add, swapVertical, swapVerticalOutline, funnelOutline, chevronUpOutline, chevronDownOutline, checkmarkCircle, caretDownOutline, key } from 'ionicons/icons';
 
 addIcons({
   'phone-portrait-outline': phonePortraitOutline,
@@ -19,6 +19,7 @@ addIcons({
   'eye': eye,
   'search':search,
   'card':card,
+  'key':key,
   'document-text':documentText,
   'log-out-outline':logOut,
   'sunny':sunny,
