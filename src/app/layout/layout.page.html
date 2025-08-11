@@ -28,9 +28,9 @@
           <ion-icon [name]="filtrosAbiertos ? 'chevron-up' : 'chevron-down'" slot="end"></ion-icon>
         </ion-item>
         <ng-container *ngIf="filtrosAbiertos">
-          <ion-item class="cursor-custom" *ngFor="let key of filtroKeys" (click)="actualizarFiltros(key)" style="padding-left: 30px;">
+          <ion-item class="cursor-custom" *ngFor="let key of filtroKeys" (click)="actualizarFiltros(key.campo)" style="padding-left: 30px;">
             <ion-icon name="chevron-back" slot="start"></ion-icon>
-            <ion-label>{{ key | titlecase }}</ion-label>
+            <ion-label>{{ key.campo | titlecase }}</ion-label>
           </ion-item>
         </ng-container>
         <ion-menu-toggle auto-hide="false">

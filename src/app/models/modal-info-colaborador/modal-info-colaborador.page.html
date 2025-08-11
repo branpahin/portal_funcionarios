@@ -14,7 +14,8 @@
   <ion-card class="tarjeta-colaborador" >
     <ion-card-header class="ion-text-center" color="primary">
       <!-- Imagen (opcional en el futuro) -->
-      <img *ngIf="colaborador?.foto" [src]="colaborador.foto" alt="Foto del colaborador" class="foto-colaborador" />
+      <!-- <img *ngIf="colaborador?.foto" [src]="colaborador.foto" alt="Foto del colaborador" class="foto-colaborador" /> -->
+      <img *ngIf="colaborador?.foto" [src]="imagenPreview || 'assets/imagen-placeholder.png'" alt="Foto del colaborador" class="foto-colaborador" />
       <div *ngIf="!colaborador?.foto" class="foto-placeholder">
         <ion-icon name="person" size="large"></ion-icon>
       </div>

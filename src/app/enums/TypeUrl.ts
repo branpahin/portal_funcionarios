@@ -12,11 +12,16 @@ export enum TypeServicio{
     getInfoColaborador = 'Colaboradores/GetInfoColaborador',
     ActualizarEstadoColaborador = 'Colaboradores/ActualizarEstadoColaborador',
     putInfoColaborador = 'Colaboradores/UpdateInfoColaborador',
-    PutInactivarUsuario = 'Colaboradores/PutInactivarUsuario',
+    PutInactivarColaborador = 'Colaboradores/InactivarColaborador',
     getUsuarios ='Usuario/GetListarUsuarios',
     CrearUsuario ='Usuario/CrearUsuario',
-    GetUsuarioSistema ='Usuario/GetUsuarioSistema',
+    GetInfoUsuario ='Usuario/GetInfoUsuario',
     GetListarUsuariosAgregar = 'Usuario/GetListarUsuariosAregar',
     ActualizarUsuario ='Usuario/ActualizarUsuario',
-    ActualizarClave='Usuario/ActualizarClave'
+    ActualizarClave='Usuario/ActualizarClave',
+    GetNombresFiltros='Filtros/GetNombresFiltros',
+    GetNombresFiltroDet='Filtros/GetNombresFiltroDet',
+    CrearFiltroDet='Filtros/CrearFiltroDet',
+    ActualzarFiltroDet='Filtros/ActualzarFiltroDet',
+    GetCamposEstado='Colaboradores/GetCamposEstado'
 }

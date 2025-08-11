@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registro de Usuario</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cerrarModal()" fill="clear" style="color:white">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="filtroForm">
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <h3 class="subtitulos">Filtro</h3>
+        </ion-col>
+      </ion-row>
+
+      <!-- Sección 1: Datos básicos -->
+      <ion-row>
+        <ion-col size="12" size-md="6">
+          <ion-item >
+            <ion-input label="Descripción" label-placement="floating"formControlName="descripcion" placeholder="Seleccione una cédula"></ion-input>
+          </ion-item>
+          <app-error-mensaje [control]="filtroForm.get('descripcion')"></app-error-mensaje>
+        </ion-col>
+
+        <ion-col size="12" size-md="6">
+          <ion-item>
+            <ion-select label="Estado" label-placement="floating" formControlName="estado">
+              <ion-select-option value="A">
+                Activo
+              </ion-select-option>
+              <ion-select-option value="I">
+                Inactivo
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+          <app-error-mensaje [control]="filtroForm.get('estado')"></app-error-mensaje>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar class="btn" color="medium">
+    <ion-button style="margin-right: 2%;"  (click)="guardarFiltro()">Guardar</ion-button>
+  </ion-toolbar>
+</ion-footer>

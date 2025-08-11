@@ -50,7 +50,7 @@ export class ColaboradoresPublicoPage implements OnInit {
   }
 
   async buscar(credentials: any) {
-    if(credentials.cedula==null){
+    if(credentials.cedula!=null){
       this.UserInteractionService.showLoading('Consultando...');
       this.service.postConsultarColaborador(credentials).subscribe({
         next:async(resp)=>{

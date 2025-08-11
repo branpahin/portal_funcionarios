@@ -17,10 +17,12 @@ import { ModalController } from '@ionic/angular';
 })
 export class ModalInfoColaboradorPage implements OnInit {
   @Input() colaborador: any;
+  imagenPreview:string=''
 
   constructor(private modalCtrl: ModalController) {addIcons({ person, close} );}
 
   ngOnInit() {
+    this.imagenPreview = `data:image/png;base64,${this.colaborador.foto}`;
   }
   cerrarModal() {
     this.modalCtrl.dismiss();

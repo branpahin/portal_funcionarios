@@ -29,6 +29,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
   imagenSeleccionada: File | null = null;
   imagenPreview: string | ArrayBuffer | null = null;
   mostrarHijo:boolean=false;
+  cargando: boolean = true;
+  camposConfig: any[] = [];
   nivelesEducativos: any[] = [];
   profesiones: any[] = [];
   postgrado: any [] = [];
@@ -60,7 +62,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
     addIcons({ pencil, eye, close, add}); 
     this.empleadoForm = this.fb.group({
       ID: [0, Validators.required],
-      // ID_TIPO_REGISTRO: [, Validators.required],
       TIPO_IDENTIFICACION : [, [Validators.required, Validators.maxLength(50)]],
       IDENTIFICACION : ['', [Validators.required, Validators.maxLength(50)]],
       NOMBRES : ['', [Validators.required, Validators.maxLength(50)]],
@@ -221,7 +222,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
             // Llena el FormArray de hijos
             const datos = resp.data.datos;
-            
+            await this.consultaEstados(Number(datos.estado))
             if(datos.foto){
               console.log("entro")
               this.imagenPreview = `data:image/png;base64,${datos.foto}`;
@@ -289,6 +290,84 @@ export class ModalEditarFuncionarioPage implements OnInit {
         }
       })
     }
+  }
+
+  async consultaEstados(estado:number) {
+    
+    this.UserInteractionService.showLoading('Cargando...');
+    this.service.getCamposEstado(estado).subscribe({
+      next:async(resp)=>{
+        try{
+          this.camposConfig=resp.data.datos.listadoCampos
+          await this.aplicarConfiguracionCampos();
+          this.UserInteractionService.dismissLoading();
+        }catch(error){
+          this.UserInteractionService.dismissLoading();
+        }
+      },error:(err)=>{
+        this.UserInteractionService.dismissLoading();
+        this.UserInteractionService.presentToast(err);
+      }
+    })
+  }
+
+  getCampoConfig(nombreCampo: string) {
+    const campo = this.camposConfig.find(
+      c => c.campo.toLowerCase() === nombreCampo.toLowerCase()
+    );
+
+    this.camposConfig.forEach(c => {
+      const control = this.empleadoForm.get(c.campo);
+      if (control) {
+        if (c.activo !== 'S') {
+          // Si no está activo, quitarlo del form
+          this.empleadoForm.removeControl(c.campo);
+        } else {
+          if (c.modificable === 'N') {
+            control.disable({ emitEvent: false });
+          } else {
+            control.enable({ emitEvent: false });
+          }
+        }
+      }
+    });
+
+    if (!campo) {
+      // No existe en la lista → no se muestra, no requerido
+      return { visible: false, editable: false, required: false };
+    }
+
+    // Existe → definimos visibilidad y edición
+    return {
+      visible: campo.activo.toUpperCase() === 'S',
+      editable: campo.modificable.toUpperCase() === 'S',
+      required: this.esRequerido(nombreCampo)
+    };
+  }
+
+  async aplicarConfiguracionCampos() {
+    this.camposConfig.forEach(c => {
+      const control = this.empleadoForm.get(c.campo);
+      if (control) {
+        if (c.activo.toUpperCase() !== 'S') {
+          this.empleadoForm.removeControl(c.campo);
+        } else {
+          if (c.modificable.toUpperCase() === 'N') {
+            control.disable({ emitEvent: false });
+          } else {
+            control.enable({ emitEvent: false });
+          }
+        }
+      }
+    });
+    this.cargando = false;
+  }
+
+  // Ejemplo: si el campo está en el formulario y es requerido por defecto
+  private esRequerido(nombreCampo: string): boolean {
+    const control = this.empleadoForm.get(nombreCampo);
+    if (!control) return false;
+    return control.hasValidator(Validators.required);
   }
 
   convertirStringArray(cadena: any): number[] {

@@ -19,13 +19,18 @@ export class PortalService {
   private getInfoColaborador = TypeServicio.getInfoColaborador
   private ActualizarEstadoColaborador = TypeServicio.ActualizarEstadoColaborador
   private putInfoColaborador = TypeServicio.putInfoColaborador
-  private InactivarUsuario = TypeServicio.PutInactivarUsuario
+  private InactivarColaborador = TypeServicio.PutInactivarColaborador
   private getUsuarios =TypeServicio.getUsuarios
   private CrearUsuario =TypeServicio.CrearUsuario
-  private GetUsuarioSistema =TypeServicio.GetUsuarioSistema
+  private GetUsuarioSistema =TypeServicio.GetInfoUsuario
   private ActualizarUsuario =TypeServicio.ActualizarUsuario
   private GetListarUsuariosAgregar = TypeServicio.GetListarUsuariosAgregar
   private ActualizarClave = TypeServicio.ActualizarClave
+  private GetNombresFiltros = TypeServicio.GetNombresFiltros
+  private GetNombresFiltroDet = TypeServicio.GetNombresFiltroDet
+  private CrearFiltroDet = TypeServicio.CrearFiltroDet
+  private ActualzarFiltroDet = TypeServicio.ActualzarFiltroDet
+  private GetCamposEstado = TypeServicio.GetCamposEstado
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -37,8 +42,20 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.camposFiltro);
   }
 
+  getNombresFiltros(): Observable<any>{
+    return this.httpService.GetParamsCore(this.GetNombresFiltros);
+  }
+
+  getNombresFiltrosDet(filtro:string): Observable<any>{
+    return this.httpService.GetParamsCore(this.GetNombresFiltroDet+"?filtro="+filtro);
+  }
+
   getColaboradores(estado:number, ciudad:number): Observable<any>{
     return this.httpService.GetParamsCore(this.colaboradores+"?estados="+estado+"&ciudad="+ciudad);
+  }
+
+  getCamposEstado(estado:number): Observable<any>{
+    return this.httpService.GetParamsCore(this.GetCamposEstado+"?estado="+estado);
   }
 
   getConsultatUsuarios(): Observable<any>{
@@ -58,7 +75,7 @@ export class PortalService {
   }
 
   getUsuariosSistema(id:number): Observable<any>{
-    return this.httpService.GetParamsCore(this.GetUsuarioSistema+"?idUser="+id);
+    return this.httpService.GetParamsCore(this.GetUsuarioSistema);
   }
 
   postCrearColaborador(data: any): Observable<any>{
@@ -81,16 +98,24 @@ export class PortalService {
     return this.httpService.PostCore(data,this.ActualizarClave);
   }
 
+  postCrearFiltroDet(data: any): Observable<any>{
+    return this.httpService.PostCore(data,this.CrearFiltroDet);
+  }
+
   putActualizarColaborador(data: any): Observable<any>{
     return this.httpService.PutFormDataCore(data,this.putInfoColaborador);
   }
 
   putInactivarUsuario(data: any): Observable<any>{
-    return this.httpService.PutJsonCore(data,this.InactivarUsuario);
+    return this.httpService.PutJsonCore(data,this.InactivarColaborador);
   }
 
   putActualizarUsuario(data: any): Observable<any>{
     return this.httpService.PutJsonCore(data,this.ActualizarUsuario);
+  }
+
+  putActualzarFiltroDet(data: any): Observable<any>{
+    return this.httpService.PutJsonCore(data,this.ActualzarFiltroDet);
   }
 
 

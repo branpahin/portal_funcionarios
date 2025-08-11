@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ModuleService } from 'src/services/modulos/module.service';
 import { IONIC_COMPONENTS } from '../../imports/ionic-imports';
+import { PortalService } from 'src/services/portal.service';
+import { ModalController } from '@ionic/angular';
+import { ModalCrearFiltroPage } from 'src/app/models/modal-crear-filtro/modal-crear-filtro.page';
 
 @Component({
   selector: 'app-actualizacion-filtros',
@@ -23,15 +26,63 @@ export class ActualizacionFiltrosPage implements OnInit {
   sortColumn = '';
   sortDirection: 'asc' | 'desc' = 'asc';
 
-  constructor(private route: ActivatedRoute, private moduleService:ModuleService) {}
+  constructor(private service:PortalService,private route: ActivatedRoute, 
+    private moduleService:ModuleService, private modalController: ModalController,) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.tipoFiltro = params['tipo'];
     });
-    this.param=this.moduleService.getFiltros();
-    this.filtros = this.param[this.tipoFiltro]
+
+    await this.nombresFiltrosDet()
+    await this.params();
+    // this.param=this.moduleService.getFiltros();
+    // this.filtros = this.param[this.tipoFiltro]
     
+  }
+
+  async params(){
+    this.service.getCaposFiltro().subscribe({
+      next:async(resp)=>{
+        try{
+          // this.filtros=resp.data.datos;
+          this.moduleService.setFiltros(resp.data.datos)
+          // this.filtroKeys = Object.keys(this.filtros);
+        }catch(error){
+          console.error("Respuesta Login: ", error)
+        }
+      }
+    })
+  }
+
+  async nombresFiltrosDet(){
+    this.service.getNombresFiltrosDet(this.tipoFiltro).subscribe({
+      next:async(resp)=>{
+        try{
+          console.log("datos: ",resp)
+          this.filtros=resp.data.datos.filtros;
+        }catch(error){
+          console.error("Respuesta Login: ", error)
+        }
+      }
+    })
+  }
+
+  async abrirModalEditar(data:any | string, editar:boolean) {
+    const modal = await this.modalController.create({
+      component: ModalCrearFiltroPage,
+      componentProps: { data: data, editar: editar}
+    });
+
+    modal.style.cssText = `
+      --border-radius: 10px;
+    `;
+
+    await modal.present();
+    
+    await modal.onWillDismiss();
+
+    this.ngOnInit();
   }
 
   get totalPages(): number {

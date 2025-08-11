@@ -40,6 +40,10 @@ export const routes: Routes = [
     loadComponent: () => import('./models/modal-search/modal-search.page').then( m => m.ModalSearchPage)
   },
   {
+    path: 'modal-crear-filtro',
+    loadComponent: () => import('./models/modal-crear-filtro/modal-crear-filtro.page').then( m => m.ModalCrearFiltroPage)
+  },
+  {
     path: 'creacion-usuario',
     loadComponent: () => import('./pages/creacion-usuario/creacion-usuario.page').then( m => m.CreacionUsuarioPage)
   },

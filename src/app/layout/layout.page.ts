@@ -39,9 +39,22 @@ export class LayoutPage implements OnInit {
     this.service.getCaposFiltro().subscribe({
       next:async(resp)=>{
         try{
-          this.filtros=resp.data.datos;
+          // this.filtros=resp.data.datos;
           this.moduleService.setFiltros(resp.data.datos)
-          this.filtroKeys = Object.keys(this.filtros);
+          // this.filtroKeys = Object.keys(this.filtros);
+        }catch(error){
+          console.error("Respuesta Login: ", error)
+        }
+      }
+    })
+
+    this.service.getNombresFiltros().subscribe({
+      next:async(resp)=>{
+        try{
+          console.log("datos: ",resp)
+          this.filtros=resp.data.datos.nombres_Filtros;
+          // this.moduleService.setFiltros(resp.data.datos)
+          this.filtroKeys = this.filtros;
         }catch(error){
           console.error("Respuesta Login: ", error)
         }

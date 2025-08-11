@@ -188,7 +188,7 @@ export class ListadoUsuariosPage implements OnInit {
     if (data) {
       this.service.postActualizarClave(data).subscribe({
         next: (resp) => this.UserInteractionService.presentToast('Clave actualizada', TypeThemeColor.SUCCESS),
-        error: (err) => this.UserInteractionService.presentToast(err)
+        error: (err) => this.UserInteractionService.presentToast(err.error.mensaje,TypeThemeColor.DANGER)
       });
       this.ngOnInit();
     }

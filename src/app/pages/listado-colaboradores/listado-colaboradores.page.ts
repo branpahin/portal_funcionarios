@@ -61,11 +61,11 @@ export class ListadoColaboradoresPage implements OnInit {
     this.service.getColaboradores(this.param.estado_Proceso,this.param.ciudad).subscribe({
       next:async(resp)=>{
         try{
-          console.log("Respuesta Login: ", resp)
+          console.log("Respuesta Colaboradores: ", resp)
           this.UserInteractionService.dismissLoading();
           this.funcionarios=resp.data.datos.listadoColaboradores
         }catch(error){
-          console.error("Respuesta Login: ", error)
+          console.error("Respuesta: ", error)
           this.UserInteractionService.dismissLoading();
         }
       },error:(err)=>{
@@ -74,7 +74,7 @@ export class ListadoColaboradoresPage implements OnInit {
       }
     })
   }
-
+  
   get totalPages(): number {
     return Math.ceil(this.funcionarios.length / this.pageSize);
   }
