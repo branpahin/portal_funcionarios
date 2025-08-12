@@ -5,5 +5,6 @@ export interface IAlertRole {
 
 export interface IAlertAction {
     text: string;
-    handler: () => void
+    role?: string; // opcional, por si usas 'cancel', 'destructive', etc.
+    handler: (data?: any) => void;
 }

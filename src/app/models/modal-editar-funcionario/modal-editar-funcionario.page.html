@@ -633,6 +633,32 @@
               <app-error-mensaje [control]="empleadoForm.get('GENERO')"></app-error-mensaje>
             </ion-col>
 
+            <ion-col size="12" size-md="6" *ngIf="getCampoConfig('ID_SEXO').visible">
+              <ion-item [disabled]="!editar || !getCampoConfig('ID_SEXO').editable" (mousedown)="abrirModal('ID_SEXO', sexos, 'descripcion', false)">
+                <ion-input label="Sexo" labelPlacement="floating" [value]="getGeneroDescripcion('ID_SEXO', sexos) || 'Seleccione...'" readonly></ion-input>
+                <ion-icon name="caret-down-outline" slot="end"></ion-icon>
+              </ion-item>
+              <app-error-mensaje [control]="empleadoForm.get('ID_SEXO')"></app-error-mensaje>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12" size-md="6" *ngIf="getCampoConfig('ID_ORIENTACION_SEXUAL').visible">
+              <ion-item [disabled]="!editar || !getCampoConfig('ID_ORIENTACION_SEXUAL').editable" (mousedown)="abrirModal('ID_ORIENTACION_SEXUAL', orientaciones_Sexuales, 'descripcion', false)">
+                <ion-input label="Orientación sexual" labelPlacement="floating" [value]="getGeneroDescripcion('ID_ORIENTACION_SEXUAL', orientaciones_Sexuales) || 'Seleccione...'" readonly></ion-input>
+                <ion-icon name="caret-down-outline" slot="end"></ion-icon>
+              </ion-item>
+              <app-error-mensaje [control]="empleadoForm.get('ID_ORIENTACION_SEXUAL')"></app-error-mensaje>
+            </ion-col>
+
+            <ion-col size="12" size-md="6" *ngIf="getCampoConfig('ID_DISCAPACIDAD').visible">
+              <ion-item [disabled]="!editar || !getCampoConfig('ID_DISCAPACIDAD').editable" (mousedown)="abrirModal('ID_DISCAPACIDAD', discapacidades, 'descripcion', false)">
+                <ion-input label="Discapacidad" labelPlacement="floating" [value]="getGeneroDescripcion('ID_DISCAPACIDAD', discapacidades) || 'Seleccione...'" readonly></ion-input>
+                <ion-icon name="caret-down-outline" slot="end"></ion-icon>
+              </ion-item>
+              <app-error-mensaje [control]="empleadoForm.get('ID_DISCAPACIDAD')"></app-error-mensaje>
+            </ion-col>
+          </ion-row>
+          <ion-row>
             <ion-col size="12" size-md="6" *ngIf="getCampoConfig('RH').visible">
               <ion-item [disabled]="!editar || !getCampoConfig('RH').editable" (mousedown)="abrirModal('RH', rh, 'descripcion', false)">
                 <ion-input label="Rh" labelPlacement="floating" [value]="getGeneroDescripcion('RH', rh) || 'Seleccione...'" readonly></ion-input>
@@ -640,8 +666,7 @@
               </ion-item>
               <app-error-mensaje [control]="empleadoForm.get('RH')"></app-error-mensaje>
             </ion-col>
-          </ion-row>
-          <ion-row>
+
             <ion-col size="12" size-md="6" *ngIf="getCampoConfig('ID_ESTADO_CIVIL').visible">
               <ion-item [disabled]="!editar || !getCampoConfig('ID_ESTADO_CIVIL').editable" (mousedown)="abrirModal('ID_ESTADO_CIVIL', estadoCivil, 'descripcion', false)">
                 <ion-input label="Estado Civil" labelPlacement="floating" [value]="getGeneroDescripcion('ID_ESTADO_CIVIL', estadoCivil) || 'Seleccione...'" readonly></ion-input>
@@ -944,6 +969,14 @@
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('CIUDAD_TRABAJO')"></app-error-mensaje>
         </ion-col>
+
+        <ion-col size="12" size-md="6" *ngIf="getCampoConfig('ID_RUBRO').visible">
+          <ion-item [disabled]="!editar || !getCampoConfig('ID_RUBRO').editable" (mousedown)="abrirModal('ID_RUBRO', rubros, 'descripcion', false)">
+            <ion-input label="Rubro" labelPlacement="floating" [value]="getGeneroDescripcion('ID_RUBRO', rubros) || 'Seleccione...'" readonly></ion-input>
+            <ion-icon name="caret-down-outline" slot="end"></ion-icon>
+          </ion-item>
+          <app-error-mensaje [control]="empleadoForm.get('ID_RUBRO')"></app-error-mensaje>
+        </ion-col>
       </ion-row>
 
       <ion-row>
@@ -1005,6 +1038,14 @@
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('ID_ROL')"></app-error-mensaje>
+        </ion-col>
+
+        <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_RUBRO').visible">
+          <ion-item [disabled]="!editar || !getCampoConfig('ID_RUBRO').editable" (mousedown)="abrirModal('ID_RUBRO', rubros, 'descripcion', false)">
+            <ion-input label="Rubro" labelPlacement="floating" [value]="getGeneroDescripcion('ID_RUBRO', rubros) || 'Seleccione...'" readonly></ion-input>
+            <ion-icon name="caret-down-outline" slot="end"></ion-icon>
+          </ion-item>
+          <app-error-mensaje [control]="empleadoForm.get('ID_RUBRO')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('CAMBIO_CARGO').visible">

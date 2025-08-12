@@ -671,14 +671,39 @@
             </ion-col>
 
             <ion-col size="12" size-md="6">
+              <ion-item (mousedown)="abrirModal('ID_SEXO', sexos, 'descripcion', false)">
+                <ion-input label="Sexo" labelPlacement="floating" [value]="getGeneroDescripcion('ID_SEXO', sexos) || 'Seleccione...'" readonly></ion-input>
+                <ion-icon name="caret-down-outline" slot="end"></ion-icon>
+              </ion-item>
+              <app-error-mensaje [control]="empleadoForm.get('ID_SEXO')"></app-error-mensaje>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12" size-md="6">
+              <ion-item (mousedown)="abrirModal('ID_ORIENTACION_SEXUAL', orientaciones_Sexuales, 'descripcion', false)">
+                <ion-input label="Orientación sexual" labelPlacement="floating" [value]="getGeneroDescripcion('ID_ORIENTACION_SEXUAL', orientaciones_Sexuales) || 'Seleccione...'" readonly></ion-input>
+                <ion-icon name="caret-down-outline" slot="end"></ion-icon>
+              </ion-item>
+              <app-error-mensaje [control]="empleadoForm.get('ID_ORIENTACION_SEXUAL')"></app-error-mensaje>
+            </ion-col>
+
+            <ion-col size="12" size-md="6">
+              <ion-item (mousedown)="abrirModal('ID_DISCAPACIDAD', discapacidades, 'descripcion', false)">
+                <ion-input label="Discapacidad" labelPlacement="floating" [value]="getGeneroDescripcion('ID_DISCAPACIDAD', discapacidades) || 'Seleccione...'" readonly></ion-input>
+                <ion-icon name="caret-down-outline" slot="end"></ion-icon>
+              </ion-item>
+              <app-error-mensaje [control]="empleadoForm.get('ID_DISCAPACIDAD')"></app-error-mensaje>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12" size-md="6">
               <ion-item (mousedown)="abrirModal('RH', rh, 'descripcion', false)">
                 <ion-input label="Rh" labelPlacement="floating" [value]="getGeneroDescripcion('RH', rh) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
               </ion-item>
               <app-error-mensaje [control]="empleadoForm.get('RH')"></app-error-mensaje>
             </ion-col>
-          </ion-row>
-          <ion-row>
+
             <ion-col size="12" size-md="6">
               <ion-item (mousedown)="abrirModal('ID_ESTADO_CIVIL', estadoCivil, 'descripcion', false)">
                 <ion-input label="Estado Civil" labelPlacement="floating" [value]="getGeneroDescripcion('ID_ESTADO_CIVIL', estadoCivil) || 'Seleccione...'" readonly></ion-input>
@@ -1042,15 +1067,12 @@
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('ID_ROL')"></app-error-mensaje>
         </ion-col>
-
         <ion-col size="12" size-md="4">
-          <ion-item>
-            <ion-select label="Cambio cargo" label-placement="floating" formControlName="CAMBIO_CARGO">
-              <ion-select-option value="S">SI</ion-select-option>
-              <ion-select-option value="N">NO</ion-select-option>
-            </ion-select>
+          <ion-item (mousedown)="abrirModal('ID_RUBRO', rubros, 'descripcion', false)">
+            <ion-input label="Rubro" labelPlacement="floating" [value]="getGeneroDescripcion('ID_RUBRO', rubros) || 'Seleccione...'" readonly></ion-input>
+            <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('CAMBIO_CARGO')"></app-error-mensaje>
+          <app-error-mensaje [control]="empleadoForm.get('ID_RUBRO')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 
@@ -1099,26 +1121,6 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="3">
-          <ion-item>
-            <ion-select label="Paz y Salvo" label-placement="floating" formControlName="PAZ_SALVO_ACTIVOS">
-              <ion-select-option value="SI">SI</ion-select-option>
-              <ion-select-option value="NO">NO</ion-select-option>
-            </ion-select>
-          </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('PAZ_SALVO_ACTIVOS')"></app-error-mensaje>
-        </ion-col>
-
-        <ion-col size="12" size-md="3">
-          <ion-item>
-            <ion-select label="Entrega tarjeta de ingreso" label-placement="floating" formControlName="ENTREGA_TARJETA_INGRESO">
-              <ion-select-option value="SI">SI</ion-select-option>
-              <ion-select-option value="NO">NO</ion-select-option>
-            </ion-select>
-          </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ENTREGA_TARJETA_INGRESO')"></app-error-mensaje>
-        </ion-col>
-
         <ion-col size="12" size-md="3">
           <ion-item (mousedown)="abrirModal('ARL', arl, 'descripcion', false)">
             <ion-input label="Arl" labelPlacement="floating" [value]="getGeneroDescripcion('ARL', arl) || 'Seleccione...'" readonly></ion-input>

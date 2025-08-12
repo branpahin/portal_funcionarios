@@ -38,7 +38,8 @@ export class UserInteractionService {
       },
     ],
     checkIsShowAlert = false,
-    header: string = 'Notificación'
+    header: string = 'Notificación',
+    inputs?: any[]
   ): Promise<HTMLIonAlertElement | void> {
     if ((checkIsShowAlert && !this.showAlert) || !checkIsShowAlert) {
       this.showAlert = true;
@@ -48,6 +49,7 @@ export class UserInteractionService {
         header,
         message,
         buttons: actions,
+        ...(inputs ? { inputs } : {})
       });
 
       alert.present();

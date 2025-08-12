@@ -51,6 +51,12 @@ export class ModalCrearFuncionarioPage implements OnInit {
   arl: any[] = [];
   jefes: any[] = [];
   razas: any[] = [];
+  rubros:  any[] = [];
+  sexos: any[] = [];
+  orientaciones_Sexuales: any[] = [];
+  discapacidades: any[] = [];
+
+
   isModalOpen = false;
 
   constructor(private fb: FormBuilder, private moduleService:ModuleService, private service:PortalService, 
@@ -337,6 +343,10 @@ export class ModalCrearFuncionarioPage implements OnInit {
       'profesiones',
       'postgrado',
       'generos',
+      'sexos',
+      'orientaciones_Sexuales',
+      'discapacidades',
+      'rubros',
       'tieneHijos',
       'empresas',
       'sedes',
@@ -350,7 +360,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
       'jefes',
       'tipoRegistro',
       'estadoCivil',
-      // 'parentezco',
       'arl',
       'ciudadTrabajo',
       'razas'
@@ -374,6 +383,12 @@ export class ModalCrearFuncionarioPage implements OnInit {
       this.postgrado = this.param[lista] || [];
     } else if (lista === 'generos') {
       this.generos = this.param[lista] || [];
+    } else if (lista === 'sexos') {
+      this.sexos = this.param[lista] || [];
+    } else if (lista === 'orientaciones_Sexuales') {
+      this.orientaciones_Sexuales = this.param[lista] || [];
+    } else if (lista === 'discapacidades') {
+      this.discapacidades = this.param[lista] || [];
     } else if (lista === 'razas') {
       this.razas = this.param[lista] || [];
     } else if (lista === 'tieneHijos') {
@@ -414,6 +429,8 @@ export class ModalCrearFuncionarioPage implements OnInit {
       this.arl = this.param[lista] || [];
     } else if (lista === 'ciudadTrabajo') {
       this.ciudadTrabajo = this.param[lista] || [];
+    } else if (lista === 'rubros') {
+      this.rubros = this.param[lista] || [];
     } 
     
   }

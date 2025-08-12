@@ -31,6 +31,7 @@ export class PortalService {
   private CrearFiltroDet = TypeServicio.CrearFiltroDet
   private ActualzarFiltroDet = TypeServicio.ActualzarFiltroDet
   private GetCamposEstado = TypeServicio.GetCamposEstado
+  private AprobarRechazarColaborador = TypeServicio.AprobarRechazarColaborador
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -96,6 +97,10 @@ export class PortalService {
 
   postActualizarClave(data: any): Observable<any>{
     return this.httpService.PostCore(data,this.ActualizarClave);
+  }
+
+  postAprobarRechazarColaborador(data: any): Observable<any>{
+    return this.httpService.PostCore(data,this.AprobarRechazarColaborador);
   }
 
   postCrearFiltroDet(data: any): Observable<any>{

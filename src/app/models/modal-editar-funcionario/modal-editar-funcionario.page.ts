@@ -11,6 +11,7 @@ import { ModalController } from '@ionic/angular';
 import { UserInteractionService } from 'src/services/user-interaction-service.service';
 import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
 import { ComponenteBusquedaComponent } from 'src/app/components/componente-busqueda/componente-busqueda.component';
+import { IAlertAction } from 'src/interfaces/IAlertOptions';
 
 @Component({
   selector: 'app-modal-editar-funcionario',
@@ -30,6 +31,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
   imagenPreview: string | ArrayBuffer | null = null;
   mostrarHijo:boolean=false;
   cargando: boolean = true;
+  cargandoHijos: boolean = true;
   camposConfig: any[] = [];
   nivelesEducativos: any[] = [];
   profesiones: any[] = [];
@@ -54,6 +56,10 @@ export class ModalEditarFuncionarioPage implements OnInit {
   arl: any[] = [];
   jefes: any[] = [];
   razas: any[] = [];
+  rubros:  any[] = [];
+  sexos: any[] = [];
+  orientaciones_Sexuales: any[] = [];
+  discapacidades: any[] = [];
   isModalOpen = false;
   
   constructor(private cdRef: ChangeDetectorRef, private fb: FormBuilder, private moduleService:ModuleService, 
@@ -67,6 +73,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
       NOMBRES : ['', [Validators.required, Validators.maxLength(50)]],
       APELLIDOS : ['', [Validators.required, Validators.maxLength(50)]],
       GENERO : ['', Validators.required],
+       ID_SEXO : [0,Validators.required],
+      ID_ORIENTACION_SEXUAL: [0,Validators.required],
+      ID_DISCAPACIDAD:[0,Validators.required],
       ID_RAZA: ['', Validators.required],
       RH : ['', [Validators.required, Validators.maxLength(3)]],
       FECHA_NACIMIENTO : ['', Validators.required],
@@ -87,7 +96,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
       CIUDAD_TRABAJO : [''],
       ID_SEDE : [],
       ID_GERENCIA : [],
+      ID_CCO:[],
       ID_AREA : [],
+      ID_RUBRO : [],
       ID_CARGO : [],
       ID_TIPO_NOMINA : [],
       ID_ROL : [],
@@ -316,26 +327,23 @@ export class ModalEditarFuncionarioPage implements OnInit {
       c => c.campo.toLowerCase() === nombreCampo.toLowerCase()
     );
 
-    this.camposConfig.forEach(c => {
-      const control = this.empleadoForm.get(c.campo);
-      if (control) {
-        if (c.activo !== 'S') {
-          // Si no está activo, quitarlo del form
-          this.empleadoForm.removeControl(c.campo);
-        } else {
-          if (c.modificable === 'N') {
-            control.disable({ emitEvent: false });
-          } else {
-            control.enable({ emitEvent: false });
-          }
-        }
-      }
-    });
-
     if (!campo) {
-      // No existe en la lista → no se muestra, no requerido
-      return { visible: false, editable: false, required: false };
+    return { visible: false, editable: false, required: false };
+  }
+
+  const control = this.empleadoForm.get(campo.campo);
+
+  if (control) {
+    if (campo.activo !== 'S') {
+      this.empleadoForm.removeControl(campo.campo);
+    } else {
+      if (campo.modificable === 'N') {
+        control.disable({ emitEvent: false });
+      } else {
+        control.enable({ emitEvent: false });
+      }
     }
+  }
 
     // Existe → definimos visibilidad y edición
     return {
@@ -361,6 +369,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
       }
     });
     this.cargando = false;
+    this.cargandoHijos = false;
   }
 
   // Ejemplo: si el campo está en el formulario y es requerido por defecto
@@ -410,6 +419,15 @@ export class ModalEditarFuncionarioPage implements OnInit {
     } else if (lista === 'GENERO') {
       lista = 'generos'
       this.generos = this.param[lista] || [];
+    } else if (lista === 'ID_SEXO') {
+      lista = 'sexos'
+      this.sexos = this.param[lista] || [];
+    } else if (lista === 'ID_ORIENTACION_SEXUAL') {
+      lista = 'orientaciones_Sexuales'
+      this.orientaciones_Sexuales = this.param[lista] || [];
+    } else if (lista === 'ID_DISCAPACIDAD') {
+      lista = 'discapacidades'
+      this.discapacidades = this.param[lista] || [];
     } else if (lista === 'ID_RAZA') {
       lista = 'razas'
       console.log("raza: ",this.param)
@@ -474,7 +492,10 @@ export class ModalEditarFuncionarioPage implements OnInit {
     } else if (lista === 'ID_JEFE') {
       lista = 'jefes'
       this.jefes = this.param[lista] || [];
-    }
+    } else if (lista === 'ID_RUBRO') {
+      lista = 'rubros'
+      this.rubros = this.param[lista] || [];
+    } 
     
   }
 
@@ -519,6 +540,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
   motrarHijos(){
     this.mostrarHijo=!this.mostrarHijo
+    this.cargandoHijos=true
     console.log(this.empleadoForm.value)
   }
 
@@ -651,8 +673,78 @@ export class ModalEditarFuncionarioPage implements OnInit {
         next: async (resp) => {
           try {
             console.log("Respuesta:", resp);
+            let action2 :IAlertAction[] =[
+              {
+                text: 'Cancelar',
+                handler: async () => {}
+              }, 
+              {
+                text: 'Rechazar',
+                handler: async (data) => {
+                  await this.aprobar(data.observacion,'R');
+                  this.UserInteractionService.presentToast('Usuario editado con exito, pero no aprobado',TypeThemeColor.SUCCESS);
+                }
+              }
+            ]
+
+            let action :IAlertAction[] =[
+              {
+                text: 'Rechazar',
+                handler: async () => {
+                  this.UserInteractionService.presentAlertActions(
+                  '¡Se ha realizado un cambio en el formulario!',
+                  action)
+                }
+              },
+              {
+                text: 'Aprobar',
+                handler: async (data) => {
+                  await this.aprobar(data.observacion,'A');
+                  this.UserInteractionService.presentToast('Usuario editado con exito',TypeThemeColor.SUCCESS);
+                }
+              }
+            ]
+            this.UserInteractionService.presentAlertActions(
+              '¡Se ha realizado un cambio en el formulario!',
+              action,
+              false,
+              'Notificación',
+              [
+                {
+                  name: 'observacion',
+                  type: 'textarea', 
+                  placeholder: 'Escriba su observación'
+                }
+              ]
+            );
+            this.cerrarModal();
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
             this.UserInteractionService.dismissLoading();
-            this.UserInteractionService.presentToast('Usuario editado con exito',TypeThemeColor.SUCCESS);
+            this.cerrarModal();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err);
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err);
+          this.cerrarModal();
+        }
+      });
+  }
+
+  async aprobar(observacion:string, tipo:string){
+    const params = this.moduleService.getParam();
+    const data ={
+      identificacion: Number(params.identificacion),
+      observacion:observacion,
+      tipo:tipo
+    }
+    this.service.postAprobarRechazarColaborador(data).subscribe({
+        next: async (resp) => {
+          try {
+            console.log("Respuesta:", resp);
+            this.UserInteractionService.dismissLoading();
             this.cerrarModal();
           } catch (error) {
             console.error("Error al procesar respuesta:", error);
