@@ -76,7 +76,7 @@ export class CreacionUsuarioPage implements OnInit {
       ID_EMPRESA: [null, Validators.required], // NUMBER
       IDENTIFICACION: [null, Validators.required], // NUMBER
       CIUDAD: [null, Validators.required], // NUMBER
-      ROL: ['', [Validators.required, Validators.maxLength(1)]], // CHAR(1 BYTE)
+      ROL: ['', [Validators.required, Validators.maxLength(30)]],
       CLAVE: ['', [Validators.required]],
       ESTADO_PROCESO: ['', [Validators.required, Validators.maxLength(30)]], // VARCHAR2(30 BYTE)
     });
@@ -171,7 +171,7 @@ export class CreacionUsuarioPage implements OnInit {
     const payload = {
       ...formValue,
       ESTADO_PROCESO: formValue.ESTADO_PROCESO.join(','),
-      ROL: String(formValue.ROL),
+      ROL: String(formValue.ROL.join(',')),
     };
     if(!this.editar){
       this.service.postCrearUsuario(payload).subscribe({

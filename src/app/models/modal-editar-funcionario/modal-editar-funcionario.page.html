@@ -969,14 +969,6 @@
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('CIUDAD_TRABAJO')"></app-error-mensaje>
         </ion-col>
-
-        <ion-col size="12" size-md="6" *ngIf="getCampoConfig('ID_RUBRO').visible">
-          <ion-item [disabled]="!editar || !getCampoConfig('ID_RUBRO').editable" (mousedown)="abrirModal('ID_RUBRO', rubros, 'descripcion', false)">
-            <ion-input label="Rubro" labelPlacement="floating" [value]="getGeneroDescripcion('ID_RUBRO', rubros) || 'Seleccione...'" readonly></ion-input>
-            <ion-icon name="caret-down-outline" slot="end"></ion-icon>
-          </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_RUBRO')"></app-error-mensaje>
-        </ion-col>
       </ion-row>
 
       <ion-row>

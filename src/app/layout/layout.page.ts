@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonMenu, IonMenuButton, IonIcon} from '@ionic/angular/standalone';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonMenu, IonMenuButton, IonIcon, IonSelect, IonSelectOption} from '@ionic/angular/standalone';
 import { Router, RouterModule } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { home, person, people, chevronDown, chevronForward, options, filter, close, logOut, chevronUp, chevronBack } from 'ionicons/icons';
@@ -14,7 +14,7 @@ import { ModuleService } from 'src/services/modulos/module.service';
   templateUrl: './layout.page.html',
   styleUrls: ['./layout.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonMenu,IonMenuButton,RouterModule,IonIcon],
+  imports: [IonContent, IonHeader, IonSelect, IonSelectOption, IonTitle, IonToolbar, CommonModule, FormsModule, IonMenu,IonMenuButton,RouterModule,IonIcon, ReactiveFormsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
   
 })
@@ -22,6 +22,8 @@ export class LayoutPage implements OnInit {
   param:any;
   filtros:any;
   filtroKeys:any;
+  rolesSelec:any;
+  rolSeleccionado: number | null = null;
   version = environment.version;
   filtrosAbiertos = false;
   constructor(private service:PortalService, 
@@ -29,7 +31,8 @@ export class LayoutPage implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef) {addIcons({ home, people, person, chevronDown, chevronUp, chevronBack, options, filter}); this.params()}
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.roles()
   }
 
   
@@ -58,6 +61,25 @@ export class LayoutPage implements OnInit {
         }catch(error){
           console.error("Respuesta Login: ", error)
         }
+      }
+    })
+  }
+
+  async roles(){
+    this.service.getRolesUsuario().subscribe({
+      next:async(data)=>{
+        try {
+          const resp=data.data.rolesUsuario
+          console.log("resp: ",resp)
+          this.rolesSelec=resp
+          this.rolSeleccionado=resp[0].id
+
+        } catch (error) {
+          console.error("Error en listarUsuarios:", error);
+        }
+      },
+      error: (err) => {
+        console.error("Error al obtener usuarios:", err);
       }
     })
   }

@@ -73,7 +73,7 @@
 
         <ion-col size="12" size-md="4">
           <ion-item>
-            <ion-select label="Rol" label-placement="floating" formControlName="ROL" (click)="selec('roles_Usuario')">
+            <ion-select label="Rol" label-placement="floating" formControlName="ROL" multiple="true" (click)="selec('roles_Usuario')">
               <ion-select-option *ngFor="let nivel of roles_Usuario" [value]="+nivel.id">
                 {{ nivel.descripcion }}
               </ion-select-option>

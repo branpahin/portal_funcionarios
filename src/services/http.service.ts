@@ -82,6 +82,8 @@ export class HttpService {
 
 	PutFormDataCore(body: FormData, rutaApi: string): Observable<any> {
 		const APIREST = `${this._baseApiUrl}${rutaApi}`
+		
+		console.log("token: ",this.token)
 		const headers = new HttpHeaders({
 			Authorization: `Bearer ${this.token}`
 		});

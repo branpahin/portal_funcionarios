@@ -610,6 +610,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
       formData.append('HIJOS_COLABORADOR_JSON', hijosJson);
 
       // ID_PROFESION uno por uno
+      
+    console.log("DATA: ",this.empleadoForm.value)
       const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
       profesionesSeleccionadas.forEach((id: number) => {
         formData.append('ID_PROFESION', id.toString());
@@ -620,7 +622,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
         formData.append('ID_POSTGRADO', id.toString());
       });
 
-
       if (this.imagenSeleccionada) {
         const reader = new FileReader();
         reader.onload = (e: any) => {
@@ -630,41 +631,79 @@ export class ModalEditarFuncionarioPage implements OnInit {
             canvas.width = img.width;
             canvas.height = img.height;
             const ctx = canvas.getContext('2d');
-      
+
             if (ctx) {
               ctx.drawImage(img, 0, 0);
-      
+
               // Convertimos a Blob en formato JPEG
               canvas.toBlob(async (blob) => {
                 if (blob) {
                   const jpgFile = new File([blob], 'imagen.jpg', { type: 'image/jpeg' });
-      
-                  // Agregamos la imagen ya transformada
-                  formData.append('foto', jpgFile);
-      
-                  await this.enviar(formData)
+
+                  // 🔹 Crear nuevo FormData en el formato requerido
+                  const nuevoFormData = new FormData();
+                  nuevoFormData.append('ESTADO', formData.get('ESTADO') || '');
+                  nuevoFormData.append('Foto', jpgFile);
+
+                  // Construir ModeloJson manteniendo arrays si hay claves repetidas
+                  const modelo: any = {};
+                  formData.forEach((valor, clave) => {
+                    if (clave !== 'foto') {
+                      if (modelo[clave]) {
+                        if (!Array.isArray(modelo[clave])) {
+                          modelo[clave] = [modelo[clave]];
+                        }
+                        modelo[clave].push(valor);
+                      } else {
+                        modelo[clave] = valor;
+                      }
+                    }
+                  });
+
+                  nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
+
+                  // Depuración opcional
+                  console.log("ModeloJson:", modelo);
+                  nuevoFormData.forEach((valor, clave) => {
+                    console.log(`${clave}:`, valor);
+                  });
+
+                  await this.enviar(nuevoFormData);
                 } else {
                   console.error("No se pudo convertir la imagen a blob.");
                 }
               }, 'image/jpeg');
             }
           };
-      
-          // Cargar imagen desde base64
-          img.src = e.target.result;
-        };
-      
-        // Leer la imagen original como base64
-        reader.readAsDataURL(this.imagenSeleccionada);
-      }else{
-        await this.enviar(formData)
-      }
 
-      console.log(this.empleadoForm.value);
-    // } else {
-    //   console.log(this.empleadoForm.value);
-    //   console.log('Formulario inválido');
-    // }
+          img.src = e.target.result; // Cargar imagen desde base64
+        };
+
+        reader.readAsDataURL(this.imagenSeleccionada); // Leer imagen como base64
+        } else {
+        // 🔹 Si no hay imagen, también adaptamos al nuevo formato
+        const nuevoFormData = new FormData();
+        nuevoFormData.append('ESTADO', formData.get('ESTADO') || '');
+
+        const modelo: any = {};
+        formData.forEach((valor, clave) => {
+          if (clave !== 'foto') {
+            if (modelo[clave]) {
+              if (!Array.isArray(modelo[clave])) {
+                modelo[clave] = [modelo[clave]];
+              }
+              modelo[clave].push(valor);
+            } else {
+              modelo[clave] = valor;
+            }
+          }
+        });
+
+        nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
+
+        console.log("ModeloJson:", modelo);
+        await this.enviar(nuevoFormData);
+        }
   }
 
   async enviar(formData:any){
@@ -734,9 +773,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
   }
 
   async aprobar(observacion:string, tipo:string){
-    const params = this.moduleService.getParam();
+    const params = this.empleadoForm.get('IDENTIFICACION')?.value || '';
     const data ={
-      identificacion: Number(params.identificacion),
+      identificacion: Number(params),
       observacion:observacion,
       tipo:tipo
     }

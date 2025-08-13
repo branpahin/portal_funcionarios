@@ -32,6 +32,7 @@ export class PortalService {
   private ActualzarFiltroDet = TypeServicio.ActualzarFiltroDet
   private GetCamposEstado = TypeServicio.GetCamposEstado
   private AprobarRechazarColaborador = TypeServicio.AprobarRechazarColaborador
+  private GetRolesUsuario = TypeServicio.GetRolesUsuario
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -52,7 +53,7 @@ export class PortalService {
   }
 
   getColaboradores(estado:number, ciudad:number): Observable<any>{
-    return this.httpService.GetParamsCore(this.colaboradores+"?estados="+estado+"&ciudad="+ciudad);
+    return this.httpService.GetParamsCore(this.colaboradores);
   }
 
   getCamposEstado(estado:number): Observable<any>{
@@ -69,6 +70,10 @@ export class PortalService {
 
   getConsultarColaboradores(): Observable<any>{
     return this.httpService.GetCore(this.consultarColaboradores);
+  }
+
+  getRolesUsuario(): Observable<any>{
+    return this.httpService.GetCore(this.GetRolesUsuario);
   }
 
   getInfoColaboradores(idColaborador:number): Observable<any>{

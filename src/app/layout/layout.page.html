@@ -2,6 +2,17 @@
   <ion-header color="primary">
     <ion-toolbar color="primary">
       <ion-title>Menú</ion-title>
+      <ion-buttons slot="end">
+      <ion-select
+        placeholder="Seleccionar"
+        interface="popover"
+        [(ngModel)]="rolSeleccionado"
+      >
+        <ion-select-option *ngFor="let rol of rolesSelec" [value]="rol.id">
+          {{ rol.descripcion }}
+        </ion-select-option>
+      </ion-select>
+    </ion-buttons>
     </ion-toolbar>
   </ion-header>
 
