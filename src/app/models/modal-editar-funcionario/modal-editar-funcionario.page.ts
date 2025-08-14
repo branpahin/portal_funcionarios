@@ -60,6 +60,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
   sexos: any[] = [];
   orientaciones_Sexuales: any[] = [];
   discapacidades: any[] = [];
+  apis: any[] = [];
   isModalOpen = false;
   
   constructor(private cdRef: ChangeDetectorRef, private fb: FormBuilder, private moduleService:ModuleService, 
@@ -115,6 +116,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
       ARL : ['', Validators.required],
       ID_ESTADO_CIVIL : [, Validators.required],
       ID_JEFE : [, Validators.required],
+      APLICACIONES : [],
       HIJOS_COLABORADOR_JSON: this.fb.array([]) // Para agregar hijos dinámicamente
     });
   }
@@ -130,6 +132,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
   async ngOnInit() {
     
     await this.colaboradores();
+    await this.aplicativos();
     this.cdRef.detectChanges();
   }
 
@@ -138,6 +141,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
   }
 
   async abrirModal(label:string, options:any, displayProperty:string, multiple:boolean) {
+    console.log("options: ",options)
     const datos = await this.getDataSeleccion(label, options);
     const modal = await this.modalCtrl.create({
       component: ComponenteBusquedaComponent,
@@ -209,10 +213,16 @@ export class ModalEditarFuncionarioPage implements OnInit {
     const valor = this.empleadoForm.get(label)?.value;
 
     if (!Array.isArray(valor)) return [];
+    else if(label=='APLICACIONES'){
+      return valor
+        .map((id: number) => opciones.find((o: any) => o.id === id)?.aplicacion)
+        .filter(desc => !!desc);
+    }else{
+      return valor
+        .map((id: number) => opciones.find((o: any) => o.id === id)?.descripcion)
+        .filter(desc => !!desc);
+    }
 
-    return valor
-      .map((id: number) => opciones.find((o: any) => o.id === id)?.descripcion)
-      .filter(desc => !!desc);
   }
 
   async actualizarEstadoFormulario() {
@@ -221,6 +231,23 @@ export class ModalEditarFuncionarioPage implements OnInit {
     } else {
       this.empleadoForm.disable();
     }
+  }
+
+  async aplicativos(){
+    this.UserInteractionService.showLoading('Consultando aplicativos...');
+    this.service.getGetAplicativos().subscribe({
+      next:async(resp)=>{
+        try{
+          this.apis=resp.data.datos.aplicativos
+          this.UserInteractionService.dismissLoading();
+        }catch(error){
+          this.UserInteractionService.dismissLoading();
+        }
+      },error:(err)=>{
+        this.UserInteractionService.dismissLoading();
+        this.UserInteractionService.presentToast(err);
+      }
+    })
   }
 
   async colaboradores() {
@@ -328,22 +355,23 @@ export class ModalEditarFuncionarioPage implements OnInit {
     );
 
     if (!campo) {
-    return { visible: false, editable: false, required: false };
-  }
-
-  const control = this.empleadoForm.get(campo.campo);
-
-  if (control) {
-    if (campo.activo !== 'S') {
-      this.empleadoForm.removeControl(campo.campo);
-    } else {
-      if (campo.modificable === 'N') {
-        control.disable({ emitEvent: false });
-      } else {
-        control.enable({ emitEvent: false });
-      }
+      return { visible: false, editable: false, required: false };
     }
-  }
+
+    const control = this.empleadoForm.get(campo.campo);
+
+    if (control) {
+      if (campo.activo !== 'S') {
+        
+          console.log('c.campo:',campo.campo)
+          this.empleadoForm.removeControl(campo.campo);
+      } if (campo.modificable === 'N') {
+          control.enable({ emitEvent: false }); 
+          control.markAsTouched({ onlySelf: true }); 
+        } else {
+          control.enable({ emitEvent: false });
+        }
+    }
 
     // Existe → definimos visibilidad y edición
     return {
@@ -361,7 +389,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
           this.empleadoForm.removeControl(c.campo);
         } else {
           if (c.modificable.toUpperCase() === 'N') {
-            control.disable({ emitEvent: false });
+            control.enable({ emitEvent: false }); 
+            control.markAsTouched({ onlySelf: true }); 
           } else {
             control.enable({ emitEvent: false });
           }
@@ -579,6 +608,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
   }
 
   async guardarEmpleado() {
+    console.log("datos: ",this.empleadoForm.value)
     // if (this.empleadoForm.invalid) {
     //   this.empleadoForm.markAllAsTouched();
     //   return;
@@ -599,7 +629,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
           this.empleadoForm.value[key] !== undefined &&
           key !== 'HIJOS_COLABORADOR_JSON' &&
           key !== 'ID_PROFESION' &&
-          key !== 'ID_POSTGRADO'
+          key !== 'ID_POSTGRADO' && 
+          key !=='APLICACIONES'
         ) {
           formData.append(key, this.empleadoForm.value[key]);
         }
@@ -620,6 +651,11 @@ export class ModalEditarFuncionarioPage implements OnInit {
       const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
       postgradoSeleccionadas.forEach((id: number) => {
         formData.append('ID_POSTGRADO', id.toString());
+      });
+
+      const aplicacionesSeleccionadas: number[] = this.empleadoForm.get('APLICACIONES')?.value || [];
+      aplicacionesSeleccionadas.forEach((id: number) => {
+        formData.append('APLICACIONES', id.toString());
       });
 
       if (this.imagenSeleccionada) {
@@ -711,6 +747,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
       this.service.putActualizarColaborador(formData).subscribe({
         next: async (resp) => {
           try {
+            this.UserInteractionService.dismissLoading();
             console.log("Respuesta:", resp);
             let action2 :IAlertAction[] =[
               {
@@ -732,7 +769,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
                 handler: async () => {
                   this.UserInteractionService.presentAlertActions(
                   '¡Se ha realizado un cambio en el formulario!',
-                  action)
+                  action2)
                 }
               },
               {
@@ -756,7 +793,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
                 }
               ]
             );
-            this.cerrarModal();
           } catch (error) {
             console.error("Error al procesar respuesta:", error);
             this.UserInteractionService.dismissLoading();

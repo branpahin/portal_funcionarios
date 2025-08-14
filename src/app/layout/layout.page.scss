@@ -20,10 +20,23 @@ ion-icon {
     opacity: 1 !important;
 }
 
+ion-header {
+  position: relative;
+
+  img.logo-home {
+    position: absolute;
+    top: -40px; /* mueve hacia arriba para sobresalir */
+    left: 10px;
+    height: 120px; /* ajusta el tamaño */
+    z-index: 999;
+    pointer-events: none;
+  }
+}
 ion-item:hover {
     --background: rgb(247, 204, 124) !important;
     --color: white !important;
 }
+
 
 ion-item {
     --border-color: transparent !important; /* Oculta el borde inferior */

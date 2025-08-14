@@ -33,6 +33,7 @@ export class PortalService {
   private GetCamposEstado = TypeServicio.GetCamposEstado
   private AprobarRechazarColaborador = TypeServicio.AprobarRechazarColaborador
   private GetRolesUsuario = TypeServicio.GetRolesUsuario
+  private GetAplicativos = TypeServicio.GetAplicativos
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -74,6 +75,10 @@ export class PortalService {
 
   getRolesUsuario(): Observable<any>{
     return this.httpService.GetCore(this.GetRolesUsuario);
+  }
+
+  getGetAplicativos(): Observable<any>{
+    return this.httpService.GetCore(this.GetAplicativos);
   }
 
   getInfoColaboradores(idColaborador:number): Observable<any>{

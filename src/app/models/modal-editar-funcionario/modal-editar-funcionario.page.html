@@ -1124,6 +1124,24 @@
           <app-error-mensaje [control]="empleadoForm.get('ARL')"></app-error-mensaje>
         </ion-col>
 
+        <ion-col [attr.size]="getListaSeleccion('APLICACIONES', apis).length > 0 ? '12' : '12'"
+            [attr.size-md]="getListaSeleccion('APLICACIONES', apis).length > 0 ? '6' : '3'" 
+            *ngIf="getCampoConfig('APLICACIONES').visible">
+          <ion-item [disabled]="!editar || !getCampoConfig('APLICACIONES').editable" (mousedown)="abrirModal('APLICACIONES', apis, 'aplicacion', true)">
+            <ion-input label="Posgrado" labelPlacement="floating" readonly
+              [value]="getListaSeleccion('APLICACIONES', apis).length === 0 ? 'Seleccione...' : ''">
+            </ion-input>
+            <ion-list *ngIf="getListaSeleccion('APLICACIONES', apis).length > 0" lines="none" class="mt-2 ml-2">
+              <ion-item [disabled]="!editar || !getCampoConfig('APLICACIONES').editable" *ngFor="let item of getListaSeleccion('APLICACIONES', apis)" lines="none">
+                <ion-icon name="ellipse" slot="start" size="small" color="primary"></ion-icon>
+                <ion-label class="ion-text-wrap">{{ item }}</ion-label>
+              </ion-item>
+            </ion-list>
+            <ion-icon name="caret-down-outline" slot="end"></ion-icon>
+          </ion-item>
+          <app-error-mensaje [control]="empleadoForm.get('APLICACIONES')"></app-error-mensaje>
+        </ion-col>
+
         <!-- <ion-col size="12" size-md="3">
           <ion-item [disabled]='!editar' (mousedown)="abrirModal('ID_TIPO_REGISTRO', tipoRegistro, 'descripcion', false)">
             <ion-input label="Tipo de registro" labelPlacement="floating" [value]="getGeneroDescripcion('ID_TIPO_REGISTRO', tipoRegistro) || 'Seleccione...'" readonly></ion-input>

@@ -26,12 +26,17 @@ export class LayoutPage implements OnInit {
   rolSeleccionado: number | null = null;
   version = environment.version;
   filtrosAbiertos = false;
+  isHome = false;
   constructor(private service:PortalService, 
     private moduleService:ModuleService,
     private router: Router,
-    private cdr: ChangeDetectorRef) {addIcons({ home, people, person, chevronDown, chevronUp, chevronBack, options, filter}); this.params()}
+    private cdr: ChangeDetectorRef) {addIcons({ home, people, person, chevronDown, chevronUp, chevronBack, options, filter}); this.params()
+  this.router.events.subscribe(() => {
+      this.isHome = this.router.url === '/layout/home';
+    });}
 
   async ngOnInit() {
+    console.log("this.isHome: ",this.isHome)
     await this.roles()
   }
 

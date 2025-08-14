@@ -68,12 +68,27 @@
   <ion-header color="primary">
     <ion-toolbar color="primary">
         <!-- Opción 1: usando <img> -->
-        <img slot="start" src="assets/icon/logoEEP_dynamic.svg" alt="Logo" style="height: 60px;" />
+        <!-- <img *ngIf="isHome"
+       slot="start"
+       src="assets/icon/logoEEP_dynamic.svg"
+       alt="Logo"
+       class="logo-home" -->
+        /> <!-- ejemplo de sobresalir -->
+
+      <img *ngIf="!isHome"
+          slot="start"
+          src="assets/icon/logoEEP_static.png"
+          alt="Logo"
+          style="height: 40px;" />
       <ion-buttons slot="end">
         <ion-menu-button></ion-menu-button>
       </ion-buttons>
       <ion-title>Portal Funcionarios</ion-title>
     </ion-toolbar>
+    <img *ngIf="isHome"
+       src="assets/icon/logoEEP_dynamic.svg"
+       alt="Logo"
+       class="logo-home" />
   </ion-header>
 
   <ion-content class="ion-padding">

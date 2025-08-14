@@ -9,6 +9,7 @@ import { IONIC_COMPONENTS } from '../../imports/ionic-imports';
 import { ModalEditarFuncionarioPage } from 'src/app/models/modal-editar-funcionario/modal-editar-funcionario.page';
 import { UserInteractionService } from 'src/services/user-interaction-service.service';
 import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
+import { IAlertAction } from 'src/interfaces/IAlertOptions';
 
 @Component({
   selector: 'app-listado-colaboradores',
@@ -246,5 +247,78 @@ export class ListadoColaboradoresPage implements OnInit {
     });
 
   }
+
+    async enviar(identificacion:string){
+      let action2 :IAlertAction[] =[
+        {
+          text: 'Cancelar',
+          handler: async () => {}
+        }, 
+        {
+          text: 'Rechazar',
+          handler: async (data) => {
+            await this.aprobar(identificacion,data.observacion,'R');
+            this.UserInteractionService.presentToast('Usuario editado con exito, pero no aprobado',TypeThemeColor.SUCCESS);
+          }
+        }
+      ]
+
+      let action :IAlertAction[] =[
+        {
+          text: 'Rechazar',
+          handler: async () => {
+            this.UserInteractionService.presentAlertActions(
+            '¡Se ha realizado un cambio en el formulario!',
+            action2)
+          }
+        },
+        {
+          text: 'Aprobar',
+          handler: async (data) => {
+            await this.aprobar(identificacion,data.observacion,'A');
+            this.UserInteractionService.presentToast('Usuario editado con exito',TypeThemeColor.SUCCESS);
+          }
+        }
+      ]
+      this.UserInteractionService.presentAlertActions(
+        '¡Se ha realizado un cambio en el formulario!',
+        action,
+        false,
+        'Notificación',
+        [
+          {
+            name: 'observacion',
+            type: 'textarea', 
+            placeholder: 'Escriba su observación'
+          }
+        ]
+      );
+    
+    }
+  
+    async aprobar(identificacion:string,observacion:string, tipo:string){
+      const data ={
+        identificacion: Number(identificacion),
+        observacion:observacion,
+        tipo:tipo
+      }
+      this.service.postAprobarRechazarColaborador(data).subscribe({
+          next: async (resp) => {
+            try {
+              console.log("Respuesta:", resp);
+              this.UserInteractionService.dismissLoading();
+              this.ngOnInit();
+            } catch (error) {
+              console.error("Error al procesar respuesta:", error);
+              this.UserInteractionService.dismissLoading();
+            }
+          },
+          error: (err) => {
+            console.error("Error al enviar formulario:", err);
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast(err);
+          }
+        });
+    }
 
 }
