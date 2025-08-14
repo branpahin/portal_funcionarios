@@ -107,7 +107,8 @@
         </ion-item>
         <ion-item-options side="end" >
           <div class="botones_opcion">
-            <ion-button class="btn-accion" color="medium" (click)="abrirModalEditarFuncionario(datos.id,true)"><ion-icon name="pencil"></ion-icon></ion-button>
+            <ion-button *ngIf="datos.estado==1 || datos.estado==2 || datos.estado==4 || datos.estado==7" class="btn-accion" color="medium" (click)="abrirModalEditarFuncionario(datos.id,true)"><ion-icon name="pencil"></ion-icon></ion-button>
+            <ion-button *ngIf="datos.estado!=1 && datos.estado!=2 && datos.estado!=4 && datos.estado!=7" class="btn-accion" color="medium" (click)="enviar(datos.identificacion)"><ion-icon name="checkmark-circle-outline"></ion-icon></ion-button>
             <ion-button class="btn-accion" color="success" (click)="abrirModalEditarFuncionario(datos.id,false)"><ion-icon name="eye"></ion-icon></ion-button>
             <ion-button class="btn-accion" color="danger"><ion-icon name="close"></ion-icon></ion-button>
           </div>

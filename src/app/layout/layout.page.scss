@@ -25,11 +25,13 @@ ion-header {
 
   img.logo-home {
     position: absolute;
-    top: -40px; /* mueve hacia arriba para sobresalir */
-    left: 10px;
-    height: 120px; /* ajusta el tamaño */
+    top: -20px; /* mueve hacia arriba para sobresalir */
+    left: -2px;
+    height: 180px; /* ajusta el tamaño */
     z-index: 999;
     pointer-events: none;
+    filter: drop-shadow(4px 6px 8px rgba(0, 0, 0, 0.6));
+
   }
 }
 ion-item:hover {
