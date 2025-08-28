@@ -11,6 +11,7 @@ import { addIcons } from 'ionicons';
 import { add, eye, pencil, close } from 'ionicons/icons';
 import { UserInteractionService } from 'src/services/user-interaction-service.service';
 import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
+import { PermisosService } from 'src/services/permisos.service';
 
 @Component({
   selector: 'app-modal-crear-filtro',
@@ -26,10 +27,11 @@ export class ModalCrearFiltroPage implements OnInit {
   filtroForm: FormGroup = new FormGroup({});
   param:any;
   constructor(private service:PortalService, private modalCtrl: ModalController, 
-    private fb: FormBuilder, private moduleService:ModuleService, private UserInteractionService: UserInteractionService) {
-    addIcons({ pencil, eye, close, add}); 
-    this.formulario();
-   }
+    private fb: FormBuilder, private moduleService:ModuleService, private UserInteractionService: UserInteractionService,
+    public permisosService: PermisosService) {
+      addIcons({ pencil, eye, close, add}); 
+      this.formulario();
+    }
 
   async ngOnInit() {
     this.param=this.moduleService.getFiltros();

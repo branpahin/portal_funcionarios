@@ -26,5 +26,6 @@ export enum TypeServicio{
     ActualzarFiltroDet='Filtros/ActualzarFiltroDet',
     GetCamposEstado='Colaboradores/GetCamposEstado',
     AprobarRechazarColaborador='Colaboradores/AprobarRechazarColaborador',
-    GetAplicativos='Colaboradores/GetAplicativos'
+    GetAplicativos='Colaboradores/GetAplicativos',
+    GetMenu='Menu/ConsultarMenuPerfil'
 }

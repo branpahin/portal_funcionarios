@@ -7,6 +7,7 @@ import { IONIC_COMPONENTS } from '../../imports/ionic-imports';
 import { PortalService } from 'src/services/portal.service';
 import { ModalController } from '@ionic/angular';
 import { ModalCrearFiltroPage } from 'src/app/models/modal-crear-filtro/modal-crear-filtro.page';
+import { PermisosService } from 'src/services/permisos.service';
 
 @Component({
   selector: 'app-actualizacion-filtros',
@@ -19,6 +20,7 @@ import { ModalCrearFiltroPage } from 'src/app/models/modal-crear-filtro/modal-cr
 export class ActualizacionFiltrosPage implements OnInit {
   param:any;
   tipoFiltro: string = '';
+  cargando:boolean=false;
   filtros:any[]=[];
   pageSize = 10; // Tamaño por página (10, 50, 100)
   currentPage = 1;
@@ -27,18 +29,18 @@ export class ActualizacionFiltrosPage implements OnInit {
   sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(private service:PortalService,private route: ActivatedRoute, 
-    private moduleService:ModuleService, private modalController: ModalController,) {}
+    private moduleService:ModuleService, private modalController: ModalController,
+    public permisosService: PermisosService) {}
 
   async ngOnInit() {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe(async params => {
+      this.cargando=true
       this.tipoFiltro = params['tipo'];
-    });
 
-    await this.nombresFiltrosDet()
-    await this.params();
-    // this.param=this.moduleService.getFiltros();
-    // this.filtros = this.param[this.tipoFiltro]
-    
+      // Cada vez que cambie el filtro, vuelve a ejecutar tu lógica
+      await this.nombresFiltrosDet();
+      await this.params();
+    });
   }
 
   async params(){
@@ -61,6 +63,7 @@ export class ActualizacionFiltrosPage implements OnInit {
         try{
           console.log("datos: ",resp)
           this.filtros=resp.data.datos.filtros;
+          this.cargando=false
         }catch(error){
           console.error("Respuesta Login: ", error)
         }

@@ -9,6 +9,7 @@ import { CreacionUsuarioPage } from '../creacion-usuario/creacion-usuario.page';
 import { ModalCambiarClaveComponent } from 'src/app/models/modal-cambiar-clave/modal-cambiar-clave.component';
 import { UserInteractionService } from 'src/services/user-interaction-service.service';
 import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
+import { PermisosService } from 'src/services/permisos.service';
 
 @Component({
   selector: 'app-listado-usuarios',
@@ -36,7 +37,8 @@ export class ListadoUsuariosPage implements OnInit {
       private moduleService:ModuleService, 
       private modalController: ModalController,
       private fb: FormBuilder,
-      private UserInteractionService: UserInteractionService) {}
+      private UserInteractionService: UserInteractionService,
+      public permisosService: PermisosService) {}
 
   async ngOnInit() {
     this.param=this.moduleService.getParam();

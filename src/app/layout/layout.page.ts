@@ -8,6 +8,15 @@ import { home, person, people, chevronDown, chevronForward, options, filter, clo
 import { environment } from 'src/environments/environment';
 import { PortalService } from 'src/services/portal.service';
 import { ModuleService } from 'src/services/modulos/module.service';
+import { PermisosService } from 'src/services/permisos.service';
+
+interface MenuItem {
+  name: string
+  href: string
+  icon: string
+  accion:string
+  permisos:any
+}
 
 @Component({
   selector: 'app-layout',
@@ -19,9 +28,11 @@ import { ModuleService } from 'src/services/modulos/module.service';
   
 })
 export class LayoutPage implements OnInit {
+  menuItems: MenuItem[] = []
   param:any;
   filtros:any;
   filtroKeys:any;
+  permisosFiltros:any
   rolesSelec:any;
   rolSeleccionado: number | null = null;
   version = environment.version;
@@ -30,7 +41,9 @@ export class LayoutPage implements OnInit {
   constructor(private service:PortalService, 
     private moduleService:ModuleService,
     private router: Router,
-    private cdr: ChangeDetectorRef) {addIcons({ home, people, person, chevronDown, chevronUp, chevronBack, options, filter}); this.params()
+    private cdr: ChangeDetectorRef,
+    private permisosService:PermisosService
+  ) {addIcons({ home, people, person, chevronDown, chevronUp, chevronBack, options, filter}); this.params()
   this.router.events.subscribe(() => {
       this.isHome = this.router.url === '/layout/home';
     });}
@@ -78,6 +91,31 @@ export class LayoutPage implements OnInit {
           console.log("resp: ",resp)
           this.rolesSelec=resp
           this.rolSeleccionado=resp[0].id
+          await this.menu(this.rolSeleccionado!)
+        } catch (error) {
+          console.error("Error en listarUsuarios:", error);
+        }
+      },
+      error: (err) => {
+        console.error("Error al obtener usuarios:", err);
+      }
+    })
+  }
+
+  async menu(rol:number){
+    this.service.getMenu(rol).subscribe({
+      next:async(data)=>{
+        try {
+          
+          console.log("resp: ",data)
+          const resp=data.data.menus
+          this.menuItems = resp.map((item: any) => ({
+            name: item.descripcion,
+            href: item.controlador,
+            icon: item.imagen,
+            accion: item.accion,
+            permisos: item.permisos
+          }));
 
         } catch (error) {
           console.error("Error en listarUsuarios:", error);
@@ -89,7 +127,11 @@ export class LayoutPage implements OnInit {
     })
   }
 
-  toggleFiltros() {
+  toggleFiltros(data:any) {
+    this.permisosFiltros = data
+    console.log("permisosFiltros",this.permisosFiltros)
+    this.permisosService.setPermisos(data);
+    localStorage.setItem('permisos',JSON.stringify(data));
     this.filtrosAbiertos = !this.filtrosAbiertos;
   }
 
@@ -97,7 +139,7 @@ export class LayoutPage implements OnInit {
     this.router.navigate(['/layout/actualizacion-filtros'], {
       queryParams: { tipo: tipo},
     }).then(() => {
-      location.reload();
+      // location.reload();
     });
     
   }

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Registro de Usuario</ion-title>
+    <ion-title>Actualizar filtro</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="cerrarModal()" fill="clear" style="color:white">
         <ion-icon name="close" slot="icon-only"></ion-icon>
@@ -48,6 +48,6 @@
 
 <ion-footer>
   <ion-toolbar class="btn" color="medium">
-    <ion-button style="margin-right: 2%;"  (click)="guardarFiltro()">Guardar</ion-button>
+    <ion-button *ngIf="permisosService.puedeGrabar()" style="margin-right: 2%;"  (click)="guardarFiltro()">Guardar</ion-button>
   </ion-toolbar>
 </ion-footer>

@@ -12,6 +12,7 @@ import { UserInteractionService } from 'src/services/user-interaction-service.se
 import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
 import { BuscadorSelectWrapperComponent } from 'src/app/components/buscador-select-wrapper/buscador-select-wrapper.component';
 import { ComponenteBusquedaComponent } from 'src/app/components/componente-busqueda/componente-busqueda.component';
+import { PermisosService } from 'src/services/permisos.service';
 
 @Component({
   selector: 'app-modal-crear-funcionario',
@@ -60,7 +61,8 @@ export class ModalCrearFuncionarioPage implements OnInit {
   isModalOpen = false;
 
   constructor(private fb: FormBuilder, private moduleService:ModuleService, private service:PortalService, 
-    private modalCtrl: ModalController, private UserInteractionService: UserInteractionService) 
+    private modalCtrl: ModalController, private UserInteractionService: UserInteractionService,
+    public permisosService: PermisosService) 
   {
     addIcons({ pencil, eye, close, add}); 
   }

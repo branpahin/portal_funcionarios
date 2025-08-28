@@ -34,6 +34,7 @@ export class PortalService {
   private AprobarRechazarColaborador = TypeServicio.AprobarRechazarColaborador
   private GetRolesUsuario = TypeServicio.GetRolesUsuario
   private GetAplicativos = TypeServicio.GetAplicativos
+  private GetMenu = TypeServicio.GetMenu
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -51,6 +52,10 @@ export class PortalService {
 
   getNombresFiltrosDet(filtro:string): Observable<any>{
     return this.httpService.GetParamsCore(this.GetNombresFiltroDet+"?filtro="+filtro);
+  }
+
+  getMenu(rol:number): Observable<any>{
+    return this.httpService.GetParamsCore(this.GetMenu+"?Rol="+rol);
   }
 
   getColaboradores(estado:number, ciudad:number): Observable<any>{

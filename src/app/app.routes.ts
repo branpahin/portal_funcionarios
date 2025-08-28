@@ -15,7 +15,7 @@ export const routes: Routes = [
   {
     path: 'layout',
     loadChildren: () => import('./layout/layout.module').then(m => m.LayoutModule),
-    canActivate: [authGuard]
+    // canActivate: [authGuard]
   },
   {
     path: 'modal-crear-funcionario',
@@ -41,10 +41,12 @@ export const routes: Routes = [
   },
   {
     path: 'modal-crear-filtro',
-    loadComponent: () => import('./models/modal-crear-filtro/modal-crear-filtro.page').then( m => m.ModalCrearFiltroPage)
+    loadComponent: () => import('./models/modal-crear-filtro/modal-crear-filtro.page').then( m => m.ModalCrearFiltroPage),
+    canActivate: [authGuard]
   },
   {
     path: 'creacion-usuario',
-    loadComponent: () => import('./pages/creacion-usuario/creacion-usuario.page').then( m => m.CreacionUsuarioPage)
+    loadComponent: () => import('./pages/creacion-usuario/creacion-usuario.page').then( m => m.CreacionUsuarioPage),
+    canActivate: [authGuard]
   },
 ];

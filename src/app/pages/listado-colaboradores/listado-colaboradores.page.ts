@@ -10,6 +10,7 @@ import { ModalEditarFuncionarioPage } from 'src/app/models/modal-editar-funciona
 import { UserInteractionService } from 'src/services/user-interaction-service.service';
 import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
 import { IAlertAction } from 'src/interfaces/IAlertOptions';
+import { PermisosService } from 'src/services/permisos.service';
 
 @Component({
   selector: 'app-listado-colaboradores',
@@ -46,7 +47,8 @@ export class ListadoColaboradoresPage implements OnInit {
     private moduleService:ModuleService, 
     private modalController: ModalController,
     private fb: FormBuilder,
-    private UserInteractionService: UserInteractionService
+    private UserInteractionService: UserInteractionService,
+    public permisosService: PermisosService
   ) 
     {}
 

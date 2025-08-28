@@ -12,6 +12,7 @@ import { UserInteractionService } from 'src/services/user-interaction-service.se
 import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
 import { ComponenteBusquedaComponent } from 'src/app/components/componente-busqueda/componente-busqueda.component';
 import { IAlertAction } from 'src/interfaces/IAlertOptions';
+import { PermisosService } from 'src/services/permisos.service';
 
 @Component({
   selector: 'app-modal-editar-funcionario',
@@ -64,7 +65,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
   isModalOpen = false;
   
   constructor(private cdRef: ChangeDetectorRef, private fb: FormBuilder, private moduleService:ModuleService, 
-    private service:PortalService, private modalCtrl: ModalController, private UserInteractionService: UserInteractionService
+    private service:PortalService, private modalCtrl: ModalController, private UserInteractionService: UserInteractionService,
+    public permisosService: PermisosService
   ) { 
     addIcons({ pencil, eye, close, add}); 
     this.empleadoForm = this.fb.group({
@@ -355,6 +357,11 @@ export class ModalEditarFuncionarioPage implements OnInit {
     );
 
     if (!campo) {
+      const control = this.empleadoForm.get(nombreCampo);
+      this.empleadoForm.removeControl(nombreCampo);
+      if(control){
+          control.disable({ emitEvent: false });
+      }
       return { visible: false, editable: false, required: false };
     }
 
@@ -365,6 +372,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         
           console.log('c.campo:',campo.campo)
           this.empleadoForm.removeControl(campo.campo);
+          control.disable({ emitEvent: false });
       } if (campo.modificable === 'N') {
           control.enable({ emitEvent: false }); 
           control.markAsTouched({ onlySelf: true }); 
@@ -387,6 +395,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
       if (control) {
         if (c.activo.toUpperCase() !== 'S') {
           this.empleadoForm.removeControl(c.campo);
+          control.disable({ emitEvent: false });
         } else {
           if (c.modificable.toUpperCase() === 'N') {
             control.enable({ emitEvent: false }); 
@@ -627,7 +636,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         if (
           this.empleadoForm.value[key] !== null &&
           this.empleadoForm.value[key] !== undefined &&
-          key !== 'HIJOS_COLABORADOR_JSON' &&
+          key !== 'HIJOS_COLABORADOR_JSON' && 
           key !== 'ID_PROFESION' &&
           key !== 'ID_POSTGRADO' && 
           key !=='APLICACIONES'
@@ -643,20 +652,21 @@ export class ModalEditarFuncionarioPage implements OnInit {
       // ID_PROFESION uno por uno
       
     console.log("DATA: ",this.empleadoForm.value)
-      const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
-      profesionesSeleccionadas.forEach((id: number) => {
-        formData.append('ID_PROFESION', id.toString());
-      });
+    
+      // const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
+      // profesionesSeleccionadas.forEach((id: number) => {
+      //   formData.append('ID_PROFESION', id.toString());
+      // });
 
-      const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
-      postgradoSeleccionadas.forEach((id: number) => {
-        formData.append('ID_POSTGRADO', id.toString());
-      });
+      // const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
+      // postgradoSeleccionadas.forEach((id: number) => {
+      //   formData.append('ID_POSTGRADO', id.toString());
+      // });
 
-      const aplicacionesSeleccionadas: number[] = this.empleadoForm.get('APLICACIONES')?.value || [];
-      aplicacionesSeleccionadas.forEach((id: number) => {
-        formData.append('APLICACIONES', id.toString());
-      });
+      // const aplicacionesSeleccionadas: number[] = this.empleadoForm.get('APLICACIONES')?.value || [];
+      // aplicacionesSeleccionadas.forEach((id: number) => {
+      //   formData.append('APLICACIONES', id.toString());
+      // });
 
       if (this.imagenSeleccionada) {
         const reader = new FileReader();

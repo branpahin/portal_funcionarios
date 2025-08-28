@@ -11,6 +11,7 @@ import { addIcons } from 'ionicons';
 import { add, eye, pencil, close } from 'ionicons/icons';
 import { UserInteractionService } from 'src/services/user-interaction-service.service';
 import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
+import { PermisosService } from 'src/services/permisos.service';
 
 @Component({
   selector: 'app-creacion-usuario',
@@ -35,10 +36,11 @@ export class CreacionUsuarioPage implements OnInit {
   apellido: string ='';
   clave: string = '';
   constructor(private service:PortalService, private modalCtrl: ModalController, 
-    private fb: FormBuilder, private moduleService:ModuleService, private UserInteractionService: UserInteractionService) {
-    addIcons({ pencil, eye, close, add}); 
-    this.formulario();
-   }
+    private fb: FormBuilder, private moduleService:ModuleService, private UserInteractionService: UserInteractionService,
+    public permisosService: PermisosService) {
+      addIcons({ pencil, eye, close, add}); 
+      this.formulario();
+    }
 
   async ngOnInit() {
     this.param=this.moduleService.getFiltros();
@@ -60,7 +62,9 @@ export class CreacionUsuarioPage implements OnInit {
         ID_EMPRESA: Number(this.usuario.empresa),
         IDENTIFICACION: this.usuario.identificacion,
         CIUDAD: this.usuario.ciudad,
-        ROL: Number(this.usuario.rol),
+        ROL: this.usuario.rol
+        ? this.usuario.rol.split(',').map((e:any) => +e.trim())
+        : [],
         ESTADO_PROCESO: this.usuario.estadO_PROCESO
         ? this.usuario.estadO_PROCESO.split(',').map((e:any) => +e.trim())
         : []
