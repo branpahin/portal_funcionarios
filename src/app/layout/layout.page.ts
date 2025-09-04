@@ -147,6 +147,7 @@ export class LayoutPage implements OnInit {
   logout(){
     this.router.navigate(['/login'], {}).then(() => {
       localStorage.clear();
+      location.reload();
     });
   }
 

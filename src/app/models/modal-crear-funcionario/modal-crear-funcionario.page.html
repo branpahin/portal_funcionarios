@@ -146,9 +146,8 @@
         <!-- Columna de imagen -->
         <ion-col size="12" size-md="4" class="ion-text-center">
           <div class="imagen-container">
-            <ion-img [src]="imagenPreview || 'assets/imagen-placeholder.png'" class="imagen-preview"></ion-img>
+            <ion-img [src]="imagenPreview || '../../../assets/img/imagen-placeholder.png'" class="imagen-preview"></ion-img>
           </div>
-      
           <div class="botones-imagen">
             <ion-button size="small" fill="outline" (click)="triggerFileInput()">
               {{ imagenPreview ? 'Editar Imagen' : 'Agregar Imagen' }}
@@ -157,7 +156,6 @@
               Borrar Imagen
             </ion-button>
           </div>
-      
           <input type="file" accept="image/*" capture="environment" #fileInput (change)="onFileSelected($event)" hidden />
         </ion-col>
       </ion-row>
@@ -458,7 +456,7 @@
             <ion-input label="Jefe" labelPlacement="floating" [value]="getGeneroDescripcion('ID_JEFE', jefes) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_JEFE ')"></app-error-mensaje>
+          <app-error-mensaje [control]="empleadoForm.get('ID_JEFE')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 

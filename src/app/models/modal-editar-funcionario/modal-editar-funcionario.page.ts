@@ -71,21 +71,21 @@ export class ModalEditarFuncionarioPage implements OnInit {
     addIcons({ pencil, eye, close, add}); 
     this.empleadoForm = this.fb.group({
       ID: [0, Validators.required],
-      TIPO_IDENTIFICACION : [, [Validators.required, Validators.maxLength(50)]],
+      TIPO_IDENTIFICACION : [null, [Validators.required, Validators.maxLength(50)]],
       IDENTIFICACION : ['', [Validators.required, Validators.maxLength(50)]],
       NOMBRES : ['', [Validators.required, Validators.maxLength(50)]],
       APELLIDOS : ['', [Validators.required, Validators.maxLength(50)]],
       GENERO : ['', Validators.required],
-       ID_SEXO : [0,Validators.required],
-      ID_ORIENTACION_SEXUAL: [0,Validators.required],
-      ID_DISCAPACIDAD:[0,Validators.required],
+      ID_SEXO : [null, Validators.required],
+      ID_ORIENTACION_SEXUAL: [null, Validators.required],
+      ID_DISCAPACIDAD:[null, Validators.required],
       ID_RAZA: ['', Validators.required],
       RH : ['', [Validators.required, Validators.maxLength(3)]],
       FECHA_NACIMIENTO : ['', Validators.required],
-      ID_NIVEL_EDUCATIVO : [0, Validators.required],
+      ID_NIVEL_EDUCATIVO : [null, Validators.required],
       ID_PROFESION : [[]],
       ID_PROFESION_ESCOGIDA: [''],
-      ENTIDAD_PREGRADO: [''],
+      ENTIDAD_PREGRADO: ['', Validators.required],
       ID_POSTGRADO: [[]],
       ID_POSTGRADO_ESCOGIDA: [''],
       TELEFONO_CELULAR : ['', [Validators.required, Validators.maxLength(11)]],
@@ -96,29 +96,29 @@ export class ModalEditarFuncionarioPage implements OnInit {
       TELEFONO_CONTACTO: ['', [Validators.required, Validators.maxLength(11)]],
       FECHA_INGRESO : ['', Validators.required],
       ID_EMPRESA : [, Validators.required],
-      CIUDAD_TRABAJO : [''],
-      ID_SEDE : [],
-      ID_GERENCIA : [],
+      CIUDAD_TRABAJO : ['', Validators.required],
+      ID_SEDE : [null, Validators.required],
+      ID_GERENCIA : [null, Validators.required],
       ID_CCO:[],
-      ID_AREA : [],
-      ID_RUBRO : [],
-      ID_CARGO : [],
-      ID_TIPO_NOMINA : [],
-      ID_ROL : [],
-      ID_TIPO_DOTACION : [],
-      ID_NIVEL_DOTACION : [],
-      ENTIDAD_POSTGRADO: [''],
+      ID_AREA : [null, Validators.required],
+      ID_RUBRO : [null, Validators.required],
+      ID_CARGO : [null, Validators.required],
+      ID_TIPO_NOMINA : [null, Validators.required],
+      ID_ROL : [null, Validators.required],
+      ID_TIPO_DOTACION : [null, Validators.required],
+      ID_NIVEL_DOTACION : [null, Validators.required],
+      ENTIDAD_POSTGRADO: ['', Validators.required],
       CORREO_PERSONAL : ['', [Validators.required, Validators.email]],
-      CORREO_CORPORATIVO: [''],
-      PAZ_SALVO_ACTIVOS: [''],
-      ENTREGA_TARJETA_INGRESO: [''],
-      CAMBIO_CARGO: [''],
+      CORREO_CORPORATIVO: ['', Validators.required],
+      PAZ_SALVO_ACTIVOS: ['', Validators.required],
+      ENTREGA_TARJETA_INGRESO: ['', Validators.required],
+      CAMBIO_CARGO: ['', Validators.required],
       FECHA_ACTUALIZACION: ['', Validators.required],
       ESTADO: [],
       ARL : ['', Validators.required],
-      ID_ESTADO_CIVIL : [, Validators.required],
-      ID_JEFE : [, Validators.required],
-      APLICACIONES : [],
+      ID_ESTADO_CIVIL : [null, Validators.required],
+      ID_JEFE : [null, Validators.required],
+      APLICACIONES : [null,Validators.required],
       HIJOS_COLABORADOR_JSON: this.fb.array([]) // Para agregar hijos dinámicamente
     });
   }
@@ -618,12 +618,12 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
   async guardarEmpleado() {
     console.log("datos: ",this.empleadoForm.value)
-    // if (this.empleadoForm.invalid) {
-    //   this.empleadoForm.markAllAsTouched();
-    //   return;
-    // }
+    if (this.empleadoForm.invalid) {
+      this.empleadoForm.markAllAsTouched();
+      return;
+    }
 
-    // if (this.empleadoForm.valid) {
+    if (this.empleadoForm.valid) {
       const hoy = new Date();
       const fechaFormateada = hoy.toISOString().split('T')[0]; // Formato YYYY-MM-DD
     
@@ -653,20 +653,20 @@ export class ModalEditarFuncionarioPage implements OnInit {
       
     console.log("DATA: ",this.empleadoForm.value)
     
-      // const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
-      // profesionesSeleccionadas.forEach((id: number) => {
-      //   formData.append('ID_PROFESION', id.toString());
-      // });
+      const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
+      profesionesSeleccionadas.forEach((id: number) => {
+        formData.append('ID_PROFESION', id.toString());
+      });
 
-      // const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
-      // postgradoSeleccionadas.forEach((id: number) => {
-      //   formData.append('ID_POSTGRADO', id.toString());
-      // });
+      const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
+      postgradoSeleccionadas.forEach((id: number) => {
+        formData.append('ID_POSTGRADO', id.toString());
+      });
 
-      // const aplicacionesSeleccionadas: number[] = this.empleadoForm.get('APLICACIONES')?.value || [];
-      // aplicacionesSeleccionadas.forEach((id: number) => {
-      //   formData.append('APLICACIONES', id.toString());
-      // });
+      const aplicacionesSeleccionadas: number[] = this.empleadoForm.get('APLICACIONES')?.value || [];
+      aplicacionesSeleccionadas.forEach((id: number) => {
+        formData.append('APLICACIONES', id.toString());
+      });
 
       if (this.imagenSeleccionada) {
         const reader = new FileReader();
@@ -750,6 +750,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         console.log("ModeloJson:", modelo);
         await this.enviar(nuevoFormData);
         }
+      }
   }
 
   async enviar(formData:any){

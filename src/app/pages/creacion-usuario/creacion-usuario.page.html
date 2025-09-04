@@ -31,7 +31,8 @@
 
         <ion-col size="12" size-md="6">
           <ion-item>
-            <ion-select label="Ciudad de Trabajo" label-placement="floating" formControlName="CIUDAD" (click)="selec('ciudadTrabajo')">
+            <ion-select label="Ciudad de Trabajo" label-placement="floating" 
+              formControlName="CIUDAD" multiple="true" (click)="selec('ciudadTrabajo')">
               <ion-select-option *ngFor="let nivel of ciudadTrabajo" [value]="+nivel.id">
                 {{ nivel.descripcion }}
               </ion-select-option>

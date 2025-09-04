@@ -43,6 +43,7 @@ export class CreacionUsuarioPage implements OnInit {
     }
 
   async ngOnInit() {
+    console.log("usuario: ",this.usuario)
     this.param=this.moduleService.getFiltros();
     this.empleadoForm.get('ID_EMPRESA')?.valueChanges.subscribe(value => {
       this.selec('empresas');
@@ -61,7 +62,9 @@ export class CreacionUsuarioPage implements OnInit {
       this.empleadoForm.patchValue({
         ID_EMPRESA: Number(this.usuario.empresa),
         IDENTIFICACION: this.usuario.identificacion,
-        CIUDAD: this.usuario.ciudad,
+        CIUDAD: this.usuario.ciudad
+        ? this.usuario.ciudad.split(',').map((e:any) => +e.trim())
+        : [],
         ROL: this.usuario.rol
         ? this.usuario.rol.split(',').map((e:any) => +e.trim())
         : [],
@@ -79,7 +82,7 @@ export class CreacionUsuarioPage implements OnInit {
     this.empleadoForm = this.fb.group({
       ID_EMPRESA: [null, Validators.required], // NUMBER
       IDENTIFICACION: [null, Validators.required], // NUMBER
-      CIUDAD: [null, Validators.required], // NUMBER
+      CIUDAD: ['', Validators.required],
       ROL: ['', [Validators.required, Validators.maxLength(30)]],
       CLAVE: ['', [Validators.required]],
       ESTADO_PROCESO: ['', [Validators.required, Validators.maxLength(30)]], // VARCHAR2(30 BYTE)
@@ -103,7 +106,7 @@ export class CreacionUsuarioPage implements OnInit {
       this.empleadoForm.patchValue({
         ID_EMPRESA: Number(data.iD_EMPRESA),
         IDENTIFICACION: data.identificacion,
-        CIUDAD: Number(data.ciudaD_TRABAJO),
+        CIUDAD: data.ciudaD_TRABAJO,
         ROL: data.rol,
         ESTADO_PROCESO: data.estadO_PROCESO,
       });
@@ -174,6 +177,7 @@ export class CreacionUsuarioPage implements OnInit {
     const formValue = this.empleadoForm.value;
     const payload = {
       ...formValue,
+      CIUDAD: String(formValue.CIUDAD.join(',')),
       ESTADO_PROCESO: formValue.ESTADO_PROCESO.join(','),
       ROL: String(formValue.ROL.join(',')),
     };

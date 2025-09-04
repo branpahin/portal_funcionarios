@@ -13,6 +13,7 @@ import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
 import { BuscadorSelectWrapperComponent } from 'src/app/components/buscador-select-wrapper/buscador-select-wrapper.component';
 import { ComponenteBusquedaComponent } from 'src/app/components/componente-busqueda/componente-busqueda.component';
 import { PermisosService } from 'src/services/permisos.service';
+import { IAlertAction } from 'src/interfaces/IAlertOptions';
 
 @Component({
   selector: 'app-modal-crear-funcionario',
@@ -104,7 +105,11 @@ export class ModalCrearFuncionarioPage implements OnInit {
       }
     });
     const hoy = new Date();
-    const fechaFormateada = hoy.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    const year = hoy.getFullYear();
+    const month = String(hoy.getMonth() + 1).padStart(2, '0'); // Mes empieza en 0
+    const day = String(hoy.getDate()).padStart(2, '0');
+
+    const fechaFormateada = `${year}-${month}-${day}`;
   
     this.empleadoForm.patchValue({
       FECHA_ACTUALIZACION: fechaFormateada
@@ -241,102 +246,122 @@ export class ModalCrearFuncionarioPage implements OnInit {
 
   
 
-  guardarEmpleado() {
-    // if (this.empleadoForm.invalid) {
-    //   this.empleadoForm.markAllAsTouched();
-    //   return;
-    // }
-
-    // if (this.empleadoForm.valid) {
-      const formData = new FormData();
-      Object.keys(this.empleadoForm.value).forEach((key) => {
-        if (
-          this.empleadoForm.value[key] !== null &&
-          this.empleadoForm.value[key] !== undefined &&
-          key !== 'HIJOS_COLABORADOR_JSON' &&
-          key !== 'ID_PROFESION' &&
-          key !== 'ID_POSTGRADO'
-        ) {
-          formData.append(key, this.empleadoForm.value[key]);
-        }
-      });
-
-      // HIJOS_COLABORADOR_JSON
-      const hijosJson = JSON.stringify(this.HIJOS_COLABORADOR_JSON.value);
-      formData.append('HIJOS_COLABORADOR_JSON', hijosJson);
-      const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
-      profesionesSeleccionadas.forEach((id: number) => {
-        formData.append('ID_PROFESION', id.toString());
-      });
-
-      const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
-      postgradoSeleccionadas.forEach((id: number) => {
-        formData.append('ID_POSTGRADO', id.toString());
-      });
-
+  async guardarEmpleado() {
+    if (this.empleadoForm.invalid) {
+      this.empleadoForm.markAllAsTouched();
+      return;
+    }
+    if (this.empleadoForm.valid) {
+      console.log("entro")
       if (this.imagenSeleccionada) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
-      
-            if (ctx) {
-              ctx.drawImage(img, 0, 0);
-      
-              // Convertimos a Blob en formato JPEG
-              canvas.toBlob((blob) => {
-                if (blob) {
-                  const jpgFile = new File([blob], 'imagen.jpg', { type: 'image/jpeg' });
-      
-                  // Agregamos la imagen ya transformada
-                  formData.append('foto', jpgFile);
-      
-                  // ✅ Importante: el post debe ir AQUÍ
-                  this.UserInteractionService.showLoading('Guardando...');
-                  this.service.postCrearColaborador(formData).subscribe({
-                    next: async (resp) => {
-                      try {
-                        console.log("Respuesta:", resp);
-                        this.UserInteractionService.dismissLoading();
-                        this.UserInteractionService.presentToast('Usuario creado con exito', TypeThemeColor.SUCCESS);
-                        this.cerrarModal();
-                      } catch (error) {
-                        console.error("Error al procesar respuesta:", error);
-                        this.UserInteractionService.dismissLoading();
-                        this.cerrarModal();
-                      }
-                    },
-                    error: (err) => {
-                      console.error("Error al enviar formulario:", err);
-                      this.UserInteractionService.dismissLoading();
-                      this.UserInteractionService.presentToast(err);
-                      this.cerrarModal();
-                    }
-                  });
-                } else {
-                  console.error("No se pudo convertir la imagen a blob.");
-                }
-              }, 'image/jpeg');
+        await this.enviar();
+      }else{
+        this.UserInteractionService.dismissLoading();
+          let action :IAlertAction[] =[
+            {
+              text: 'Cancelar',
+              handler: async () => {}
+            }, 
+            {
+              text: 'Si, enviar',
+              handler: async () => {
+                await this.enviar();
+              }
             }
-          };
-      
-          // Cargar imagen desde base64
-          img.src = e.target.result;
-        };
-      
-        // Leer la imagen original como base64
-        reader.readAsDataURL(this.imagenSeleccionada);
+          ]
+          this.UserInteractionService.presentAlertActions(
+            'El colaborador no tiene foto, ¿desea enviar así?',
+            action,
+            false,
+            'Notificación'
+          );
       }
 
       console.log(this.empleadoForm.value);
-    // } else {
-    //   console.log(this.empleadoForm.value);
-    //   console.log('Formulario inválido');
-    // }
+    }
+  }
+
+  async enviar(){
+    const formData = new FormData();
+    Object.keys(this.empleadoForm.value).forEach((key) => {
+      if (
+        this.empleadoForm.value[key] !== null &&
+        this.empleadoForm.value[key] !== undefined &&
+        key !== 'HIJOS_COLABORADOR_JSON' &&
+        key !== 'ID_PROFESION' &&
+        key !== 'ID_POSTGRADO'
+      ) {
+        formData.append(key, this.empleadoForm.value[key]);
+      }
+    });
+
+    // HIJOS_COLABORADOR_JSON
+    const hijosJson = JSON.stringify(this.HIJOS_COLABORADOR_JSON.value);
+    formData.append('HIJOS_COLABORADOR_JSON', hijosJson);
+    const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
+    profesionesSeleccionadas.forEach((id: number) => {
+      formData.append('ID_PROFESION', id.toString());
+    });
+
+    const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
+    postgradoSeleccionadas.forEach((id: number) => {
+      formData.append('ID_POSTGRADO', id.toString());
+    });
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+  
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+  
+          // Convertimos a Blob en formato JPEG
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const jpgFile = new File([blob], 'imagen.jpg', { type: 'image/jpeg' });
+  
+              // Agregamos la imagen ya transformada
+              formData.append('foto', jpgFile);
+  
+              // ✅ Importante: el post debe ir AQUÍ
+              this.UserInteractionService.showLoading('Guardando...');
+              this.service.postCrearColaborador(formData).subscribe({
+                next: async (resp) => {
+                  try {
+                    console.log("Respuesta:", resp);
+                    this.UserInteractionService.dismissLoading();
+                    this.UserInteractionService.presentToast('Usuario creado con exito', TypeThemeColor.SUCCESS);
+                    this.cerrarModal();
+                  } catch (error) {
+                    console.error("Error al procesar respuesta:", error);
+                    this.UserInteractionService.dismissLoading();
+                    this.cerrarModal();
+                  }
+                },
+                error: (err) => {
+                  console.error("Error al enviar formulario:", err);
+                  this.UserInteractionService.dismissLoading();
+                  this.UserInteractionService.presentToast(err);
+                  this.cerrarModal();
+                }
+              });
+            } else {
+              console.error("No se pudo convertir la imagen a blob.");
+            }
+          }, 'image/jpeg');
+        }
+      };
+  
+      // Cargar imagen desde base64
+      img.src = e.target.result;
+    };
+  
+    // Leer la imagen original como base64
+    reader.readAsDataURL(this.imagenSeleccionada!);
   }
 
   cargarTodosLosFiltros() {

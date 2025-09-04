@@ -79,7 +79,7 @@ export class PortalService {
   }
 
   getRolesUsuario(): Observable<any>{
-    return this.httpService.GetCore(this.GetRolesUsuario);
+    return this.httpService.GetParamsCore(this.GetRolesUsuario);
   }
 
   getGetAplicativos(): Observable<any>{

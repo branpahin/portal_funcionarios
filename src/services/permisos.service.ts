@@ -34,14 +34,14 @@ export class PermisosService {
   }
 
   puedeGrabar(): boolean {
-    return this.permisos.grabar === '1';
+    return this.permisos.grabar === '0';
   }
 
   puedeEditar(): boolean {
-    return this.permisos.editar === '1';
+    return this.permisos.editar === '0';
   }
 
   puedeBorrar(): boolean {
-    return this.permisos.borrar === '1';
+    return this.permisos.borrar === '0';
   }
 }
