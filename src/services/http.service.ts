@@ -9,11 +9,9 @@ import { environment } from 'src/environments/environment';
 
 export class HttpService {
   private _baseApiUrl = environment.server
-  private token = localStorage.getItem('token');
 
   private getHttpOptions() {
     const token = localStorage.getItem('token'); // 🔹 Asegurar que siempre se obtiene el token actualizado
-
     if (!token) {
       console.error("⚠️ No se encontró un token en localStorage");
     }
@@ -26,30 +24,23 @@ export class HttpService {
       })
     };
   }
-  
-  httpOptions = {
-		headers: new HttpHeaders({
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		 	Authorization: `Bearer ${this.token}`
-		}),
-	}
+
   
   constructor(private http: HttpClient) { }
 
 	PostCore(body: any, rutaApi: string): Observable<HttpResponse<any>> {
 		const APIREST = `${this._baseApiUrl}${rutaApi}`;
-	
 		return this.http.post<any>(APIREST, JSON.stringify(body), {
-		...this.httpOptions,
+		...this.getHttpOptions(),
 		observe: 'response'
 		});
 	}
 
 	PostFormDataCore(body: FormData, rutaApi: string): Observable<any> {
+		const token = localStorage.getItem('token');
 		const APIREST = `${this._baseApiUrl}${rutaApi}`;
 		const headers = new HttpHeaders({
-			Authorization: `Bearer ${this.token}`
+			Authorization: `Bearer ${token}`
 		});
 		return this.http.post<any>(APIREST, body, {
 			headers,
@@ -59,7 +50,7 @@ export class HttpService {
 
 	GetCore(rutaApi: string, alternativeUrl = false): Observable<any> {
 		const APIREST = alternativeUrl ? rutaApi : `${this._baseApiUrl}${rutaApi}`
-		return this.http.get<any>(APIREST, this.httpOptions).pipe(tap((resp) => {of(resp)}))
+		return this.http.get<any>(APIREST, this.getHttpOptions()).pipe(tap((resp) => {of(resp)}))
 	}
 
 	GetParamsCore(rutaApi: string): Observable<any> {
@@ -69,10 +60,11 @@ export class HttpService {
 	}
 
 	PutJsonCore(body: any, rutaApi: string): Observable<any> {
+		const token = localStorage.getItem('token');
 		const APIREST = `${this._baseApiUrl}${rutaApi}`;
 		const headers = new HttpHeaders({
 			'Content-Type': 'application/json',
-			Authorization: `Bearer ${this.token}`
+			Authorization: `Bearer ${token}`
 		});
 		return this.http.put<any>(APIREST, JSON.stringify(body), {
 			headers,
@@ -82,10 +74,9 @@ export class HttpService {
 
 	PutFormDataCore(body: FormData, rutaApi: string): Observable<any> {
 		const APIREST = `${this._baseApiUrl}${rutaApi}`
-		
-		console.log("token: ",this.token)
+		const token = localStorage.getItem('token');
 		const headers = new HttpHeaders({
-			Authorization: `Bearer ${this.token}`
+			Authorization: `Bearer ${token}`
 		});
 		return this.http.put<any>(APIREST, body, {
 			headers,

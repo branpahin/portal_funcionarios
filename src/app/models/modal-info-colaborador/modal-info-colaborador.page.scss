@@ -20,3 +20,14 @@
     align-items: center;
     margin-bottom: 10px;
   }
+
+  .responsive-title {
+    white-space: normal;
+  }
+
+  @media (max-width: 576px) {
+    .responsive-title {
+      font-size: 1rem;
+    }
+  }
+  

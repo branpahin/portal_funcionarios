@@ -133,3 +133,13 @@ ion-item[disabled] {
   text-align: end;
   justify-content: end;
 }
+
+.responsive-title {
+  white-space: normal;
+}
+
+@media (max-width: 576px) {
+  .responsive-title {
+    font-size: 1rem;
+  }
+}

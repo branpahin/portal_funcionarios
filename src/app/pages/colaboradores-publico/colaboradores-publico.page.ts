@@ -81,10 +81,6 @@ export class ColaboradoresPublicoPage implements OnInit {
       });
   
       modal.style.cssText = `
-    
-      --max-height: 90%;
-     
-      --max-width: 90%;
       --border-radius: 10px;
     `;
       return await modal.present();

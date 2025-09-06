@@ -1,7 +1,12 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title *ngIf="editar">Modificación de Empleado</ion-title>
-    <ion-title *ngIf="!editar">Información de Empleado</ion-title>
+    <ion-title>
+      <div *ngIf="editar" class="responsive-title">Modificación de Empleado</div>
+      <div *ngIf="!editar" class="responsive-title">Información de Empleado</div>
+    </ion-title>
+    <ion-title>
+      
+    </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="cerrarModal()" fill="clear" style="color:white">
         <ion-icon name="close" slot="icon-only"></ion-icon>
@@ -30,7 +35,9 @@
       <ion-row>
         <ion-col>
           <ion-toolbar class="subtitulos">
-            <ion-title>Información Personal</ion-title>
+            <ion-title>
+              <div class="responsive-title">Información Personal</div>
+            </ion-title>
           </ion-toolbar>
         </ion-col>
       </ion-row>
@@ -46,14 +53,14 @@
                 </ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
               </ion-item>
-              <app-error-mensaje [control]="empleadoForm.get('TIPO_IDENTIFICACION')"></app-error-mensaje>
+              <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('TIPO_IDENTIFICACION')"></app-error-mensaje>
             </ion-col>
 
             <ion-col size="12" size-md="6" *ngIf="getCampoConfig('IDENTIFICACION').visible">
               <ion-item [disabled]="!editar || !getCampoConfig('IDENTIFICACION').editable">
                 <ion-input label="Número de Identificación" labelPlacement="floating" formControlName="IDENTIFICACION"></ion-input>
               </ion-item>
-              <app-error-mensaje [control]="empleadoForm.get('IDENTIFICACION')"></app-error-mensaje>
+              <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('IDENTIFICACION')"></app-error-mensaje>
             </ion-col>
           </ion-row>
 
@@ -62,14 +69,14 @@
               <ion-item [disabled]="!editar || !getCampoConfig('NOMBRES').editable">
                 <ion-input label="Nombres" labelPlacement="floating" formControlName="NOMBRES"></ion-input>
               </ion-item>
-              <app-error-mensaje [control]="empleadoForm.get('NOMBRES')"></app-error-mensaje>
+              <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('NOMBRES')"></app-error-mensaje>
             </ion-col>
 
             <ion-col size="12" size-md="6" *ngIf="getCampoConfig('APELLIDOS').visible">
               <ion-item [disabled]="!editar || !getCampoConfig('APELLIDOS').editable">
                 <ion-input label="Apellidos" labelPlacement="floating" formControlName="APELLIDOS"></ion-input>
               </ion-item>
-              <app-error-mensaje [control]="empleadoForm.get('APELLIDOS')"></app-error-mensaje>
+              <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('APELLIDOS')"></app-error-mensaje>
             </ion-col>
           </ion-row>
 
@@ -84,7 +91,7 @@
                   </ng-template>
                 </ion-modal>
               </ion-item>
-              <app-error-mensaje [control]="empleadoForm.get('FECHA_NACIMIENTO')"></app-error-mensaje>
+              <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('FECHA_NACIMIENTO')"></app-error-mensaje>
             </ion-col>
 
             <ion-col size="12" size-md="6" *ngIf="getCampoConfig('ID_RAZA').visible">
@@ -92,7 +99,7 @@
                 <ion-input label="Raza" labelPlacement="floating" [value]="getGeneroDescripcion('ID_RAZA', razas) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
               </ion-item>
-              <app-error-mensaje [control]="empleadoForm.get('ID_RAZA')"></app-error-mensaje>
+              <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_RAZA')"></app-error-mensaje>
             </ion-col>
           </ion-row>
 
@@ -102,7 +109,7 @@
                 <ion-input label="Género" labelPlacement="floating" [value]="getGeneroDescripcion('GENERO', generos) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
               </ion-item>
-              <app-error-mensaje [control]="empleadoForm.get('GENERO')"></app-error-mensaje>
+              <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('GENERO')"></app-error-mensaje>
             </ion-col>
 
             <ion-col size="12" size-md="6" *ngIf="getCampoConfig('ID_SEXO').visible">
@@ -110,7 +117,7 @@
                 <ion-input label="Sexo" labelPlacement="floating" [value]="getGeneroDescripcion('ID_SEXO', sexos) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
               </ion-item>
-              <app-error-mensaje [control]="empleadoForm.get('ID_SEXO')"></app-error-mensaje>
+              <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_SEXO')"></app-error-mensaje>
             </ion-col>
           </ion-row>
           <ion-row>
@@ -119,7 +126,7 @@
                 <ion-input label="Orientación sexual" labelPlacement="floating" [value]="getGeneroDescripcion('ID_ORIENTACION_SEXUAL', orientaciones_Sexuales) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
               </ion-item>
-              <app-error-mensaje [control]="empleadoForm.get('ID_ORIENTACION_SEXUAL')"></app-error-mensaje>
+              <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_ORIENTACION_SEXUAL')"></app-error-mensaje>
             </ion-col>
 
             <ion-col size="12" size-md="6" *ngIf="getCampoConfig('ID_DISCAPACIDAD').visible">
@@ -127,7 +134,7 @@
                 <ion-input label="Discapacidad" labelPlacement="floating" [value]="getGeneroDescripcion('ID_DISCAPACIDAD', discapacidades) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
               </ion-item>
-              <app-error-mensaje [control]="empleadoForm.get('ID_DISCAPACIDAD')"></app-error-mensaje>
+              <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_DISCAPACIDAD')"></app-error-mensaje>
             </ion-col>
           </ion-row>
           <ion-row>
@@ -136,7 +143,7 @@
                 <ion-input label="Rh" labelPlacement="floating" [value]="getGeneroDescripcion('RH', rh) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
               </ion-item>
-              <app-error-mensaje [control]="empleadoForm.get('RH')"></app-error-mensaje>
+              <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('RH')"></app-error-mensaje>
             </ion-col>
 
             <ion-col size="12" size-md="6" *ngIf="getCampoConfig('ID_ESTADO_CIVIL').visible">
@@ -144,7 +151,7 @@
                 <ion-input label="Estado Civil" labelPlacement="floating" [value]="getGeneroDescripcion('ID_ESTADO_CIVIL', estadoCivil) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
               </ion-item>
-              <app-error-mensaje [control]="empleadoForm.get('ID_ESTADO_CIVIL')"></app-error-mensaje>
+              <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_ESTADO_CIVIL')"></app-error-mensaje>
             </ion-col>
           </ion-row>
         </ion-col>
@@ -172,7 +179,9 @@
       <ion-row>
         <ion-col>
           <ion-toolbar class="subtitulos">
-            <ion-title>Información de Contacto</ion-title>
+            <ion-title>
+              <div class="responsive-title">Información de Contacto</div>
+            </ion-title>
           </ion-toolbar>
         </ion-col>
       </ion-row>
@@ -182,14 +191,14 @@
           <ion-item [disabled]="!editar || !getCampoConfig('CORREO_PERSONAL').editable">
             <ion-input label="Correo Personal" labelPlacement="floating" formControlName="CORREO_PERSONAL"></ion-input>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('CORREO_PERSONAL')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('CORREO_PERSONAL')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="6" *ngIf="getCampoConfig('CORREO_CORPORATIVO').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('CORREO_CORPORATIVO').editable">
             <ion-input label="Correo Corporativo" labelPlacement="floating" formControlName="CORREO_CORPORATIVO"></ion-input>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('CORREO_CORPORATIVO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('CORREO_CORPORATIVO')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 
@@ -198,21 +207,21 @@
           <ion-item [disabled]="!editar || !getCampoConfig('TELEFONO_CELULAR').editable">
             <ion-input label="Numero Celular" labelPlacement="floating" formControlName="TELEFONO_CELULAR"></ion-input>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('TELEFONO_CELULAR')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('TELEFONO_CELULAR')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('NOMBRE_CONTACTO').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('NOMBRE_CONTACTO').editable">
             <ion-input label="Nombre Contacto" labelPlacement="floating" formControlName="NOMBRE_CONTACTO"></ion-input>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('NOMBRE_CONTACTO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('NOMBRE_CONTACTO')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('TELEFONO_CONTACTO').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('TELEFONO_CONTACTO').editable">
             <ion-input label="Telefono Contacto" labelPlacement="floating" formControlName="TELEFONO_CONTACTO"></ion-input>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('TELEFONO_CONTACTO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('TELEFONO_CONTACTO')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 
@@ -220,7 +229,9 @@
       <ion-row>
         <ion-col>
           <ion-toolbar class="subtitulos">
-            <ion-title>Dirección</ion-title>
+            <ion-title>
+              <div class="responsive-title">Dirección</div>
+            </ion-title>
           </ion-toolbar>
         </ion-col>
       </ion-row>
@@ -230,14 +241,14 @@
           <ion-item [disabled]="!editar || !getCampoConfig('CIUDAD_RESIDENCIA').editable">
             <ion-input label="Ciudad de Residencia" labelPlacement="floating" formControlName="CIUDAD_RESIDENCIA"></ion-input>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('CIUDAD_RESIDENCIA')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('CIUDAD_RESIDENCIA')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="8" *ngIf="getCampoConfig('DIRECCION_RESIDENCIA').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('DIRECCION_RESIDENCIA').editable">
             <ion-input label="Dirección" labelPlacement="floating" formControlName="DIRECCION_RESIDENCIA"></ion-input>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('DIRECCION_RESIDENCIA')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('DIRECCION_RESIDENCIA')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 
@@ -245,7 +256,9 @@
       <ion-row>
         <ion-col>
           <ion-toolbar class="subtitulos">
-            <ion-title>Educación</ion-title>
+            <ion-title>
+              <div class="responsive-title">Educación</div>
+            </ion-title>
           </ion-toolbar>
         </ion-col>
       </ion-row>
@@ -256,21 +269,21 @@
             <ion-input label="Nivel Educativo" labelPlacement="floating" [value]="getGeneroDescripcion('ID_NIVEL_EDUCATIVO', nivelesEducativos) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_NIVEL_EDUCATIVO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_NIVEL_EDUCATIVO')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ENTIDAD_PREGRADO').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('ENTIDAD_PREGRADO').editable">
             <ion-input label="Entidad de Pregrado" labelPlacement="floating" formControlName="ENTIDAD_PREGRADO"></ion-input>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ENTIDAD_PREGRADO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ENTIDAD_PREGRADO')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ENTIDAD_POSTGRADO').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('ENTIDAD_POSTGRADO').editable">
             <ion-input label="Entidad de Postgrado" labelPlacement="floating" formControlName="ENTIDAD_POSTGRADO"></ion-input>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ENTIDAD_POSTGRADO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ENTIDAD_POSTGRADO')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 
@@ -289,7 +302,7 @@
             </ion-list>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_PROFESION')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_PROFESION')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="6" *ngIf="getCampoConfig('ID_POSTGRADO').visible">
@@ -305,7 +318,7 @@
             </ion-list>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_POSTGRADO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_POSTGRADO')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 
@@ -313,7 +326,9 @@
       <ion-row>
         <ion-col>
           <ion-toolbar class="subtitulos">
-            <ion-title>Información Familiar</ion-title>
+            <ion-title>
+              <div class="responsive-title">Información Familiar</div>
+            </ion-title>
           </ion-toolbar>
         </ion-col>
       </ion-row>
@@ -327,7 +342,7 @@
           <ion-button *ngIf="empleadoForm.get('TIENE_HIJOS')?.value === 1" fill="clear" (click)="motrarHijos()" class="link-button">
             Mostrar Hijos
           </ion-button>
-          <app-error-mensaje [control]="empleadoForm.get('TIENE_HIJOS')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('TIENE_HIJOS')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 
@@ -337,7 +352,9 @@
           <ion-row>
             <ion-col>
               <ion-toolbar class="subtitulos">
-                <ion-title>HIJOS</ion-title>
+                <ion-title>
+                  <div class="responsive-title">HIJOS</div>
+                </ion-title>
               </ion-toolbar>
             </ion-col>
           </ion-row>
@@ -349,13 +366,13 @@
                   <ion-label position="floating">Nombre Completo</ion-label>
                   <ion-input formControlName="NOMBRE_COMPLETO"></ion-input>
                 </ion-item>
-                <app-error-mensaje [control]="hijo.get('NOMBRE_COMPLETO')"></app-error-mensaje>
+                <app-error-mensaje *ngIf='editar'[control]="hijo.get('NOMBRE_COMPLETO')"></app-error-mensaje>
           
                 <ion-item [disabled]="!editar || !getCampoConfig('TIENE_HIJOS').editable">
                   <ion-label position="floating">Edad</ion-label>
                   <ion-input type="string" formControlName="EDAD"></ion-input>
                 </ion-item>
-                <app-error-mensaje [control]="hijo.get('EDAD')"></app-error-mensaje>
+                <app-error-mensaje *ngIf='editar'[control]="hijo.get('EDAD')"></app-error-mensaje>
           
                 <ion-item [disabled]="!editar || !getCampoConfig('TIENE_HIJOS').editable">
                   <ion-label position="fixed">Fecha de Nacimiento</ion-label>
@@ -368,7 +385,7 @@
                     </ng-template>
                   </ion-modal>
                 </ion-item>
-                <app-error-mensaje [control]="hijo.get('FECHA_NACIMIENTO')"></app-error-mensaje>
+                <app-error-mensaje *ngIf='editar'[control]="hijo.get('FECHA_NACIMIENTO')"></app-error-mensaje>
                 
                 <ion-item [disabled]="!editar || !getCampoConfig('TIENE_HIJOS').editable">
                   <ion-select label="Genero" label-placement="floating" formControlName="GENERO" (click)="selec('generos')">
@@ -377,7 +394,7 @@
                     </ion-select-option>
                   </ion-select>
                 </ion-item>
-                <app-error-mensaje [control]="hijo.get('GENERO')"></app-error-mensaje>
+                <app-error-mensaje *ngIf='editar'[control]="hijo.get('GENERO')"></app-error-mensaje>
                 
                 <ion-item [disabled]="!editar || !getCampoConfig('TIENE_HIJOS').editable">
                   <ion-select label="RH" label-placement="floating" formControlName="RH" (click)="selec('rh')">
@@ -386,7 +403,7 @@
                     </ion-select-option>
                   </ion-select>
                 </ion-item>
-                <app-error-mensaje [control]="hijo.get('RH')"></app-error-mensaje>
+                <app-error-mensaje *ngIf='editar'[control]="hijo.get('RH')"></app-error-mensaje>
   
                 <ion-item [disabled]="!editar || !getCampoConfig('TIENE_HIJOS').editable">
                   <ion-select label="Tipo Documento" label-placement="floating" formControlName="ID_TP_DOCUMENTO" (click)="selec('tipoIdentificacion')">
@@ -395,12 +412,12 @@
                     </ion-select-option>
                   </ion-select>
                 </ion-item>
-                <app-error-mensaje [control]="hijo.get('ID_TP_DOCUMENTO')"></app-error-mensaje>
+                <app-error-mensaje *ngIf='editar'[control]="hijo.get('ID_TP_DOCUMENTO')"></app-error-mensaje>
 
                 <ion-item [disabled]="!editar || !getCampoConfig('TIENE_HIJOS').editable">
                   <ion-input label="Documento" labelPlacement="floating" formControlName="DOCUMENTO"></ion-input>
                 </ion-item>
-                <app-error-mensaje [control]="hijo.get('DOCUMENTO')"></app-error-mensaje>
+                <app-error-mensaje *ngIf='editar'[control]="hijo.get('DOCUMENTO')"></app-error-mensaje>
           
                 <ion-button [disabled]="!editar || !getCampoConfig('TIENE_HIJOS').editable" (click)="eliminarHijo(i)" color="danger" expand="block">Eliminar</ion-button>
               </div>
@@ -415,7 +432,9 @@
       <ion-row>
         <ion-col>
           <ion-toolbar class="subtitulos">
-            <ion-title>Información de Empresa</ion-title>
+            <ion-title>
+              <div class="responsive-title">Información de Empresa</div>
+            </ion-title>
           </ion-toolbar>
         </ion-col>
       </ion-row>
@@ -431,7 +450,7 @@
               </ng-template>
             </ion-modal>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('FECHA_INGRESO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('FECHA_INGRESO')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="6" *ngIf="getCampoConfig('CIUDAD_TRABAJO').visible">
@@ -439,7 +458,7 @@
             <ion-input label="Ciudad de trabajo" labelPlacement="floating" [value]="getGeneroDescripcion('CIUDAD_TRABAJO', ciudadTrabajo) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('CIUDAD_TRABAJO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('CIUDAD_TRABAJO')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 
@@ -449,7 +468,7 @@
             <ion-input label="Empresa" labelPlacement="floating" [value]="getGeneroDescripcion('ID_EMPRESA', empresas) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_EMPRESA')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_EMPRESA')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_SEDE').visible">
@@ -457,7 +476,7 @@
             <ion-input label="Sede" labelPlacement="floating" [value]="getGeneroDescripcion('ID_SEDE', sedes) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_SEDE')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_SEDE')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_JEFE').visible">
@@ -465,7 +484,7 @@
             <ion-input label="Jefe" labelPlacement="floating" [value]="getGeneroDescripcion('ID_JEFE', jefes) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_JEFE ')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_JEFE ')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 
@@ -475,7 +494,7 @@
             <ion-input label="Gerencia" labelPlacement="floating" [value]="getGeneroDescripcion('ID_GERENCIA', gerencias) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_GERENCIA')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_GERENCIA')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_AREA').visible">
@@ -483,7 +502,7 @@
             <ion-input label="Area" labelPlacement="floating" [value]="getGeneroDescripcion('ID_AREA', areas) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_AREA')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_AREA')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_CARGO').visible">
@@ -491,7 +510,7 @@
             <ion-input label="Cargo" labelPlacement="floating" [value]="getGeneroDescripcion('ID_CARGO', cargos) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_CARGO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_CARGO')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 
@@ -501,7 +520,7 @@
             <ion-input label="Rol" labelPlacement="floating" [value]="getGeneroDescripcion('ID_ROL', roles) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_ROL')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_ROL')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_RUBRO').visible">
@@ -509,7 +528,7 @@
             <ion-input label="Rubro" labelPlacement="floating" [value]="getGeneroDescripcion('ID_RUBRO', rubros) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_RUBRO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_RUBRO')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('CAMBIO_CARGO').visible">
@@ -519,7 +538,7 @@
               <ion-select-option value="N">NO</ion-select-option>
             </ion-select>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('CAMBIO_CARGO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('CAMBIO_CARGO')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 
@@ -527,7 +546,9 @@
       <ion-row>
         <ion-col>
           <ion-toolbar class="subtitulos">
-            <ion-title>Dotación y Nómina</ion-title>
+            <ion-title>
+              <div class="responsive-title">Dotación y Nómina</div>
+            </ion-title>
           </ion-toolbar>
         </ion-col>
       </ion-row>
@@ -538,7 +559,7 @@
             <ion-input label="Nomina" labelPlacement="floating" [value]="getGeneroDescripcion('ID_TIPO_NOMINA', tipoNomnina) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_TIPO_NOMINA')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_TIPO_NOMINA')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_TIPO_DOTACION').visible">
@@ -546,7 +567,7 @@
             <ion-input label="Dotación" labelPlacement="floating" [value]="getGeneroDescripcion('ID_TIPO_DOTACION', tipoDotacion) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_TIPO_DOTACION')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_TIPO_DOTACION')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_NIVEL_DOTACION').visible">
@@ -554,7 +575,7 @@
             <ion-input label="Nivel de dotación" labelPlacement="floating" [value]="getGeneroDescripcion('ID_NIVEL_DOTACION', nivelDotacion) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_NIVEL_DOTACION')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_NIVEL_DOTACION')"></app-error-mensaje>
         </ion-col>
       </ion-row>
 
@@ -562,7 +583,9 @@
       <ion-row>
         <ion-col>
           <ion-toolbar class="subtitulos">
-            <ion-title>Seguridad y Documentación</ion-title>
+            <ion-title>
+              <div class="responsive-title">Seguridad y Documentación</div>
+            </ion-title>
           </ion-toolbar>
         </ion-col>
       </ion-row>
@@ -575,7 +598,7 @@
               <ion-select-option value="NO">NO</ion-select-option>
             </ion-select>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('PAZ_SALVO_ACTIVOS')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('PAZ_SALVO_ACTIVOS')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="3" *ngIf="getCampoConfig('ENTREGA_TARJETA_INGRESO').visible">
@@ -585,7 +608,7 @@
               <ion-select-option value="NO">NO</ion-select-option>
             </ion-select>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ENTREGA_TARJETA_INGRESO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ENTREGA_TARJETA_INGRESO')"></app-error-mensaje>
         </ion-col>
 
         <ion-col size="12" size-md="3" *ngIf="getCampoConfig('ARL').visible">
@@ -593,7 +616,7 @@
             <ion-input label="Arl" labelPlacement="floating" [value]="getGeneroDescripcion('ARL', arl) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ARL')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ARL')"></app-error-mensaje>
         </ion-col>
 
         <ion-col [attr.size]="getListaSeleccion('APLICACIONES', apis).length > 0 ? '12' : '12'"
@@ -611,7 +634,7 @@
             </ion-list>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('APLICACIONES')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('APLICACIONES')"></app-error-mensaje>
         </ion-col>
 
         <!-- <ion-col size="12" size-md="3">
@@ -619,7 +642,7 @@
             <ion-input label="Tipo de registro" labelPlacement="floating" [value]="getGeneroDescripcion('ID_TIPO_REGISTRO', tipoRegistro) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <app-error-mensaje [control]="empleadoForm.get('ID_TIPO_REGISTRO')"></app-error-mensaje>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_TIPO_REGISTRO')"></app-error-mensaje>
         </ion-col> -->
       </ion-row>
     </ion-grid>

@@ -1,7 +1,9 @@
 <main>
   <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title>Listado Colaboradores</ion-title>
+    <ion-title>
+      <div class="responsive-title">Listado Usuarios</div>
+    </ion-title>
     <ion-button *ngIf="permisosService.puedeEditar()" color="success" (click)="abrirModalCrearFuncionario()" slot="end" shape="round"><ion-icon name="add"></ion-icon> 
       <span class="texto-boton">Registrar Usuario</span>
     </ion-button>

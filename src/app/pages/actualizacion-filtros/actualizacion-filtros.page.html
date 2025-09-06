@@ -1,7 +1,9 @@
 <main>
   <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title >Actualización de Filtros - {{tipoFiltro}}</ion-title>
+    <ion-title>
+      <div class="responsive-title">Actualización de Filtros - {{tipoFiltro}}</div>
+    </ion-title>
     <ion-button *ngIf="permisosService.puedeEditar()" color="success" (click)="abrirModalEditar(tipoFiltro, false)" slot="end" shape="round"><ion-icon name="add"></ion-icon> 
       <span class="texto-boton">Registrar Colaborador</span>
     </ion-button>

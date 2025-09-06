@@ -361,7 +361,9 @@ export class ModalCrearFuncionarioPage implements OnInit {
     };
   
     // Leer la imagen original como base64
-    reader.readAsDataURL(this.imagenSeleccionada!);
+    if(this.imagenSeleccionada){
+      reader.readAsDataURL(this.imagenSeleccionada);
+    }
   }
 
   cargarTodosLosFiltros() {

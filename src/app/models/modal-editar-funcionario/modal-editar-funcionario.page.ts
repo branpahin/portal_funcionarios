@@ -107,7 +107,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
       ID_ROL : [null, Validators.required],
       ID_TIPO_DOTACION : [null, Validators.required],
       ID_NIVEL_DOTACION : [null, Validators.required],
-      ENTIDAD_POSTGRADO: ['', Validators.required],
+      ENTIDAD_POSTGRADO: [''],
       CORREO_PERSONAL : ['', [Validators.required, Validators.email]],
       CORREO_CORPORATIVO: ['', Validators.required],
       PAZ_SALVO_ACTIVOS: ['', Validators.required],

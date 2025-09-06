@@ -1,7 +1,9 @@
 <main>
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title>Listado Colaboradores</ion-title>
+    <ion-title>
+      <div class="responsive-title">Listado Colaboradores</div>
+    </ion-title>
     <ion-button *ngIf="permisosService.puedeEditar()" color="success" (click)="abrirModalCrearFuncionario()" slot="end" shape="round"><ion-icon name="add"></ion-icon> 
       <span class="texto-boton">Registrar Colaborador</span>
     </ion-button>
@@ -87,7 +89,7 @@
       <ion-item-sliding *ngFor="let datos of paginatedFuncionarios">
         <ion-item >
           <ion-label>
-              <strong class="titulo">{{datos.nombres}} {{datos.apellidos}}</strong>
+              <h2 class="titulo">{{datos.nombres}} {{datos.apellidos}}</h2>
               <br />
               <ion-text><strong>Cédula:</strong> {{datos.identificacion}}</ion-text>
               <br />

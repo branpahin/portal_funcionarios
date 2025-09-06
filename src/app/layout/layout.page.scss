@@ -25,15 +25,17 @@ ion-header {
 
   img.logo-home {
     position: absolute;
-    top: -20px; /* mueve hacia arriba para sobresalir */
-    left: -2px;
-    height: 180px; /* ajusta el tamaño */
+    
+    height: clamp(80px, 12vw, 150px);
+    width: auto; /* ajusta el tamaño */
     z-index: 999;
     pointer-events: none;
     filter: drop-shadow(4px 6px 8px rgba(0, 0, 0, 0.6));
 
   }
 }
+
+
 ion-item:hover {
     --background: rgb(247, 204, 124) !important;
     --color: white !important;
@@ -57,3 +59,20 @@ ion-menu::part(container) {
 ion-title{
     text-align: center;
 }
+
+img.logo{
+    height: clamp(40px, 10vw, 55px);
+    width: auto;
+}
+
+.responsive-title {
+  white-space: normal;
+  text-align: center; // opcional
+}
+
+@media (max-width: 576px) {
+  .responsive-title {
+    font-size: 1rem;
+  }
+}
+

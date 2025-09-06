@@ -88,6 +88,10 @@ ion-header{
     display: none;
   }
 
+.responsive-title {
+  white-space: normal;
+}
+
   @media (max-width: 1670px) {
     .actions {
       display: flex;
@@ -180,5 +184,20 @@ ion-header{
       display: inline;
     }
   }
+
+@media (max-width: 576px) {
+  .responsive-title {
+    font-size: 0.9rem;
+  }
+  
+  .texto-boton {
+    display: none;
+  }
+  
+  ion-button {
+    --padding-start: 8px;
+    --padding-end: 8px;
+  }
+}
 
   

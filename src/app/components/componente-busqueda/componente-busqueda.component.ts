@@ -63,4 +63,8 @@ export class ComponenteBusquedaComponent {
     this.modalCtrl.dismiss(this.selectedItems);
   }
 
+  cerrar() {
+    this.modalCtrl.dismiss();
+  }
+
 }

@@ -1,9 +1,14 @@
 <ion-card>
-    <ion-card-header>
+  <ion-card-header>
+    <div class="toolbar-like">
       <ion-label class="text-base font-bold">{{ label }}</ion-label>
-      
-      <ion-input [(ngModel)]="searchText" [placeholder]="placeholder" debounce="300"></ion-input>
-    </ion-card-header>
+      <ion-button fill="clear" color="medium" (click)="cerrar()">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </div>
+
+    <ion-input [(ngModel)]="searchText" [placeholder]="placeholder" debounce="300"></ion-input>
+  </ion-card-header>
 </ion-card>
 
 

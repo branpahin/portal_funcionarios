@@ -1,6 +1,8 @@
 <ion-header [translucent]="true" color="medium">
   <ion-toolbar color="medium">
-    <ion-title>Información Colaborador</ion-title>
+    <ion-title>
+      <div class="responsive-title">Información Colaborador</div>
+    </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="cerrarModal()" fill="clear" style="color:white">
         <ion-icon name="close" slot="icon-only"></ion-icon>
@@ -24,7 +26,7 @@
       <ion-card-subtitle>{{ colaborador?.cargo }}</ion-card-subtitle>
     </ion-card-header>
 
-    <ion-card-content>
+    <ion-card-content *ngIf="!isMobile">
       <ion-list lines="none">
         <ion-item>
           <ion-label><strong>Identificación:</strong></ion-label>
@@ -61,6 +63,40 @@
           <ion-text>{{ colaborador?.estadO_PROCESO }}</ion-text>
         </ion-item>
       </ion-list>
+    </ion-card-content>
+    <ion-card-content *ngIf="isMobile">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12">
+            <ion-label><strong>Identificación:</strong></ion-label>
+            <div>{{ colaborador?.identificacion }}</div>
+          </ion-col>
+          <ion-col size="12">
+            <ion-label><strong>Correo Corporativo:</strong></ion-label>
+            <div>{{ colaborador?.correO_CORPORATIVO }}</div>
+          </ion-col>
+          <ion-col size="12">
+            <ion-label><strong>Teléfono Celular:</strong></ion-label>
+            <div>{{ colaborador?.telefonO_CELULAR }}</div>
+          </ion-col>
+          <ion-col size="12">
+            <ion-label><strong>Empresa:</strong></ion-label>
+            <div>{{ colaborador?.empresa }}</div>
+          </ion-col>
+          <ion-col size="12">
+            <ion-label><strong>Sede:</strong></ion-label>
+            <div>{{ colaborador?.sede }}</div>
+          </ion-col>
+          <ion-col size="12">
+            <ion-label><strong>Gerencia:</strong></ion-label>
+            <div>{{ colaborador?.gerencia }}</div>
+          </ion-col>
+          <ion-col size="12" *ngIf="colaborador?.estadO_PROCESO">
+            <ion-label><strong>Estado del Proceso:</strong></ion-label>
+            <div>{{ colaborador?.estadO_PROCESO }}</div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-card-content>
   </ion-card>
 </ion-content>

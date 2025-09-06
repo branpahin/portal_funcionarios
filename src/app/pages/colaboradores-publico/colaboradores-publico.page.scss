@@ -33,17 +33,17 @@ ion-content {
     }
   
     .login{
-      width: 400px;
+      // width: 400px;
       background: rgb(255, 255, 255);
       border-radius: 20px;
       box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.5);
     }
   
-    @media screen and (max-width: 410px) {
-      .login {
-        width: 90%; 
-      }
-    }
+    // @media screen and (max-width: 410px) {
+    //   .login {
+    //     width: 90%; 
+    //   }
+    // }
   
     ion-card{
       background: rgb(255, 255, 255);
@@ -76,3 +76,12 @@ ion-content {
       --border-color: rgb(179, 179, 179); /* Oculta el borde inferior */
     }
     
+    .responsive-title {
+      white-space: normal;
+    }
+
+    @media (max-width: 576px) {
+      .responsive-title {
+        font-size: 1rem;
+      }
+    }

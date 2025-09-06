@@ -82,21 +82,25 @@
 <!-- Contenido Principal -->
 <ion-page id="main-content">
   <ion-header color="primary">
-    <ion-toolbar color="primary">
-      <img *ngIf="!isHome"
-          slot="start"
-          src="assets/icon/logoEEP_static.png"
-          alt="Logo"
-          style="height: 57px;" />
-      <ion-buttons slot="end">
-        <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title>Portal Funcionarios</ion-title>
-    </ion-toolbar>
-    <img *ngIf="isHome"
+    
+    <img *ngIf="isHome && !isMobile"
        src="assets/icon/logoEEP_dynamic.svg"
        alt="Logo"
        class="logo-home" />
+    <ion-toolbar color="primary">
+      <img *ngIf="!isHome || isMobile"
+          slot="start"
+          [src]="isMobile ? 'assets/img/logo_blanco.png' : 'assets/icon/logoEEP_static.png'"
+          alt="Logo" 
+          class="logo"
+          [ngStyle]="!isMobile ? {} : {'margin-left': '4%'}"/>
+      <ion-buttons slot="end">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>
+        <div class="responsive-title">Portal Funcionarios</div>
+      </ion-title>
+    </ion-toolbar>
   </ion-header>
 
   <ion-content class="ion-padding">

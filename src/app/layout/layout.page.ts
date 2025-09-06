@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonMenu, IonMenuButton, IonIcon, IonSelect, IonSelectOption} from '@ionic/angular/standalone';
@@ -38,6 +38,7 @@ export class LayoutPage implements OnInit {
   version = environment.version;
   filtrosAbiertos = false;
   isHome = false;
+  isMobile = false;
   constructor(private service:PortalService, 
     private moduleService:ModuleService,
     private router: Router,
@@ -50,7 +51,19 @@ export class LayoutPage implements OnInit {
 
   async ngOnInit() {
     console.log("this.isHome: ",this.isHome)
+    await this.checkScreenSize();
     await this.roles()
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkScreenSize();
+  }
+
+  // 🛠️ Método para verificar el tamaño de la pantalla
+  private checkScreenSize() {
+    // 🖥️ Usa window.innerWidth para obtener el ancho actual
+    this.isMobile = window.innerWidth <= 768; // 💡 Define tu punto de quiebre aquí
   }
 
   
