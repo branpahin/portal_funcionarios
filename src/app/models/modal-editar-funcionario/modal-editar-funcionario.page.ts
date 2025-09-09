@@ -26,6 +26,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
   @Input() idColaborador: number|undefined;
   @Input() editar: boolean|undefined;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  idCiudad:number=0
+  idGerencia:number=0
   param:any
   empleadoForm: FormGroup = new FormGroup({});
   imagenSeleccionada: File | null = null;
@@ -43,6 +45,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
   sedes: any[] = [];
   gerencias: any[] = [];
   areas: any[] = [];
+  cco: any[] = [];
   cargos: any[] = [];
   tipoNomnina: any[] = [];
   roles: any[] = [];
@@ -165,15 +168,91 @@ export class ModalEditarFuncionarioPage implements OnInit {
         const idsSeleccionados = data.map((item: any) => item.id);
         this.empleadoForm.get(label)?.setValue(idsSeleccionados);
       } else {
-        if (label === 'RH') {
+         if (label === 'RH') {
           this.empleadoForm.get(label)?.setValue(data.descripcion);
-        } else {
+        } else if(label === 'CIUDAD_TRABAJO'){
+          this.empleadoForm.get(label)?.setValue(data.id);
+          this.idCiudad=data.id
+          this.gerencia(data.id)
+        } else if(label === 'ID_GERENCIA'){
+          this.empleadoForm.get(label)?.setValue(data.id);
+          this.area(this.idCiudad,data.id)
+          this.idGerencia=data.id
+        } else if(label === 'ID_AREA'){
+          this.empleadoForm.get(label)?.setValue(data.id);
+          this.CCO(this.idCiudad,this.idGerencia,data.id)
+        }
+        else {
           this.empleadoForm.get(label)?.setValue(data.id);
         }
       }
     }
 
     this.isModalOpen = false;
+  }
+
+   async gerencia(idCiudad:number){
+    this.UserInteractionService.showLoading('Consultando...');
+    this.service.getGerencias(idCiudad).subscribe({
+        next:async(resp)=>{
+          try{
+            console.log("resp: ",resp)
+            this.gerencias =resp.data.datos.gerencias
+            this.param['gerencias'] = [...this.gerencias];
+            console.log("params: ",this.param)
+            this.UserInteractionService.dismissLoading();
+          }catch(error){
+            console.error("Respuesta Login: ", error)
+            this.UserInteractionService.dismissLoading();
+          }
+        },error:(err)=>{
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err);
+        }
+
+      })
+  }
+
+  async area(idCiudad:number, idGerencia:number){
+    this.UserInteractionService.showLoading('Consultando...');
+    this.service.getAreas(idCiudad, idGerencia).subscribe({
+        next:async(resp)=>{
+          try{
+            console.log("resp: ",resp)
+            this.areas =resp.data.datos.areas
+            this.param['areas'] = [...this.areas];
+            console.log("params: ",this.param)
+            this.UserInteractionService.dismissLoading();
+          }catch(error){
+            console.error("Respuesta Login: ", error)
+            this.UserInteractionService.dismissLoading();
+          }
+        },error:(err)=>{
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err);
+        }
+
+      })
+  }
+
+  async CCO(idCiudad:number, idGerencia:number, idArea:number){
+    this.UserInteractionService.showLoading('Consultando...');
+    this.service.getCCO(idCiudad,idGerencia,idArea).subscribe({
+        next:async(resp)=>{
+          try{
+            console.log("resp: ",resp)
+            this.cco =resp.data.datos.areas
+            this.UserInteractionService.dismissLoading();
+          }catch(error){
+            console.error("Respuesta Login: ", error)
+            this.UserInteractionService.dismissLoading();
+          }
+        },error:(err)=>{
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err);
+        }
+
+      })
   }
   
   async getDataSeleccion(label:string, opcion:any) {
@@ -639,7 +718,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
           key !== 'HIJOS_COLABORADOR_JSON' && 
           key !== 'ID_PROFESION' &&
           key !== 'ID_POSTGRADO' && 
-          key !=='APLICACIONES'
+          key !== 'APLICACIONES'
         ) {
           formData.append(key, this.empleadoForm.value[key]);
         }
@@ -713,7 +792,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
                   nuevoFormData.forEach((valor, clave) => {
                     console.log(`${clave}:`, valor);
                   });
-
+                  
                   await this.enviar(nuevoFormData);
                 } else {
                   console.error("No se pudo convertir la imagen a blob.");

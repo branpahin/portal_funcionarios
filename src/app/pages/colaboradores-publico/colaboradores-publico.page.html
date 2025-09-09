@@ -1,4 +1,4 @@
-<ion-content>
+<ion-content *ngIf="!url">
   <form id="frmLogin" class="ion-padding" [formGroup]="form" (ngSubmit)="buscar(form.value)">
     <div class="login">
       <ion-header color="primary">

@@ -517,6 +517,13 @@
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('ID_RUBRO')"></app-error-mensaje>
         </ion-col>
+        <ion-col size="12" size-md="4">
+          <ion-item (mousedown)="abrirModal('ID_CCO', cco, 'descripcion', false)">
+            <ion-input label="CCO" labelPlacement="floating" [value]="getGeneroDescripcion('ID_CCO', cco) || 'Seleccione...'" readonly></ion-input>
+            <ion-icon name="caret-down-outline" slot="end"></ion-icon>
+          </ion-item>
+          <app-error-mensaje [control]="empleadoForm.get('ID_CCO')"></app-error-mensaje>
+        </ion-col>
       </ion-row>
 
       <!-- Sección 7: Dotación y Nómina -->

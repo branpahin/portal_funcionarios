@@ -16,7 +16,11 @@ export class PortalService {
   private CrearColaboradores = TypeServicio.crearColaboradores
   private consultarColaboradores = TypeServicio.consultarColaboradores
   private consultarColaborador = TypeServicio.consultarColaborador
+  private consultarColaboradorCedula = TypeServicio.consultarColaboradorCedula
   private getInfoColaborador = TypeServicio.getInfoColaborador
+  private getGerencia = TypeServicio.getGerencias
+  private getGetAreas = TypeServicio.getGetAreas
+  private getGetCCO = TypeServicio.getGetCCO
   private ActualizarEstadoColaborador = TypeServicio.ActualizarEstadoColaborador
   private putInfoColaborador = TypeServicio.putInfoColaborador
   private InactivarColaborador = TypeServicio.PutInactivarColaborador
@@ -86,8 +90,24 @@ export class PortalService {
     return this.httpService.GetCore(this.GetAplicativos);
   }
 
+  getGerencias(idGerencia:number): Observable<any>{
+    return this.httpService.GetParamsCore(this.getGerencia+"?id_ciudad="+idGerencia);
+  }
+
+  getAreas(idCiudad:number, idGerencia:number, ): Observable<any>{
+    return this.httpService.GetParamsCore(this.getGetAreas+"?id_ciudad="+idCiudad+"&gerencia="+idGerencia);
+  }
+
+  getCCO(idCiudad:number, idGerencia:number, idArea:number): Observable<any>{
+    return this.httpService.GetParamsCore(this.getGetCCO+"?id_ciudad="+idCiudad+"&id_gerencia="+idGerencia+"&id_area="+idArea);
+  }
+
   getInfoColaboradores(idColaborador:number): Observable<any>{
     return this.httpService.GetParamsCore(this.getInfoColaborador+"?id_colaborador="+idColaborador);
+  }
+
+  getConsultarColaboradorCedula(data: any): Observable<any>{
+    return this.httpService.GetParamsCore(this.consultarColaboradorCedula+"?cedula="+data.cedula);
   }
 
   getUsuariosSistema(id:number): Observable<any>{

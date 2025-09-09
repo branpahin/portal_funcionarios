@@ -27,6 +27,12 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/colaboradores-publico/colaboradores-publico.page').then( m => m.ColaboradoresPublicoPage)
   },
   {
+    path: 'colaboradores-publico/:cedula',
+    loadComponent: () =>
+      import('./pages/colaboradores-publico/colaboradores-publico.page')
+        .then(m => m.ColaboradoresPublicoPage)
+  },
+  {
     path: 'modal-info-colaborador',
     loadComponent: () => import('./models/modal-info-colaborador/modal-info-colaborador.page').then( m => m.ModalInfoColaboradorPage)
   },
