@@ -659,6 +659,6 @@
 
 <ion-footer>
   <ion-toolbar class="btn" color="medium">
-    <ion-button *ngIf="editar && permisosService.puedeGrabar()" style="margin-right: 2%;"  (click)="guardarEmpleado()">Guardar</ion-button>
+    <ion-button *ngIf="editar && permisosService.puedeEditar()" style="margin-right: 2%;"  (click)="guardarEmpleado()">Guardar</ion-button>
   </ion-toolbar>
 </ion-footer>

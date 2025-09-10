@@ -17,6 +17,7 @@ export enum TypeServicio{
     ActualizarEstadoColaborador = 'Colaboradores/ActualizarEstadoColaborador',
     putInfoColaborador = 'Colaboradores/ActualizarColaborador',
     PutInactivarColaborador = 'Colaboradores/InactivarColaborador',
+    PutActivarColaborador = 'Colaboradores/ActivarColaborador',
     getUsuarios ='Usuario/GetListarUsuarios',
     CrearUsuario ='Usuario/CrearUsuario',
     GetInfoUsuario ='Usuario/GetInfoUsuario',

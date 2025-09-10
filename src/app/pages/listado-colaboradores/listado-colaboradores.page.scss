@@ -70,6 +70,7 @@ ion-header{
     display: flex;
     flex-direction: column;
     align-items: center; /* Centrar botones */
+    justify-content: center;
     gap: 10px; /* Espacio entre botones */
   }
 

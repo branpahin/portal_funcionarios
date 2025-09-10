@@ -135,6 +135,7 @@ export class CreacionUsuarioPage implements OnInit {
       },
       error: (err) => {
         console.error("Error al obtener usuarios:", err);
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }
@@ -154,6 +155,7 @@ export class CreacionUsuarioPage implements OnInit {
       },
       error: (err) => {
         console.error("Error al obtener usuarios:", err);
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }
@@ -173,56 +175,59 @@ export class CreacionUsuarioPage implements OnInit {
   }
 
   guardarUsuario(){
-    this.UserInteractionService.showLoading('Guardando...');
-    const formValue = this.empleadoForm.value;
-    const payload = {
-      ...formValue,
-      CIUDAD: String(formValue.CIUDAD.join(',')),
-      ESTADO_PROCESO: formValue.ESTADO_PROCESO.join(','),
-      ROL: String(formValue.ROL.join(',')),
-    };
-    if(!this.editar){
-      this.service.postCrearUsuario(payload).subscribe({
-        next: async (resp) => {
-          try {
-            console.log("Respuesta:", resp);
+    
+    if(this.empleadoForm.valid){
+      this.UserInteractionService.showLoading('Guardando...');
+      const formValue = this.empleadoForm.value;
+      const payload = {
+        ...formValue,
+        CIUDAD: String(formValue.CIUDAD.join(',')),
+        ESTADO_PROCESO: formValue.ESTADO_PROCESO.join(','),
+        ROL: String(formValue.ROL.join(',')),
+      };
+      if(!this.editar){
+        this.service.postCrearUsuario(payload).subscribe({
+          next: async (resp) => {
+            try {
+              console.log("Respuesta:", resp);
+              this.UserInteractionService.dismissLoading()
+              this.UserInteractionService.presentToast('Información guardada',TypeThemeColor.SUCCESS)
+              this.cerrarModal();
+            } catch (error) {
+              console.error("Error al procesar respuesta:", error);
+              this.UserInteractionService.dismissLoading()
+              this.cerrarModal();
+            }
+          },
+          error: (err) => {
+            console.error("Error al enviar formulario:", err);
             this.UserInteractionService.dismissLoading()
-            this.UserInteractionService.presentToast('Información guardada',TypeThemeColor.SUCCESS)
-            this.cerrarModal();
-          } catch (error) {
-            console.error("Error al procesar respuesta:", error);
-            this.UserInteractionService.dismissLoading()
-            this.cerrarModal();
-          }
-        },
-        error: (err) => {
-          console.error("Error al enviar formulario:", err);
-          this.UserInteractionService.dismissLoading()
-          this.UserInteractionService.presentToast(err)
-          this.cerrarModal();
-        }
-      });
-    }else{
-      this.service.putActualizarUsuario(payload).subscribe({
-        next: async (resp) => {
-          try {
-            console.log("Respuesta:", resp);
-            this.UserInteractionService.dismissLoading()
-            this.UserInteractionService.presentToast('Actualización realizada',TypeThemeColor.SUCCESS)
-            this.cerrarModal();
-          } catch (error) {
-            console.error("Error al procesar respuesta:", error);
-            this.UserInteractionService.dismissLoading()
+            this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
             this.cerrarModal();
           }
-        },
-        error: (err) => {
-          console.error("Error al enviar formulario:", err);
-          this.UserInteractionService.dismissLoading()
-          this.UserInteractionService.presentToast(err)
-          this.cerrarModal();
-        }
-      });
+        });
+      }else{
+        this.service.putActualizarUsuario(payload).subscribe({
+          next: async (resp) => {
+            try {
+              console.log("Respuesta:", resp);
+              this.UserInteractionService.dismissLoading()
+              this.UserInteractionService.presentToast('Actualización realizada',TypeThemeColor.SUCCESS)
+              this.cerrarModal();
+            } catch (error) {
+              console.error("Error al procesar respuesta:", error);
+              this.UserInteractionService.dismissLoading()
+              this.cerrarModal();
+            }
+          },
+          error: (err) => {
+            console.error("Error al enviar formulario:", err);
+            this.UserInteractionService.dismissLoading()
+            this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+            this.cerrarModal();
+          }
+        });
+      }
     }
   }
 

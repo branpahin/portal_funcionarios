@@ -78,7 +78,7 @@ export class ListadoUsuariosPage implements OnInit {
       },
       error: (err) =>{
         this.UserInteractionService.dismissLoading()
-        this.UserInteractionService.presentToast(err)
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }

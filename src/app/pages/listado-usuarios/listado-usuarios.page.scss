@@ -74,7 +74,7 @@ ion-header{
     display: flex;
     flex-direction: column;
     align-items: center; /* Centrar botones */
-    gap: 10px; /* Espacio entre botones */
+    justify-content: center;
   }
 
   .pagination {
@@ -160,15 +160,22 @@ ion-header{
     }
   }
 
-  @media (max-width: 924px) {
-    .btn-accion {
-      --padding-start: 10px;
-      --padding-end: 10px;
-      height: 30px;
-    }
-  
+@media (max-width: 924px) {
+  .btn-accion{
+    min-height: 30px;
+    height: 30px;
   }
-
+  .btn-accion::part(native) {
+    min-height: 30px;
+    height: 30px;
+  }
+  .btn-accion ion-icon {
+    font-size: 12px;
+    width: 30px;
+    height: 20px;
+  }
+  .botones_opcion { gap: 0px; }
+}
   @media (max-width: 770px) {
     .table-desktop { display: none; } /* Oculta la tabla en móviles */
     .list-mobile { display: block; }  /* Muestra la lista en móviles */

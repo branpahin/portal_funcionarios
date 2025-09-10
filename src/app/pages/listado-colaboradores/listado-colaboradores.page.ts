@@ -73,7 +73,7 @@ export class ListadoColaboradoresPage implements OnInit {
         }
       },error:(err)=>{
         this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err);
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }
@@ -143,7 +143,7 @@ export class ListadoColaboradoresPage implements OnInit {
       IDENTIFICACION : ['', [Validators.required, Validators.maxLength(50)]],
       NOMBRES : ['', [Validators.required, Validators.maxLength(50)]],
       APELLIDOS : ['', [Validators.required, Validators.maxLength(50)]],
-      GENERO : ['', [Validators.required, Validators.maxLength(1)]],
+      GENERO : ['', Validators.required],
       ID_SEXO : [null,Validators.required],
       ID_ORIENTACION_SEXUAL: [null,Validators.required],
       ID_DISCAPACIDAD:[null,Validators.required],
@@ -165,7 +165,7 @@ export class ListadoColaboradoresPage implements OnInit {
       CIUDAD_TRABAJO : ['', Validators.required],
       ID_SEDE : [null, Validators.required],
       ID_GERENCIA : [null, Validators.required],
-      ID_CCO:[],
+      ID_CCO:[null, Validators.required],
       ID_AREA : [null, Validators.required],
       ID_RUBRO : [null, Validators.required],
       ID_CARGO : [null, Validators.required],
@@ -222,13 +222,45 @@ export class ListadoColaboradoresPage implements OnInit {
   }
 
   async Inactivar(data:any){
+    let action :IAlertAction[] =[
+      {
+        text: 'Cancelar',
+        handler: async () => {
+        }
+      },
+      {
+        text: 'Aceptar',
+        handler: async (d) => {
+          const datos = {
+            IDENTIFICACION: Number(data.identificacion),
+            RESPONSABLE:Number(this.param.identificacion),
+            ID_USUARIO: data.id,
+            OBSERVACION: d.observacion
+          }
+          await this.inactivacionConfirmada(datos);
+          this.UserInteractionService.presentToast('Usuario desactivado',TypeThemeColor.SUCCESS);
+        }
+      }
+    ]
+    this.UserInteractionService.presentAlertActions(
+      '¡Se quiere inactivar el usuario!',
+      action,
+      false,
+      'Notificación',
+      [
+        {
+          name: 'observacion',
+          type: 'textarea', 
+          placeholder: 'Escriba su observación'
+        }
+      ]
+    );
+
+  }
+
+  async inactivacionConfirmada(datos:any){
+    
     this.UserInteractionService.showLoading('Guardando...');
-    const datos = {
-      IDENTIFICACION: Number(data.identificacion),
-      RESPONSABLE:Number(this.param.identificacion),
-      ID_USUARIO: data.id,
-      OBSERVACION: "prueba"
-    }
     this.service.putInactivarUsuario(datos).subscribe({
       next: async (resp) => {
         try {
@@ -244,10 +276,106 @@ export class ListadoColaboradoresPage implements OnInit {
       error: (err) => {
         console.error("Error al enviar formulario:", err);
         this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err);
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
       }
     });
+  }
 
+  async activar(data:any){
+    const actionObservacion: IAlertAction[] = [
+      {
+        text: 'Cancelar',
+        handler: async () => {}
+      },
+      {
+        text: 'Aceptar',
+        handler: async (d) => {
+          const observacion = d.observacion;
+
+          // 👉 ahora lanzamos el segundo alert con los estados
+          await this.mostrarAlertEstados(data, observacion);
+        }
+      }
+    ];
+
+    // Primer alert: observación
+    this.UserInteractionService.presentAlertActions(
+      '¡Se quiere activar el usuario!',
+      actionObservacion,
+      false,
+      'Notificación',
+      [
+        {
+          name: 'observacion',
+          type: 'textarea',
+          placeholder: 'Escriba su observación'
+        }
+      ]
+    );
+  }
+
+  private async mostrarAlertEstados(data: any, observacion: string) {
+    const filtros = this.moduleService.getFiltros();
+    const estados = filtros['estados_Proceso'] || [];
+
+    const alertInputs = estados.map((e: any) => ({
+      label: e.descripcion,
+      type: 'radio',
+      value: e.id
+    }));
+
+    const actionEstados: IAlertAction[] = [
+      {
+        text: 'Cancelar',
+        handler: async () => {}
+      },
+      {
+        text: 'Aceptar',
+        handler: async (d) => {
+          const datos = {
+            IDENTIFICACION: Number(data.identificacion),
+            RESPONSABLE: Number(this.param.identificacion),
+            ID_USUARIO: data.id,
+            OBSERVACION: observacion,
+            ESTADO: d
+          };
+          await this.activacionConfirmada(datos);
+          this.UserInteractionService.presentToast('Usuario activado', TypeThemeColor.SUCCESS);
+        }
+      }
+    ];
+
+    // Segundo alert: selección de estado
+    this.UserInteractionService.presentAlertActions(
+      'Seleccione el estado',
+      actionEstados,
+      false,
+      'Estados',
+      alertInputs
+    );
+  }
+
+  async activacionConfirmada(datos:any){
+    
+    this.UserInteractionService.showLoading('Guardando...');
+    this.service.putActivarColaborador(datos).subscribe({
+      next: async (resp) => {
+        try {
+          console.log("Respuesta:", resp);
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast('Activación realizada', TypeThemeColor.SUCCESS);
+          await this.colaboradores();
+        } catch (error) {
+          console.error("Error al procesar respuesta:", error);
+          this.UserInteractionService.dismissLoading();
+        }
+      },
+      error: (err) => {
+        console.error("Error al enviar formulario:", err);
+        this.UserInteractionService.dismissLoading();
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+      }
+    });
   }
 
     async enviar(identificacion:string){
@@ -318,7 +446,7 @@ export class ListadoColaboradoresPage implements OnInit {
           error: (err) => {
             console.error("Error al enviar formulario:", err);
             this.UserInteractionService.dismissLoading();
-            this.UserInteractionService.presentToast(err);
+            this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
           }
         });
     }

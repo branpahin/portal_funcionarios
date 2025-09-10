@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { PortalService } from 'src/services/portal.service';
 import { ModuleService } from 'src/services/modulos/module.service';
 import { PermisosService } from 'src/services/permisos.service';
+import { UserInteractionService } from 'src/services/user-interaction-service.service';
 
 interface MenuItem {
   name: string
@@ -43,7 +44,8 @@ export class LayoutPage implements OnInit {
     private moduleService:ModuleService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private permisosService:PermisosService
+    private permisosService:PermisosService,
+    private UserInteractionService: UserInteractionService,
   ) {addIcons({ home, people, person, chevronDown, chevronUp, chevronBack, options, filter}); this.params()
   this.router.events.subscribe(() => {
       this.isHome = this.router.url === '/layout/home';
@@ -111,6 +113,7 @@ export class LayoutPage implements OnInit {
       },
       error: (err) => {
         console.error("Error al obtener usuarios:", err);
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }
@@ -136,6 +139,7 @@ export class LayoutPage implements OnInit {
       },
       error: (err) => {
         console.error("Error al obtener usuarios:", err);
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }

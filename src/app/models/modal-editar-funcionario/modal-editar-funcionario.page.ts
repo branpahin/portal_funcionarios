@@ -102,7 +102,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
       CIUDAD_TRABAJO : ['', Validators.required],
       ID_SEDE : [null, Validators.required],
       ID_GERENCIA : [null, Validators.required],
-      ID_CCO:[],
+      ID_CCO:[null, Validators.required],
       ID_AREA : [null, Validators.required],
       ID_RUBRO : [null, Validators.required],
       ID_CARGO : [null, Validators.required],
@@ -207,7 +207,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err);
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -229,7 +229,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err);
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -249,7 +249,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err);
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -326,7 +326,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         }
       },error:(err)=>{
         this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err);
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }
@@ -348,7 +348,10 @@ export class ModalEditarFuncionarioPage implements OnInit {
             }
             datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
             datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
-
+            datos.aplicaciones = this.convertirStringArray(datos.aplicaciones);
+            if(datos.ciudaD_TRABAJO && datos.iD_GERENCIA && datos.iD_AREA){
+              await this.CCO(datos.ciudaD_TRABAJO,datos.iD_GERENCIA, datos.iD_AREA);
+            }
             // Luego aplicas patchValue con las claves en mayúscula si es necesario
             this.empleadoForm.patchValue(this.convertirClavesMayus(datos));
             const hijosFormArray = this.empleadoForm.get('HIJOS_COLABORADOR_JSON') as FormArray;
@@ -405,7 +408,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading()
-          this.UserInteractionService.presentToast(err);
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
       })
     }
@@ -425,7 +428,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         }
       },error:(err)=>{
         this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err);
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }
@@ -730,7 +733,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
       // ID_PROFESION uno por uno
       
-    console.log("DATA: ",this.empleadoForm.value)
     
       const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
       profesionesSeleccionadas.forEach((id: number) => {
@@ -741,12 +743,13 @@ export class ModalEditarFuncionarioPage implements OnInit {
       postgradoSeleccionadas.forEach((id: number) => {
         formData.append('ID_POSTGRADO', id.toString());
       });
-
+      console.log("this.empleadoForm: ",this.empleadoForm.value)
       const aplicacionesSeleccionadas: number[] = this.empleadoForm.get('APLICACIONES')?.value || [];
       aplicacionesSeleccionadas.forEach((id: number) => {
         formData.append('APLICACIONES', id.toString());
       });
-
+      
+    console.log("DATA: ",formData.getAll)
       if (this.imagenSeleccionada) {
         const reader = new FileReader();
         reader.onload = (e: any) => {
@@ -774,13 +777,20 @@ export class ModalEditarFuncionarioPage implements OnInit {
                   const modelo: any = {};
                   formData.forEach((valor, clave) => {
                     if (clave !== 'foto') {
-                      if (modelo[clave]) {
-                        if (!Array.isArray(modelo[clave])) {
-                          modelo[clave] = [modelo[clave]];
+                      if(clave!=='ID_POSTGRADO' && clave!=='ID_PROFESION' && clave!=='APLICACIONES'){
+                        if (modelo[clave]) {
+                          if (!Array.isArray(modelo[clave])) {
+                            modelo[clave] = [modelo[clave]];
+                          }
+                          modelo[clave].push(valor);
+                        } else {
+                          modelo[clave] = valor;
                         }
-                        modelo[clave].push(valor);
-                      } else {
-                        modelo[clave] = valor;
+                      }else{
+                        if (!modelo[clave]) {
+                          modelo[clave] = [];
+                        }
+                        modelo[clave].push(valor.toString());
                       }
                     }
                   });
@@ -813,16 +823,24 @@ export class ModalEditarFuncionarioPage implements OnInit {
         const modelo: any = {};
         formData.forEach((valor, clave) => {
           if (clave !== 'foto') {
-            if (modelo[clave]) {
-              if (!Array.isArray(modelo[clave])) {
-                modelo[clave] = [modelo[clave]];
+            if(clave!=='ID_POSTGRADO' && clave!=='ID_PROFESION' && clave!=='APLICACIONES'){
+              if (modelo[clave]) {
+                if (!Array.isArray(modelo[clave])) {
+                  modelo[clave] = [modelo[clave]];
+                }
+                modelo[clave].push(valor);
+              } else {
+                modelo[clave] = valor;
               }
-              modelo[clave].push(valor);
-            } else {
-              modelo[clave] = valor;
+            }else{
+              if (!modelo[clave]) {
+                modelo[clave] = [];
+              }
+              modelo[clave].push(valor.toString());
             }
           }
         });
+
 
         nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
 
@@ -890,9 +908,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
           }
         },
         error: (err) => {
-          console.error("Error al enviar formulario:", err);
+          console.error("Error al enviar formulario:", err.error.data.error);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err);
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
           this.cerrarModal();
         }
       });
@@ -920,7 +938,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         error: (err) => {
           console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err);
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
           this.cerrarModal();
         }
       });

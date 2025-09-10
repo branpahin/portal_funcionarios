@@ -183,7 +183,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err);
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -205,7 +205,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err);
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -225,7 +225,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err);
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -429,7 +429,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
                   error: (err) => {
                     console.error("Error al enviar formulario:", err);
                     this.UserInteractionService.dismissLoading();
-                    this.UserInteractionService.presentToast(err);
+                    this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
                     this.cerrarModal();
                   }
                 });
@@ -462,7 +462,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
         error: (err) => {
           console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err);
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
           this.cerrarModal();
         }
       });

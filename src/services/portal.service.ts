@@ -24,6 +24,7 @@ export class PortalService {
   private ActualizarEstadoColaborador = TypeServicio.ActualizarEstadoColaborador
   private putInfoColaborador = TypeServicio.putInfoColaborador
   private InactivarColaborador = TypeServicio.PutInactivarColaborador
+  private ActivarColaborador = TypeServicio.PutActivarColaborador
   private getUsuarios =TypeServicio.getUsuarios
   private CrearUsuario =TypeServicio.CrearUsuario
   private GetUsuarioSistema =TypeServicio.GetInfoUsuario
@@ -148,6 +149,10 @@ export class PortalService {
 
   putInactivarUsuario(data: any): Observable<any>{
     return this.httpService.PutJsonCore(data,this.InactivarColaborador);
+  }
+
+  putActivarColaborador(data: any): Observable<any>{
+    return this.httpService.PutJsonCore(data,this.ActivarColaborador);
   }
 
   putActualizarUsuario(data: any): Observable<any>{

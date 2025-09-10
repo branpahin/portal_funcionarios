@@ -4,7 +4,7 @@
     <ion-title>
       <div class="responsive-title">Actualización de Filtros - {{tipoFiltro}}</div>
     </ion-title>
-    <ion-button *ngIf="permisosService.puedeEditar()" color="success" (click)="abrirModalEditar(tipoFiltro, false)" slot="end" shape="round"><ion-icon name="add"></ion-icon> 
+    <ion-button *ngIf="permisosService.puedeGrabar()" color="success" (click)="abrirModalEditar(tipoFiltro, false)" slot="end" shape="round"><ion-icon name="add"></ion-icon> 
       <span class="texto-boton">Registrar Colaborador</span>
     </ion-button>
   </ion-toolbar>

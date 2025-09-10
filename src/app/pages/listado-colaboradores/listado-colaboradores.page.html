@@ -4,7 +4,7 @@
     <ion-title>
       <div class="responsive-title">Listado Colaboradores</div>
     </ion-title>
-    <ion-button *ngIf="permisosService.puedeEditar()" color="success" (click)="abrirModalCrearFuncionario()" slot="end" shape="round"><ion-icon name="add"></ion-icon> 
+    <ion-button *ngIf="permisosService.puedeGrabar()" color="success" (click)="abrirModalCrearFuncionario()" slot="end" shape="round"><ion-icon name="add"></ion-icon> 
       <span class="texto-boton">Registrar Colaborador</span>
     </ion-button>
   </ion-toolbar>
@@ -77,9 +77,10 @@
         <ion-col>{{datos.estadO_PROCESO}}</ion-col>
         <ion-col> 
           <ion-button *ngIf="permisosService.puedeEditar() && [1,3,5,7].includes(datos.estado)" class="btn-accion" color="medium" (click)="abrirModalEditarFuncionario(datos.id,true)"><ion-icon name="pencil"></ion-icon></ion-button>
-          <ion-button *ngIf="permisosService.puedeGrabar() && datos.estado!=1 && datos.estado!=3 && datos.estado!=5 && datos.estado!=7" class="btn-accion" color="medium" (click)="enviar(datos.identificacion)"><ion-icon name="checkmark-circle-outline"></ion-icon></ion-button>
+          <ion-button *ngIf="permisosService.puedeEditar() && datos.estado!=1 && datos.estado!=3 && datos.estado!=5 && datos.estado!=7 && datos.estado!=8" class="btn-accion" color="medium" (click)="enviar(datos.identificacion)"><ion-icon name="checkmark-circle-outline"></ion-icon></ion-button>
           <ion-button *ngIf="permisosService.puedeConsultar()" class="btn-accion" color="success" (click)="abrirModalEditarFuncionario(datos.id,false)"><ion-icon name="eye"></ion-icon></ion-button>
-          <ion-button *ngIf="permisosService.puedeBorrar()" class="btn-accion" color="danger" (click)="Inactivar(datos)"><ion-icon name="close"></ion-icon></ion-button>
+          <ion-button *ngIf="permisosService.puedeBorrar() && datos.estado!=8" class="btn-accion" color="danger" (click)="Inactivar(datos)"><ion-icon name="close"></ion-icon></ion-button>
+          <ion-button *ngIf="permisosService.puedeEditar() && datos.estado==8" class="btn-accion" color="primary" (click)="activar(datos)"><ion-icon name="checkmark-donde-circle-outline"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -110,9 +111,10 @@
         <ion-item-options side="end" >
           <div class="botones_opcion">
             <ion-button *ngIf="permisosService.puedeEditar() && [1,3,5,7].includes(datos.estado)" class="btn-accion" color="medium" (click)="abrirModalEditarFuncionario(datos.id,true)"><ion-icon name="pencil"></ion-icon></ion-button>
-            <ion-button *ngIf="permisosService.puedeGrabar() && datos.estado!=1 && datos.estado!=3 && datos.estado!=5 && datos.estado!=7" class="btn-accion" color="medium" (click)="enviar(datos.identificacion)"><ion-icon name="checkmark-circle-outline"></ion-icon></ion-button>
+            <ion-button *ngIf="permisosService.puedeEditar() && datos.estado!=1 && datos.estado!=3 && datos.estado!=5 && datos.estado!=7" class="btn-accion" color="medium" (click)="enviar(datos.identificacion)"><ion-icon name="checkmark-circle-outline"></ion-icon></ion-button>
             <ion-button *ngIf="permisosService.puedeConsultar()" class="btn-accion" color="success" (click)="abrirModalEditarFuncionario(datos.id,false)"><ion-icon name="eye"></ion-icon></ion-button>
-            <ion-button *ngIf="permisosService.puedeBorrar()" class="btn-accion" color="danger"><ion-icon name="close"></ion-icon></ion-button>
+            <ion-button *ngIf="permisosService.puedeBorrar()" class="btn-accion" color="danger" (click)="Inactivar(datos)" ><ion-icon name="close"></ion-icon></ion-button>
+            <ion-button *ngIf="permisosService.puedeEditar() && datos.estado==8" class="btn-accion" color="primary" (click)="activar(datos)"><ion-icon name="checkmark-donde-circle-outline"></ion-icon></ion-button>
           </div>
         </ion-item-options>
       </ion-item-sliding>
