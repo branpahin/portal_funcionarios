@@ -30,6 +30,7 @@ interface MenuItem {
 })
 export class LayoutPage implements OnInit {
   menuItems: MenuItem[] = []
+  funcionarios:any[]=[];
   param:any;
   filtros:any;
   filtroKeys:any;
@@ -66,6 +67,27 @@ export class LayoutPage implements OnInit {
   private checkScreenSize() {
     // 🖥️ Usa window.innerWidth para obtener el ancho actual
     this.isMobile = window.innerWidth <= 768; // 💡 Define tu punto de quiebre aquí
+  }
+
+  async colaboradores() {
+    
+    this.UserInteractionService.showLoading('Cargando...');
+    this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
+    this.service.getColaboradores(this.param.estado_Proceso,this.param.ciudad).subscribe({
+      next:async(resp)=>{
+        try{
+          console.log("Respuesta Colaboradores: ", resp)
+          this.UserInteractionService.dismissLoading();
+          this.funcionarios=resp.data.datos.listadoColaboradores
+        }catch(error){
+          console.error("Respuesta: ", error)
+          this.UserInteractionService.dismissLoading();
+        }
+      },error:(err)=>{
+        this.UserInteractionService.dismissLoading();
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+      }
+    })
   }
 
   
@@ -133,6 +155,13 @@ export class LayoutPage implements OnInit {
             permisos: item.permisos
           }));
 
+          const colaboradoresItem = this.menuItems.find(
+            (item) => item.href === '/layout/listado-colaboradores'
+          );
+
+          if (colaboradoresItem) {
+            await this.colaboradores();
+          }
         } catch (error) {
           console.error("Error en listarUsuarios:", error);
         }

@@ -40,6 +40,13 @@
             <ion-label class="text-base">
               {{ item.name }}
             </ion-label>
+            <div slot="end">
+              <ion-note *ngIf="item.href=='/layout/listado-colaboradores' && funcionarios.length > 0" 
+                class="notification-badge" >
+                {{funcionarios.length}}
+              </ion-note>
+            </div>
+
           </ion-item>
         </ion-menu-toggle>
         <ion-item class="cursor-custom"
