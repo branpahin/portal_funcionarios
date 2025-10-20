@@ -73,21 +73,39 @@ export class LayoutPage implements OnInit {
     
     this.UserInteractionService.showLoading('Cargando...');
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
-    this.service.getColaboradores(this.param.estado_Proceso,this.param.ciudad).subscribe({
-      next:async(resp)=>{
-        try{
-          console.log("Respuesta Colaboradores: ", resp)
+    if(this.rolSeleccionado==2){
+      this.service.getColaboradoresInterventor(this.rolSeleccionado).subscribe({
+        next:async(resp)=>{
+          try{
+            console.log("Respuesta Colaboradores: ", resp)
+            this.UserInteractionService.dismissLoading();
+            this.funcionarios=resp.data.datos.listadoColaboradores
+          }catch(error){
+            console.error("Respuesta: ", error)
+            this.UserInteractionService.dismissLoading();
+          }
+        },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.funcionarios=resp.data.datos.listadoColaboradores
-        }catch(error){
-          console.error("Respuesta: ", error)
-          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
-      },error:(err)=>{
-        this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
-      }
-    })
+      })
+    }else{
+      this.service.getColaboradores(this.param.estado_Proceso,this.param.ciudad).subscribe({
+        next:async(resp)=>{
+          try{
+            console.log("Respuesta Colaboradores: ", resp)
+            this.UserInteractionService.dismissLoading();
+            this.funcionarios=resp.data.datos.listadoColaboradores
+          }catch(error){
+            console.error("Respuesta: ", error)
+            this.UserInteractionService.dismissLoading();
+          }
+        },error:(err)=>{
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        }
+      })
+    }
   }
 
   
@@ -147,6 +165,7 @@ export class LayoutPage implements OnInit {
           
           console.log("resp: ",data)
           const resp=data.data.menus
+          localStorage.setItem('rolSeleccionado',String(rol));
           this.menuItems = resp.map((item: any) => ({
             name: item.descripcion,
             href: item.controlador,
@@ -154,7 +173,7 @@ export class LayoutPage implements OnInit {
             accion: item.accion,
             permisos: item.permisos
           }));
-
+          await this.router.navigate(['/layout/home']);
           const colaboradoresItem = this.menuItems.find(
             (item) => item.href === '/layout/listado-colaboradores'
           );

@@ -71,59 +71,113 @@ export class ModalEditarFuncionarioPage implements OnInit {
     private service:PortalService, private modalCtrl: ModalController, private UserInteractionService: UserInteractionService,
     public permisosService: PermisosService
   ) { 
-    addIcons({ pencil, eye, close, add}); 
-    this.empleadoForm = this.fb.group({
-      ID: [0, Validators.required],
-      TIPO_IDENTIFICACION : [null, [Validators.required, Validators.maxLength(50)]],
-      IDENTIFICACION : ['', [Validators.required, Validators.maxLength(50)]],
-      NOMBRES : ['', [Validators.required, Validators.maxLength(50)]],
-      APELLIDOS : ['', [Validators.required, Validators.maxLength(50)]],
-      GENERO : ['', Validators.required],
-      ID_SEXO : [null, Validators.required],
-      ID_ORIENTACION_SEXUAL: [null, Validators.required],
-      ID_DISCAPACIDAD:[null, Validators.required],
-      ID_RAZA: ['', Validators.required],
-      RH : ['', [Validators.required, Validators.maxLength(3)]],
-      FECHA_NACIMIENTO : ['', Validators.required],
-      ID_NIVEL_EDUCATIVO : [null, Validators.required],
-      ID_PROFESION : [[]],
-      ID_PROFESION_ESCOGIDA: [''],
-      ENTIDAD_PREGRADO: ['', Validators.required],
-      ID_POSTGRADO: [[]],
-      ID_POSTGRADO_ESCOGIDA: [''],
-      TELEFONO_CELULAR : ['', [Validators.required, Validators.maxLength(11)]],
-      CIUDAD_RESIDENCIA : ['', [Validators.required, Validators.maxLength(50)]],
-      DIRECCION_RESIDENCIA : ['', [Validators.required, Validators.maxLength(100)]],
-      TIENE_HIJOS : [, [Validators.required, Validators.maxLength(1)]],
-      NOMBRE_CONTACTO : ['', [Validators.required, Validators.maxLength(100)]],
-      TELEFONO_CONTACTO: ['', [Validators.required, Validators.maxLength(11)]],
-      FECHA_INGRESO : ['', Validators.required],
-      ID_EMPRESA : [, Validators.required],
-      CIUDAD_TRABAJO : ['', Validators.required],
-      ID_SEDE : [null, Validators.required],
-      ID_GERENCIA : [null, Validators.required],
-      ID_CCO:[null, Validators.required],
-      ID_AREA : [null, Validators.required],
-      ID_RUBRO : [null, Validators.required],
-      ID_CARGO : [null, Validators.required],
-      ID_TIPO_NOMINA : [null, Validators.required],
-      ID_ROL : [null, Validators.required],
-      ID_TIPO_DOTACION : [null, Validators.required],
-      ID_NIVEL_DOTACION : [null, Validators.required],
-      ENTIDAD_POSTGRADO: [''],
-      CORREO_PERSONAL : ['', [Validators.required, Validators.email]],
-      CORREO_CORPORATIVO: ['', Validators.required],
-      PAZ_SALVO_ACTIVOS: ['', Validators.required],
-      ENTREGA_TARJETA_INGRESO: ['', Validators.required],
-      CAMBIO_CARGO: ['', Validators.required],
-      FECHA_ACTUALIZACION: ['', Validators.required],
-      ESTADO: [],
-      ARL : ['', Validators.required],
-      ID_ESTADO_CIVIL : [null, Validators.required],
-      ID_JEFE : [null, Validators.required],
-      APLICACIONES : [null,Validators.required],
-      HIJOS_COLABORADOR_JSON: this.fb.array([]) // Para agregar hijos dinámicamente
-    });
+    addIcons({ pencil, eye, close, add});
+    this.formulario();
+  }
+
+  formulario(){
+    const rol =  Number(localStorage.getItem('rolSeleccionado'));
+    if(rol == 2){
+      this.empleadoForm = this.fb.group({
+        ID: [0, Validators.required],
+        TIPO_IDENTIFICACION : [null, [Validators.required, Validators.maxLength(50)]],
+        IDENTIFICACION : ['', [Validators.required, Validators.maxLength(50)]],
+        NOMBRES : ['', [Validators.required, Validators.maxLength(50)]],
+        APELLIDOS : ['', [Validators.required, Validators.maxLength(50)]],
+        GENERO : ['', Validators.required],
+        // ID_SEXO : [null,Validators.required],
+        // ID_ORIENTACION_SEXUAL: [null,Validators.required],
+        // ID_DISCAPACIDAD:[null,Validators.required],
+        // ID_RAZA: ['', Validators.required],
+        RH : ['', [Validators.required, Validators.maxLength(3)]],
+        FECHA_NACIMIENTO : ['', Validators.required],
+        ID_NIVEL_EDUCATIVO : [null, Validators.required],
+        // ID_PROFESION : [[],Validators.required],
+        // ENTIDAD_PREGRADO: ['',Validators.required],
+        // ID_POSTGRADO: [[]],
+        TELEFONO_CELULAR : ['', [Validators.required, Validators.maxLength(11)]],
+        CIUDAD_RESIDENCIA : ['', [Validators.required, Validators.maxLength(50)]],
+        DIRECCION_RESIDENCIA : ['', [Validators.required, Validators.maxLength(100)]],
+        TIENE_HIJOS : [, [Validators.required, Validators.maxLength(1)]],
+        // NOMBRE_CONTACTO : ['', [Validators.required, Validators.maxLength(100)]],
+        // TELEFONO_CONTACTO: ['', [Validators.required, Validators.maxLength(11)]],
+        // FECHA_INGRESO : ['', Validators.required],
+        ID_EMPRESA : [null, Validators.required],
+        CIUDAD_TRABAJO : ['', Validators.required],
+        ID_SEDE : [null, Validators.required],
+        ID_GERENCIA : [null, Validators.required],
+        // ID_CCO:[null, Validators.required],
+        // ID_AREA : [null, Validators.required],
+        // ID_RUBRO : [null, Validators.required],
+        ID_CARGO : [null, Validators.required],
+        // ID_TIPO_NOMINA : [null, Validators.required],
+        // ID_ROL : [null, Validators.required],
+        // ID_TIPO_DOTACION : [null, Validators.required],
+        // ID_NIVEL_DOTACION : [null, Validators.required],
+        // ENTIDAD_POSTGRADO: [''],
+        CORREO_PERSONAL : ['', [Validators.required, Validators.email]],
+        CORREO_CORPORATIVO: ['', Validators.email],
+        FECHA_ACTUALIZACION: ['', Validators.required],
+        ESTADO: [],
+        ARL : ['', Validators.required],
+        ID_ESTADO_CIVIL : [null, Validators.required],
+        // ID_JEFE : [null, Validators.required],
+        // HIJOS_COLABORADOR_JSON: this.fb.array([]) // Para agregar hijos dinámicamente
+      });
+    }else{
+      this.empleadoForm = this.fb.group({
+        ID: [0, Validators.required],
+        TIPO_IDENTIFICACION : [null, [Validators.required, Validators.maxLength(50)]],
+        IDENTIFICACION : ['', [Validators.required, Validators.maxLength(50)]],
+        NOMBRES : ['', [Validators.required, Validators.maxLength(50)]],
+        APELLIDOS : ['', [Validators.required, Validators.maxLength(50)]],
+        GENERO : ['', Validators.required],
+        ID_SEXO : [null, Validators.required],
+        ID_ORIENTACION_SEXUAL: [null, Validators.required],
+        ID_DISCAPACIDAD:[null, Validators.required],
+        ID_RAZA: ['', Validators.required],
+        RH : ['', [Validators.required, Validators.maxLength(3)]],
+        FECHA_NACIMIENTO : ['', Validators.required],
+        ID_NIVEL_EDUCATIVO : [null, Validators.required],
+        ID_PROFESION : [[]],
+        ID_PROFESION_ESCOGIDA: [''],
+        ENTIDAD_PREGRADO: ['', Validators.required],
+        ID_POSTGRADO: [[]],
+        ID_POSTGRADO_ESCOGIDA: [''],
+        TELEFONO_CELULAR : ['', [Validators.required, Validators.maxLength(11)]],
+        CIUDAD_RESIDENCIA : ['', [Validators.required, Validators.maxLength(50)]],
+        DIRECCION_RESIDENCIA : ['', [Validators.required, Validators.maxLength(100)]],
+        TIENE_HIJOS : [, [Validators.required, Validators.maxLength(1)]],
+        NOMBRE_CONTACTO : ['', [Validators.required, Validators.maxLength(100)]],
+        TELEFONO_CONTACTO: ['', [Validators.required, Validators.maxLength(11)]],
+        FECHA_INGRESO : ['', Validators.required],
+        ID_EMPRESA : [, Validators.required],
+        CIUDAD_TRABAJO : ['', Validators.required],
+        ID_SEDE : [null, Validators.required],
+        ID_GERENCIA : [null, Validators.required],
+        ID_CCO:[null, Validators.required],
+        ID_AREA : [null, Validators.required],
+        ID_RUBRO : [null, Validators.required],
+        ID_CARGO : [null, Validators.required],
+        ID_TIPO_NOMINA : [null, Validators.required],
+        ID_ROL : [null, Validators.required],
+        ID_TIPO_DOTACION : [null, Validators.required],
+        ID_NIVEL_DOTACION : [null, Validators.required],
+        ENTIDAD_POSTGRADO: [''],
+        CORREO_PERSONAL : ['', [Validators.required, Validators.email]],
+        CORREO_CORPORATIVO: ['', Validators.required],
+        PAZ_SALVO_ACTIVOS: ['', Validators.required],
+        ENTREGA_TARJETA_INGRESO: ['', Validators.required],
+        CAMBIO_CARGO: ['', Validators.required],
+        FECHA_ACTUALIZACION: ['', Validators.required],
+        ESTADO: [],
+        ARL : ['', Validators.required],
+        ID_ESTADO_CIVIL : [null, Validators.required],
+        ID_JEFE : [null, Validators.required],
+        APLICACIONES : [null,Validators.required],
+        HIJOS_COLABORADOR_JSON: this.fb.array([]) // Para agregar hijos dinámicamente
+      });
+    }
   }
 
   convertirClavesMayus(obj: any): any {
@@ -334,83 +388,164 @@ export class ModalEditarFuncionarioPage implements OnInit {
   async colaboradores() {
     if(this.idColaborador){
       this.UserInteractionService.showLoading('Cargando...');
-      this.service.getInfoColaboradores(this.idColaborador).subscribe({
-        next:async(resp)=>{
-          try{
-            console.log("datos: ",resp.data.datos)
+      const rol = Number(localStorage.getItem('rolSeleccionado'));
+      if(rol == 2){
+        this.service.getInfoColaboradoresInterventor(this.idColaborador).subscribe({
+          next:async(resp)=>{
+            try{
+              console.log("datos: ",resp.data.datos)
 
-            // Llena el FormArray de hijos
-            const datos = resp.data.datos;
-            await this.consultaEstados(Number(datos.estado))
-            if(datos.foto){
-              console.log("entro")
-              this.imagenPreview = `data:image/png;base64,${datos.foto}`;
-            }
-            datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
-            datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
-            datos.aplicaciones = this.convertirStringArray(datos.aplicaciones);
-            if(datos.ciudaD_TRABAJO && datos.iD_GERENCIA && datos.iD_AREA){
-              await this.CCO(datos.ciudaD_TRABAJO,datos.iD_GERENCIA, datos.iD_AREA);
-            }
-            // Luego aplicas patchValue con las claves en mayúscula si es necesario
-            this.empleadoForm.patchValue(this.convertirClavesMayus(datos));
-            const hijosFormArray = this.empleadoForm.get('HIJOS_COLABORADOR_JSON') as FormArray;
-            hijosFormArray.clear();
-
-            (resp.data.datos.hijoS_COLABORADOR || []).forEach((hijo: any) => {
-              const hijoFormGroup = this.fb.group({
-                ID: [hijo.id],
-                ID_COLABORADOR: [hijo.iD_COLABORADOR],
-                NOMBRE_COMPLETO: [hijo.nombrE_COMPLETO],
-                EDAD: [hijo.edad],
-                FECHA_NACIMIENTO: [hijo.fechA_NACIMIENTO],
-                GENERO: [hijo.genero],
-                RH: [hijo.rh],
-                AñO_NACIMIENTO: [hijo.anO_NACIMIENTO],
-                MES_NACIMIENTO: [hijo.meS_NACIMIENTO],
-                DIA_NACIMIENTO: [hijo.diA_NACIMIENTO],
-                DOCUMENTO: [hijo.documento],
-                ID_TP_DOCUMENTO: [hijo.iD_TP_DOCUMENTO],
-              });
-
-              // ✅ Deshabilitar todo el grupo hijo
-              hijoFormGroup.disable();
-
-              hijosFormArray.push(hijoFormGroup);
-            });
-
-            // ✅ Mostrar formulario completo (incluye campos deshabilitados)
-            console.log("form2 (raw): ", this.empleadoForm.getRawValue());
-
-            // Obtener claves de hijos (opcional)
-            const clavesHijos = Object.keys(hijosFormArray.controls[0]?.value || {});
-
-            // ✅ Usa getRawValue() también aquí si necesitas recorrer el formulario completo
-            const formCompleto = this.empleadoForm.getRawValue();
-            Object.keys(formCompleto).forEach((key) => {
-              if (key !== 'HIJOS_COLABORADOR_JSON') {
-                console.log("raza: ",key)
-                this.selec(key, 'idPadre');
+              // Llena el FormArray de hijos
+              const datos = resp.data.datos;
+              await this.consultaEstados(Number(datos.estado))
+              if(datos.foto){
+                console.log("entro")
+                this.imagenPreview = `data:image/png;base64,${datos.foto}`;
               }
-            });
+              datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
+              datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
+              datos.aplicaciones = this.convertirStringArray(datos.aplicaciones);
+              if(datos.ciudaD_TRABAJO && datos.iD_GERENCIA && datos.iD_AREA){
+                await this.CCO(datos.ciudaD_TRABAJO,datos.iD_GERENCIA, datos.iD_AREA);
+              }
+              // Luego aplicas patchValue con las claves en mayúscula si es necesario
+              this.empleadoForm.patchValue(this.convertirClavesMayus(datos));
+              const hijosFormArray = this.empleadoForm.get('HIJOS_COLABORADOR_JSON') as FormArray;
+              hijosFormArray.clear();
 
-            // Recorrer hijos normalmente
-            for (let hijo of formCompleto.HIJOS_COLABORADOR_JSON || []) {
-              Object.keys(hijo).forEach((key) => {
-                this.selec(key);
+              (resp.data.datos.hijoS_COLABORADOR || []).forEach((hijo: any) => {
+                const hijoFormGroup = this.fb.group({
+                  ID: [hijo.id],
+                  ID_COLABORADOR: [hijo.iD_COLABORADOR],
+                  NOMBRE_COMPLETO: [hijo.nombrE_COMPLETO],
+                  EDAD: [hijo.edad],
+                  FECHA_NACIMIENTO: [hijo.fechA_NACIMIENTO],
+                  GENERO: [hijo.genero],
+                  RH: [hijo.rh],
+                  AñO_NACIMIENTO: [hijo.anO_NACIMIENTO],
+                  MES_NACIMIENTO: [hijo.meS_NACIMIENTO],
+                  DIA_NACIMIENTO: [hijo.diA_NACIMIENTO],
+                  DOCUMENTO: [hijo.documento],
+                  ID_TP_DOCUMENTO: [hijo.iD_TP_DOCUMENTO],
+                });
+
+                // ✅ Deshabilitar todo el grupo hijo
+                hijoFormGroup.disable();
+
+                hijosFormArray.push(hijoFormGroup);
               });
-            }
-            this.UserInteractionService.dismissLoading()
 
-          }catch(error){
-            console.error("Respuesta Login: ", error)
+              // ✅ Mostrar formulario completo (incluye campos deshabilitados)
+              console.log("form2 (raw): ", this.empleadoForm.getRawValue());
+
+              // Obtener claves de hijos (opcional)
+              const clavesHijos = Object.keys(hijosFormArray.controls[0]?.value || {});
+
+              // ✅ Usa getRawValue() también aquí si necesitas recorrer el formulario completo
+              const formCompleto = this.empleadoForm.getRawValue();
+              Object.keys(formCompleto).forEach((key) => {
+                if (key !== 'HIJOS_COLABORADOR_JSON') {
+                  console.log("raza: ",key)
+                  this.selec(key, 'idPadre');
+                }
+              });
+
+              // Recorrer hijos normalmente
+              for (let hijo of formCompleto.HIJOS_COLABORADOR_JSON || []) {
+                Object.keys(hijo).forEach((key) => {
+                  this.selec(key);
+                });
+              }
+              this.UserInteractionService.dismissLoading()
+
+            }catch(error){
+              console.error("Respuesta Login: ", error)
+              this.UserInteractionService.dismissLoading()
+            }
+          },error:(err)=>{
             this.UserInteractionService.dismissLoading()
+            this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
           }
-        },error:(err)=>{
-          this.UserInteractionService.dismissLoading()
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
-        }
-      })
+        })
+      }else{
+        this.service.getInfoColaboradores(this.idColaborador).subscribe({
+          next:async(resp)=>{
+            try{
+              console.log("datos: ",resp.data.datos)
+
+              // Llena el FormArray de hijos
+              const datos = resp.data.datos;
+              await this.consultaEstados(Number(datos.estado))
+              if(datos.foto){
+                console.log("entro")
+                this.imagenPreview = `data:image/png;base64,${datos.foto}`;
+              }
+              datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
+              datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
+              datos.aplicaciones = this.convertirStringArray(datos.aplicaciones);
+              if(datos.ciudaD_TRABAJO && datos.iD_GERENCIA && datos.iD_AREA){
+                await this.CCO(datos.ciudaD_TRABAJO,datos.iD_GERENCIA, datos.iD_AREA);
+              }
+              // Luego aplicas patchValue con las claves en mayúscula si es necesario
+              this.empleadoForm.patchValue(this.convertirClavesMayus(datos));
+              const hijosFormArray = this.empleadoForm.get('HIJOS_COLABORADOR_JSON') as FormArray;
+              hijosFormArray.clear();
+
+              (resp.data.datos.hijoS_COLABORADOR || []).forEach((hijo: any) => {
+                const hijoFormGroup = this.fb.group({
+                  ID: [hijo.id],
+                  ID_COLABORADOR: [hijo.iD_COLABORADOR],
+                  NOMBRE_COMPLETO: [hijo.nombrE_COMPLETO],
+                  EDAD: [hijo.edad],
+                  FECHA_NACIMIENTO: [hijo.fechA_NACIMIENTO],
+                  GENERO: [hijo.genero],
+                  RH: [hijo.rh],
+                  AñO_NACIMIENTO: [hijo.anO_NACIMIENTO],
+                  MES_NACIMIENTO: [hijo.meS_NACIMIENTO],
+                  DIA_NACIMIENTO: [hijo.diA_NACIMIENTO],
+                  DOCUMENTO: [hijo.documento],
+                  ID_TP_DOCUMENTO: [hijo.iD_TP_DOCUMENTO],
+                });
+
+                // ✅ Deshabilitar todo el grupo hijo
+                hijoFormGroup.disable();
+
+                hijosFormArray.push(hijoFormGroup);
+              });
+
+              // ✅ Mostrar formulario completo (incluye campos deshabilitados)
+              console.log("form2 (raw): ", this.empleadoForm.getRawValue());
+
+              // Obtener claves de hijos (opcional)
+              const clavesHijos = Object.keys(hijosFormArray.controls[0]?.value || {});
+
+              // ✅ Usa getRawValue() también aquí si necesitas recorrer el formulario completo
+              const formCompleto = this.empleadoForm.getRawValue();
+              Object.keys(formCompleto).forEach((key) => {
+                if (key !== 'HIJOS_COLABORADOR_JSON') {
+                  console.log("raza: ",key)
+                  this.selec(key, 'idPadre');
+                }
+              });
+
+              // Recorrer hijos normalmente
+              for (let hijo of formCompleto.HIJOS_COLABORADOR_JSON || []) {
+                Object.keys(hijo).forEach((key) => {
+                  this.selec(key);
+                });
+              }
+              this.UserInteractionService.dismissLoading()
+
+            }catch(error){
+              console.error("Respuesta Login: ", error)
+              this.UserInteractionService.dismissLoading()
+            }
+          },error:(err)=>{
+            this.UserInteractionService.dismissLoading()
+            this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          }
+        })
+      }
     }
   }
 
@@ -434,6 +569,11 @@ export class ModalEditarFuncionarioPage implements OnInit {
   }
 
   getCampoConfig(nombreCampo: string) {
+    const existeControl = this.empleadoForm.get(nombreCampo);
+    if (!existeControl) {
+      // Si no existe, no intentamos remover ni deshabilitar nada
+      return { visible: false, editable: false, required: false };
+    }
     const campo = this.camposConfig.find(
       c => c.campo.toLowerCase() === nombreCampo.toLowerCase()
     );

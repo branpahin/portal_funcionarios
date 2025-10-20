@@ -13,11 +13,14 @@ export class PortalService {
   private login = TypeServicio.login
   private camposFiltro = TypeServicio.camposFiltro
   private colaboradores = TypeServicio.colaboradores
+  private colaboradoresInterventor = TypeServicio.colaboradoresInterventor
   private CrearColaboradores = TypeServicio.crearColaboradores
+  private crearColaboradoresInterv = TypeServicio.crearColaboradoresInterv
   private consultarColaboradores = TypeServicio.consultarColaboradores
   private consultarColaborador = TypeServicio.consultarColaborador
   private consultarColaboradorCedula = TypeServicio.consultarColaboradorCedula
   private getInfoColaborador = TypeServicio.getInfoColaborador
+  private getInfoColaboradorIntenventor = TypeServicio.getInfoColaboradorIntenventor
   private getGerencia = TypeServicio.getGerencias
   private getGetAreas = TypeServicio.getGetAreas
   private getGetCCO = TypeServicio.getGetCCO
@@ -67,6 +70,10 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.colaboradores);
   }
 
+  getColaboradoresInterventor(idRol:number): Observable<any>{
+    return this.httpService.GetParamsCore(this.colaboradoresInterventor+"?idRol="+idRol);
+  }
+
   getCamposEstado(estado:number): Observable<any>{
     return this.httpService.GetParamsCore(this.GetCamposEstado+"?estado="+estado);
   }
@@ -107,6 +114,10 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.getInfoColaborador+"?id_colaborador="+idColaborador);
   }
 
+  getInfoColaboradoresInterventor(idColaborador:number): Observable<any>{
+    return this.httpService.GetParamsCore(this.getInfoColaboradorIntenventor+"?id_colaborador="+idColaborador);
+  }
+
   getConsultarColaboradorCedula(data: any): Observable<any>{
     return this.httpService.GetParamsCore(this.consultarColaboradorCedula+"?cedula="+data.cedula);
   }
@@ -117,6 +128,10 @@ export class PortalService {
 
   postCrearColaborador(data: any): Observable<any>{
     return this.httpService.PostFormDataCore(data,this.CrearColaboradores);
+  }
+
+  postCrearColaboradorInterventor(data: any): Observable<any>{
+    return this.httpService.PostFormDataCore(data,this.crearColaboradoresInterv);
   }
 
   postConsultarColaborador(data: any): Observable<any>{

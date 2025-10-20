@@ -37,7 +37,7 @@
         <!-- Columna de datos -->
         <ion-col size="12" size-md="8">
           <ion-row>
-            <ion-col size="12" size-md="6">
+            <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('TIPO_IDENTIFICACION')">
               <ion-item (mousedown)="abrirModal('TIPO_IDENTIFICACION', tipoDocumento, 'descripcion', false)">
                 <ion-input label="Tipo Documento" labelPlacement="floating" 
                   [value]="getGeneroDescripcion('TIPO_IDENTIFICACION', tipoDocumento) || 'Seleccione...'" readonly>
@@ -47,7 +47,7 @@
               <app-error-mensaje [control]="empleadoForm.get('TIPO_IDENTIFICACION')"></app-error-mensaje>
             </ion-col>
 
-            <ion-col size="12" size-md="6">
+            <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('IDENTIFICACION')">
               <ion-item>
                 <ion-input label="Número de Identificación" labelPlacement="floating" formControlName="IDENTIFICACION"></ion-input>
               </ion-item>
@@ -56,7 +56,7 @@
           </ion-row>
 
           <ion-row>
-            <ion-col size="12" size-md="6">
+            <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('NOMBRES')">
               <ion-item>
                 <ion-input label="Nombres" labelPlacement="floating" formControlName="NOMBRES"></ion-input>
               </ion-item>
@@ -72,7 +72,7 @@
           </ion-row>
 
           <ion-row>
-            <ion-col size="12" size-md="6">
+            <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('FECHA_NACIMIENTO')">
               <ion-item>
                 <ion-label position="fixed">Fecha de Nacimiento</ion-label>
                 <ion-datetime-button datetime="datetime-nacimiento"></ion-datetime-button>
@@ -85,7 +85,7 @@
               <app-error-mensaje [control]="empleadoForm.get('FECHA_NACIMIENTO')"></app-error-mensaje>
             </ion-col>
 
-            <ion-col size="12" size-md="6">
+            <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('ID_RAZA')">
               <ion-item (mousedown)="abrirModal('ID_RAZA', razas, 'descripcion', false)">
                 <ion-input label="Raza" labelPlacement="floating" [value]="getGeneroDescripcion('ID_RAZA', razas) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -95,7 +95,7 @@
           </ion-row>
 
           <ion-row>
-            <ion-col size="12" size-md="6">
+            <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('GENERO')">
               <ion-item (mousedown)="abrirModal('GENERO', generos, 'descripcion', false)">
                 <ion-input label="Género" labelPlacement="floating" [value]="getGeneroDescripcion('GENERO', generos) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -103,7 +103,7 @@
               <app-error-mensaje [control]="empleadoForm.get('GENERO')"></app-error-mensaje>
             </ion-col>
 
-            <ion-col size="12" size-md="6">
+            <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('ID_SEXO')">
               <ion-item (mousedown)="abrirModal('ID_SEXO', sexos, 'descripcion', false)">
                 <ion-input label="Sexo" labelPlacement="floating" [value]="getGeneroDescripcion('ID_SEXO', sexos) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -112,7 +112,7 @@
             </ion-col>
           </ion-row>
           <ion-row>
-            <ion-col size="12" size-md="6">
+            <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('ID_ORIENTACION_SEXUAL')">
               <ion-item (mousedown)="abrirModal('ID_ORIENTACION_SEXUAL', orientaciones_Sexuales, 'descripcion', false)">
                 <ion-input label="Orientación sexual" labelPlacement="floating" [value]="getGeneroDescripcion('ID_ORIENTACION_SEXUAL', orientaciones_Sexuales) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -120,7 +120,7 @@
               <app-error-mensaje [control]="empleadoForm.get('ID_ORIENTACION_SEXUAL')"></app-error-mensaje>
             </ion-col>
 
-            <ion-col size="12" size-md="6">
+            <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('ID_DISCAPACIDAD')">
               <ion-item (mousedown)="abrirModal('ID_DISCAPACIDAD', discapacidades, 'descripcion', false)">
                 <ion-input label="Discapacidad" labelPlacement="floating" [value]="getGeneroDescripcion('ID_DISCAPACIDAD', discapacidades) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -129,7 +129,7 @@
             </ion-col>
           </ion-row>
           <ion-row>
-            <ion-col size="12" size-md="6">
+            <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('RH')">
               <ion-item (mousedown)="abrirModal('RH', rh, 'descripcion', false)">
                 <ion-input label="Rh" labelPlacement="floating" [value]="getGeneroDescripcion('RH', rh) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -137,7 +137,7 @@
               <app-error-mensaje [control]="empleadoForm.get('RH')"></app-error-mensaje>
             </ion-col>
 
-            <ion-col size="12" size-md="6">
+            <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('ID_ESTADO_CIVIL')">
               <ion-item (mousedown)="abrirModal('ID_ESTADO_CIVIL', estadoCivil, 'descripcion', false)">
                 <ion-input label="Estado Civil" labelPlacement="floating" [value]="getGeneroDescripcion('ID_ESTADO_CIVIL', estadoCivil) || 'Seleccione...'" readonly></ion-input>
                 <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -176,14 +176,14 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="6">
+        <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('CORREO_PERSONAL')">
           <ion-item>
             <ion-input label="Correo Personal" labelPlacement="floating" formControlName="CORREO_PERSONAL"></ion-input>
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('CORREO_PERSONAL')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="6">
+        <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('CORREO_CORPORATIVO')">
           <ion-item>
             <ion-input label="Correo Corporativo" labelPlacement="floating" formControlName="CORREO_CORPORATIVO"></ion-input>
           </ion-item>
@@ -192,21 +192,21 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('TELEFONO_CELULAR')">
           <ion-item>
             <ion-input label="Numero Celular" labelPlacement="floating" formControlName="TELEFONO_CELULAR"></ion-input>
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('TELEFONO_CELULAR')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('NOMBRE_CONTACTO')">
           <ion-item>
             <ion-input label="Nombre Contacto" labelPlacement="floating" formControlName="NOMBRE_CONTACTO"></ion-input>
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('NOMBRE_CONTACTO')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('TELEFONO_CONTACTO')">
           <ion-item>
             <ion-input label="Telefono Contacto" labelPlacement="floating" formControlName="TELEFONO_CONTACTO"></ion-input>
           </ion-item>
@@ -226,14 +226,14 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('CIUDAD_RESIDENCIA')">
           <ion-item>
             <ion-input label="Ciudad de Residencia" labelPlacement="floating" formControlName="CIUDAD_RESIDENCIA"></ion-input>
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('CIUDAD_RESIDENCIA')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="8">
+        <ion-col size="12" size-md="8" *ngIf="empleadoForm.get('DIRECCION_RESIDENCIA')">
           <ion-item>
             <ion-input label="Dirección" labelPlacement="floating" formControlName="DIRECCION_RESIDENCIA"></ion-input>
           </ion-item>
@@ -253,7 +253,7 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_NIVEL_EDUCATIVO')">
           <ion-item (mousedown)="abrirModal('ID_NIVEL_EDUCATIVO', nivelesEducativos, 'descripcion', false)">
             <ion-input label="Nivel Educativo" labelPlacement="floating" [value]="getGeneroDescripcion('ID_NIVEL_EDUCATIVO', nivelesEducativos) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -261,14 +261,14 @@
           <app-error-mensaje [control]="empleadoForm.get('ID_NIVEL_EDUCATIVO')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ENTIDAD_PREGRADO')">
           <ion-item>
             <ion-input label="Entidad de Pregrado" labelPlacement="floating" formControlName="ENTIDAD_PREGRADO"></ion-input>
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('ENTIDAD_PREGRADO')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ENTIDAD_POSTGRADO')">
           <ion-item>
             <ion-input label="Entidad de Postgrado" labelPlacement="floating" formControlName="ENTIDAD_POSTGRADO"></ion-input>
           </ion-item>
@@ -277,7 +277,7 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="6">
+        <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('ID_PROFESION')">
           <ion-item (mousedown)="abrirModal('ID_PROFESION', profesiones, 'descripcion', true)">
             <ion-input label="Profesión" labelPlacement="floating" 
               [value]="getListaSeleccion('ID_PROFESION', profesiones).length === 0 ? 'Seleccione...' : ''" 
@@ -294,7 +294,7 @@
           <app-error-mensaje [control]="empleadoForm.get('ID_PROFESION')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="6">
+        <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('ID_POSTGRADO')">
           <ion-item (mousedown)="abrirModal('ID_POSTGRADO', postgrado, 'descripcion', true)">
             <ion-input label="Posgrado" labelPlacement="floating" readonly
               [value]="getListaSeleccion('ID_POSTGRADO', postgrado).length === 0 ? 'Seleccione...' : ''">
@@ -323,12 +323,12 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="6">
+        <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('TIENE_HIJOS')">
           <ion-item (mousedown)="abrirModal('TIENE_HIJOS', tieneHijos, 'descripcion', false)">
             <ion-input label="¿Tiene hijos?" labelPlacement="floating" [value]="getGeneroDescripcion('TIENE_HIJOS', tieneHijos) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <ion-button *ngIf="empleadoForm.get('TIENE_HIJOS')?.value === 1" fill="clear" (click)="motrarHijos()" class="link-button">
+          <ion-button *ngIf="empleadoForm.get('HIJOS_COLABORADOR_JSON') && empleadoForm.get('TIENE_HIJOS')?.value === 1" fill="clear" (click)="motrarHijos()" class="link-button">
             Mostrar Hijos
           </ion-button>
           <app-error-mensaje [control]="empleadoForm.get('TIENE_HIJOS')"></app-error-mensaje>
@@ -337,7 +337,7 @@
 
       <!-- Sección de Hijos (condicional) -->
       <ion-row *ngIf="mostrarHijo">
-        <ion-col class="col-hijos">
+        <ion-col class="col-hijos" *ngIf="empleadoForm.get('HIJOS_COLABORADOR_JSON')">
           <ion-row>
             <ion-col>
               <ion-toolbar class="subtitulos">
@@ -428,7 +428,7 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="6">
+        <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('FECHA_INGRESO')">
           <ion-item>
             <ion-label position="fixed">Fecha de Ingreso</ion-label>
             <ion-datetime-button datetime="datetime-ingreso"></ion-datetime-button>
@@ -441,7 +441,7 @@
           <app-error-mensaje [control]="empleadoForm.get('FECHA_INGRESO')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="6">
+        <ion-col size="12" size-md="6" *ngIf="empleadoForm.get('CIUDAD_TRABAJO')">
           <ion-item (mousedown)="abrirModal('CIUDAD_TRABAJO', ciudadTrabajo, 'descripcion', false)">
             <ion-input label="Ciudad de trabajo" labelPlacement="floating" [value]="getGeneroDescripcion('CIUDAD_TRABAJO', ciudadTrabajo) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -451,7 +451,7 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_EMPRESA')">
           <ion-item (mousedown)="abrirModal('ID_EMPRESA', empresas, 'descripcion', false)">
             <ion-input label="Empresa" labelPlacement="floating" [value]="getGeneroDescripcion('ID_EMPRESA', empresas) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -459,7 +459,7 @@
           <app-error-mensaje [control]="empleadoForm.get('ID_EMPRESA')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_SEDE')">
           <ion-item (mousedown)="abrirModal('ID_SEDE', sedes, 'descripcion', false)">
             <ion-input label="Sede" labelPlacement="floating" [value]="getGeneroDescripcion('ID_SEDE', sedes) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -467,7 +467,7 @@
           <app-error-mensaje [control]="empleadoForm.get('ID_SEDE')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_JEFE')">
           <ion-item (mousedown)="abrirModal('ID_JEFE', jefes, 'descripcion', false)">
             <ion-input label="Jefe" labelPlacement="floating" [value]="getGeneroDescripcion('ID_JEFE', jefes) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -477,7 +477,7 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_GERENCIA')">
           <ion-item (mousedown)="abrirModal('ID_GERENCIA', gerencias, 'descripcion', false)">
             <ion-input label="Gerencia" labelPlacement="floating" [value]="getGeneroDescripcion('ID_GERENCIA', gerencias) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -485,7 +485,7 @@
           <app-error-mensaje [control]="empleadoForm.get('ID_GERENCIA')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_AREA')">
           <ion-item (mousedown)="abrirModal('ID_AREA', areas, 'descripcion', false)">
             <ion-input label="Area" labelPlacement="floating" [value]="getGeneroDescripcion('ID_AREA', areas) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -493,7 +493,7 @@
           <app-error-mensaje [control]="empleadoForm.get('ID_AREA')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_CARGO')">
           <ion-item (mousedown)="abrirModal('ID_CARGO', cargos, 'descripcion', false)">
             <ion-input label="Cargo" labelPlacement="floating" [value]="getGeneroDescripcion('ID_CARGO', cargos) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -503,21 +503,21 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_ROL')">
           <ion-item (mousedown)="abrirModal('ID_ROL', roles, 'descripcion', false)">
             <ion-input label="Rol" labelPlacement="floating" [value]="getGeneroDescripcion('ID_ROL', roles) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('ID_ROL')"></app-error-mensaje>
         </ion-col>
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_RUBRO')">
           <ion-item (mousedown)="abrirModal('ID_RUBRO', rubros, 'descripcion', false)">
             <ion-input label="Rubro" labelPlacement="floating" [value]="getGeneroDescripcion('ID_RUBRO', rubros) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
           <app-error-mensaje [control]="empleadoForm.get('ID_RUBRO')"></app-error-mensaje>
         </ion-col>
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_CCO')">
           <ion-item (mousedown)="abrirModal('ID_CCO', cco, 'descripcion', false)">
             <ion-input label="CCO" labelPlacement="floating" [value]="getGeneroDescripcion('ID_CCO', cco) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -538,7 +538,7 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_TIPO_NOMINA')">
           <ion-item (mousedown)="abrirModal('ID_TIPO_NOMINA', tipoNomnina, 'descripcion', false)">
             <ion-input label="Nomina" labelPlacement="floating" [value]="getGeneroDescripcion('ID_TIPO_NOMINA', tipoNomnina) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -546,7 +546,7 @@
           <app-error-mensaje [control]="empleadoForm.get('ID_TIPO_NOMINA')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_TIPO_DOTACION')">
           <ion-item (mousedown)="abrirModal('ID_TIPO_DOTACION', tipoDotacion, 'descripcion', false)">
             <ion-input label="Dotación" labelPlacement="floating" [value]="getGeneroDescripcion('ID_TIPO_DOTACION', tipoDotacion) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -554,7 +554,7 @@
           <app-error-mensaje [control]="empleadoForm.get('ID_TIPO_DOTACION')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="4">
+        <ion-col size="12" size-md="4" *ngIf="empleadoForm.get('ID_NIVEL_DOTACION')">
           <ion-item (mousedown)="abrirModal('ID_NIVEL_DOTACION', nivelDotacion, 'descripcion', false)">
             <ion-input label="Nivel de dotación" labelPlacement="floating" [value]="getGeneroDescripcion('ID_NIVEL_DOTACION', nivelDotacion) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
@@ -575,7 +575,7 @@
       </ion-row>
 
       <ion-row>
-        <ion-col size="12" size-md="3">
+        <ion-col size="12" size-md="3" *ngIf="empleadoForm.get('ARL')">
           <ion-item (mousedown)="abrirModal('ARL', arl, 'descripcion', false)">
             <ion-input label="Arl" labelPlacement="floating" [value]="getGeneroDescripcion('ARL', arl) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>

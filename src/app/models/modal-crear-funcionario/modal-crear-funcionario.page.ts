@@ -327,6 +327,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
   
 
   async guardarEmpleado() {
+    const rol =  Number(localStorage.getItem('rolSeleccionado'));
     if (this.empleadoForm.invalid) {
       this.empleadoForm.markAllAsTouched();
       return;
@@ -334,7 +335,11 @@ export class ModalCrearFuncionarioPage implements OnInit {
     if (this.empleadoForm.valid) {
       console.log("entro")
       if (this.imagenSeleccionada) {
-        await this.enviar();
+        if(rol==2){
+          await this.enviarColaboradorInterventor()
+        }else{
+          await this.enviar();
+        }
       }else{
         this.UserInteractionService.dismissLoading();
           let action :IAlertAction[] =[
@@ -345,7 +350,11 @@ export class ModalCrearFuncionarioPage implements OnInit {
             {
               text: 'Si, enviar',
               handler: async () => {
-                await this.enviar();
+                if(rol==2){
+                  await this.enviarColaboradorInterventor()
+                }else{
+                  await this.enviar();
+                }
               }
             }
           ]
@@ -447,6 +456,114 @@ export class ModalCrearFuncionarioPage implements OnInit {
     }else{
       this.UserInteractionService.showLoading('Guardando...');
       this.service.postCrearColaborador(formData).subscribe({
+        next: async (resp) => {
+          try {
+            console.log("Respuesta:", resp);
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast('Usuario creado con exito', TypeThemeColor.SUCCESS);
+            this.cerrarModal();
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading();
+            this.cerrarModal();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err);
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.cerrarModal();
+        }
+      });
+    }
+  }
+
+  async enviarColaboradorInterventor(){
+    const formData = new FormData();
+    // Object.keys(this.empleadoForm.value).forEach((key) => {
+    //   if (
+    //     this.empleadoForm.value[key] !== null &&
+    //     this.empleadoForm.value[key] !== undefined &&
+    //     key !== 'HIJOS_COLABORADOR_JSON' &&
+    //     key !== 'ID_PROFESION' &&
+    //     key !== 'ID_POSTGRADO'
+    //   ) {
+    //     formData.append(key, this.empleadoForm.value[key]);
+    //   }
+    // });
+
+    // HIJOS_COLABORADOR_JSON
+    // const hijosJson = JSON.stringify(this.HIJOS_COLABORADOR_JSON.value);
+    // formData.append('HIJOS_COLABORADOR_JSON', hijosJson);
+    // const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
+    // profesionesSeleccionadas.forEach((id: number) => {
+    //   formData.append('ID_PROFESION', id.toString());
+    // });
+
+    // const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
+    // postgradoSeleccionadas.forEach((id: number) => {
+    //   formData.append('ID_POSTGRADO', id.toString());
+    // });
+
+  
+    // Leer la imagen original como base64
+    if(this.imagenSeleccionada){
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+    
+          if (ctx) {
+            ctx.drawImage(img, 0, 0);
+    
+            // Convertimos a Blob en formato JPEG
+            canvas.toBlob((blob) => {
+              if (blob) {
+                const jpgFile = new File([blob], 'imagen.jpg', { type: 'image/jpeg' });
+    
+                // Agregamos la imagen ya transformada
+                formData.append('foto', jpgFile);
+    
+                // ✅ Importante: el post debe ir AQUÍ
+                this.UserInteractionService.showLoading('Guardando...');
+                this.service.postCrearColaboradorInterventor(formData).subscribe({
+                  next: async (resp) => {
+                    try {
+                      console.log("Respuesta:", resp);
+                      this.UserInteractionService.dismissLoading();
+                      this.UserInteractionService.presentToast('Usuario creado con exito', TypeThemeColor.SUCCESS);
+                      this.cerrarModal();
+                    } catch (error) {
+                      console.error("Error al procesar respuesta:", error);
+                      this.UserInteractionService.dismissLoading();
+                      this.cerrarModal();
+                    }
+                  },
+                  error: (err) => {
+                    console.error("Error al enviar formulario:", err);
+                    this.UserInteractionService.dismissLoading();
+                    this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+                    this.cerrarModal();
+                  }
+                });
+              } else {
+                console.error("No se pudo convertir la imagen a blob.");
+              }
+            }, 'image/jpeg');
+          }
+        };
+    
+        // Cargar imagen desde base64
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(this.imagenSeleccionada);
+    }else{
+      this.UserInteractionService.showLoading('Guardando...');
+      this.service.postCrearColaboradorInterventor(formData).subscribe({
         next: async (resp) => {
           try {
             console.log("Respuesta:", resp);

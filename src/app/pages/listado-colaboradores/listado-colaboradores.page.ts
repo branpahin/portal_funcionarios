@@ -61,21 +61,41 @@ export class ListadoColaboradoresPage implements OnInit {
     
     this.UserInteractionService.showLoading('Cargando...');
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
-    this.service.getColaboradores(this.param.estado_Proceso,this.param.ciudad).subscribe({
-      next:async(resp)=>{
-        try{
-          console.log("Respuesta Colaboradores: ", resp)
+    const rol =  Number(localStorage.getItem('rolSeleccionado'));
+    if(rol==2){
+      this.service.getColaboradoresInterventor(rol).subscribe({
+        next:async(resp)=>{
+          try{
+            console.log("Respuesta Colaboradores: ", resp)
+            this.UserInteractionService.dismissLoading();
+            this.funcionarios=resp.data.datos.listadoColaboradores
+          }catch(error){
+            console.error("Respuesta: ", error)
+            this.UserInteractionService.dismissLoading();
+          }
+        },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.funcionarios=resp.data.datos.listadoColaboradores
-        }catch(error){
-          console.error("Respuesta: ", error)
-          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
-      },error:(err)=>{
-        this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
-      }
-    })
+      })
+    }else{
+      this.service.getColaboradores(this.param.estado_Proceso,this.param.ciudad).subscribe({
+        next:async(resp)=>{
+          try{
+            console.log("Respuesta Colaboradores: ", resp)
+            this.UserInteractionService.dismissLoading();
+            this.funcionarios=resp.data.datos.listadoColaboradores
+          }catch(error){
+            console.error("Respuesta: ", error)
+            this.UserInteractionService.dismissLoading();
+          }
+        },error:(err)=>{
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        }
+      })
+    }
+    
   }
   
   get totalPages(): number {
@@ -137,52 +157,102 @@ export class ListadoColaboradoresPage implements OnInit {
   }
 
   formCrear(){
-    return this.empleadoForm = this.fb.group({
-      ID: [0, Validators.required],
-      TIPO_IDENTIFICACION : [null, [Validators.required, Validators.maxLength(50)]],
-      IDENTIFICACION : ['', [Validators.required, Validators.maxLength(50)]],
-      NOMBRES : ['', [Validators.required, Validators.maxLength(50)]],
-      APELLIDOS : ['', [Validators.required, Validators.maxLength(50)]],
-      GENERO : ['', Validators.required],
-      ID_SEXO : [null,Validators.required],
-      ID_ORIENTACION_SEXUAL: [null,Validators.required],
-      ID_DISCAPACIDAD:[null,Validators.required],
-      ID_RAZA: ['', Validators.required],
-      RH : ['', [Validators.required, Validators.maxLength(3)]],
-      FECHA_NACIMIENTO : ['', Validators.required],
-      ID_NIVEL_EDUCATIVO : [null, Validators.required],
-      ID_PROFESION : [[],Validators.required],
-      ENTIDAD_PREGRADO: ['',Validators.required],
-      ID_POSTGRADO: [[]],
-      TELEFONO_CELULAR : ['', [Validators.required, Validators.maxLength(11)]],
-      CIUDAD_RESIDENCIA : ['', [Validators.required, Validators.maxLength(50)]],
-      DIRECCION_RESIDENCIA : ['', [Validators.required, Validators.maxLength(100)]],
-      TIENE_HIJOS : [, [Validators.required, Validators.maxLength(1)]],
-      NOMBRE_CONTACTO : ['', [Validators.required, Validators.maxLength(100)]],
-      TELEFONO_CONTACTO: ['', [Validators.required, Validators.maxLength(11)]],
-      FECHA_INGRESO : ['', Validators.required],
-      ID_EMPRESA : [null, Validators.required],
-      CIUDAD_TRABAJO : ['', Validators.required],
-      ID_SEDE : [null, Validators.required],
-      ID_GERENCIA : [null, Validators.required],
-      ID_CCO:[null, Validators.required],
-      ID_AREA : [null, Validators.required],
-      ID_RUBRO : [null, Validators.required],
-      ID_CARGO : [null, Validators.required],
-      ID_TIPO_NOMINA : [null, Validators.required],
-      ID_ROL : [null, Validators.required],
-      ID_TIPO_DOTACION : [null, Validators.required],
-      ID_NIVEL_DOTACION : [null, Validators.required],
-      ENTIDAD_POSTGRADO: [''],
-      CORREO_PERSONAL : ['', [Validators.required, Validators.email]],
-      CORREO_CORPORATIVO: ['', Validators.email],
-      FECHA_ACTUALIZACION: ['', Validators.required],
-      ESTADO: [],
-      ARL : ['', Validators.required],
-      ID_ESTADO_CIVIL : [null, Validators.required],
-      ID_JEFE : [null, Validators.required],
-      HIJOS_COLABORADOR_JSON: this.fb.array([]) // Para agregar hijos dinámicamente
-    });
+    const rol =  Number(localStorage.getItem('rolSeleccionado'));
+    if(rol == 2){
+      return this.empleadoForm = this.fb.group({
+        ID: [0, Validators.required],
+        TIPO_IDENTIFICACION : [null, [Validators.required, Validators.maxLength(50)]],
+        IDENTIFICACION : ['', [Validators.required, Validators.maxLength(50)]],
+        NOMBRES : ['', [Validators.required, Validators.maxLength(50)]],
+        APELLIDOS : ['', [Validators.required, Validators.maxLength(50)]],
+        GENERO : ['', Validators.required],
+        // ID_SEXO : [null,Validators.required],
+        // ID_ORIENTACION_SEXUAL: [null,Validators.required],
+        // ID_DISCAPACIDAD:[null,Validators.required],
+        // ID_RAZA: ['', Validators.required],
+        RH : ['', [Validators.required, Validators.maxLength(3)]],
+        FECHA_NACIMIENTO : ['', Validators.required],
+        ID_NIVEL_EDUCATIVO : [null, Validators.required],
+        // ID_PROFESION : [[],Validators.required],
+        // ENTIDAD_PREGRADO: ['',Validators.required],
+        // ID_POSTGRADO: [[]],
+        TELEFONO_CELULAR : ['', [Validators.required, Validators.maxLength(11)]],
+        CIUDAD_RESIDENCIA : ['', [Validators.required, Validators.maxLength(50)]],
+        DIRECCION_RESIDENCIA : ['', [Validators.required, Validators.maxLength(100)]],
+        TIENE_HIJOS : [, [Validators.required, Validators.maxLength(1)]],
+        // NOMBRE_CONTACTO : ['', [Validators.required, Validators.maxLength(100)]],
+        // TELEFONO_CONTACTO: ['', [Validators.required, Validators.maxLength(11)]],
+        // FECHA_INGRESO : ['', Validators.required],
+        ID_EMPRESA : [null, Validators.required],
+        CIUDAD_TRABAJO : ['', Validators.required],
+        ID_SEDE : [null, Validators.required],
+        ID_GERENCIA : [null, Validators.required],
+        // ID_CCO:[null, Validators.required],
+        // ID_AREA : [null, Validators.required],
+        // ID_RUBRO : [null, Validators.required],
+        ID_CARGO : [null, Validators.required],
+        // ID_TIPO_NOMINA : [null, Validators.required],
+        // ID_ROL : [null, Validators.required],
+        // ID_TIPO_DOTACION : [null, Validators.required],
+        // ID_NIVEL_DOTACION : [null, Validators.required],
+        // ENTIDAD_POSTGRADO: [''],
+        CORREO_PERSONAL : ['', [Validators.required, Validators.email]],
+        CORREO_CORPORATIVO: ['', Validators.email],
+        FECHA_ACTUALIZACION: ['', Validators.required],
+        ESTADO: [],
+        ARL : ['', Validators.required],
+        ID_ESTADO_CIVIL : [null, Validators.required],
+        // ID_JEFE : [null, Validators.required],
+        // HIJOS_COLABORADOR_JSON: this.fb.array([]) // Para agregar hijos dinámicamente
+      });
+    }else{
+      return this.empleadoForm = this.fb.group({
+        ID: [0, Validators.required],
+        TIPO_IDENTIFICACION : [null, [Validators.required, Validators.maxLength(50)]],
+        IDENTIFICACION : ['', [Validators.required, Validators.maxLength(50)]],
+        NOMBRES : ['', [Validators.required, Validators.maxLength(50)]],
+        APELLIDOS : ['', [Validators.required, Validators.maxLength(50)]],
+        GENERO : ['', Validators.required],
+        ID_SEXO : [null,Validators.required],
+        ID_ORIENTACION_SEXUAL: [null,Validators.required],
+        ID_DISCAPACIDAD:[null,Validators.required],
+        ID_RAZA: ['', Validators.required],
+        RH : ['', [Validators.required, Validators.maxLength(3)]],
+        FECHA_NACIMIENTO : ['', Validators.required],
+        ID_NIVEL_EDUCATIVO : [null, Validators.required],
+        ID_PROFESION : [[],Validators.required],
+        ENTIDAD_PREGRADO: ['',Validators.required],
+        ID_POSTGRADO: [[]],
+        TELEFONO_CELULAR : ['', [Validators.required, Validators.maxLength(11)]],
+        CIUDAD_RESIDENCIA : ['', [Validators.required, Validators.maxLength(50)]],
+        DIRECCION_RESIDENCIA : ['', [Validators.required, Validators.maxLength(100)]],
+        TIENE_HIJOS : [, [Validators.required, Validators.maxLength(1)]],
+        NOMBRE_CONTACTO : ['', [Validators.required, Validators.maxLength(100)]],
+        TELEFONO_CONTACTO: ['', [Validators.required, Validators.maxLength(11)]],
+        FECHA_INGRESO : ['', Validators.required],
+        ID_EMPRESA : [null, Validators.required],
+        CIUDAD_TRABAJO : ['', Validators.required],
+        ID_SEDE : [null, Validators.required],
+        ID_GERENCIA : [null, Validators.required],
+        ID_CCO:[null, Validators.required],
+        ID_AREA : [null, Validators.required],
+        ID_RUBRO : [null, Validators.required],
+        ID_CARGO : [null, Validators.required],
+        ID_TIPO_NOMINA : [null, Validators.required],
+        ID_ROL : [null, Validators.required],
+        ID_TIPO_DOTACION : [null, Validators.required],
+        ID_NIVEL_DOTACION : [null, Validators.required],
+        ENTIDAD_POSTGRADO: [''],
+        CORREO_PERSONAL : ['', [Validators.required, Validators.email]],
+        CORREO_CORPORATIVO: ['', Validators.email],
+        FECHA_ACTUALIZACION: ['', Validators.required],
+        ESTADO: [],
+        ARL : ['', Validators.required],
+        ID_ESTADO_CIVIL : [null, Validators.required],
+        ID_JEFE : [null, Validators.required],
+        HIJOS_COLABORADOR_JSON: this.fb.array([]) // Para agregar hijos dinámicamente
+      });
+    }
   }
 
   async abrirModalCrearFuncionario() {
