@@ -180,9 +180,9 @@ export class ListadoColaboradoresPage implements OnInit {
         CIUDAD_RESIDENCIA : ['', [Validators.required, Validators.maxLength(50)]],
         DIRECCION_RESIDENCIA : ['', [Validators.required, Validators.maxLength(100)]],
         TIENE_HIJOS : [, [Validators.required, Validators.maxLength(1)]],
-        // NOMBRE_CONTACTO : ['', [Validators.required, Validators.maxLength(100)]],
-        // TELEFONO_CONTACTO: ['', [Validators.required, Validators.maxLength(11)]],
-        // FECHA_INGRESO : ['', Validators.required],
+        NOMBRE_CONTACTO : ['', [Validators.required, Validators.maxLength(100)]],
+        TELEFONO_CONTACTO: ['', [Validators.required, Validators.maxLength(11)]],
+        FECHA_INGRESO : ['', Validators.required],
         ID_EMPRESA : [null, Validators.required],
         CIUDAD_TRABAJO : ['', Validators.required],
         ID_SEDE : [null, Validators.required],
@@ -329,26 +329,49 @@ export class ListadoColaboradoresPage implements OnInit {
   }
 
   async inactivacionConfirmada(datos:any){
-    
-    this.UserInteractionService.showLoading('Guardando...');
-    this.service.putInactivarUsuario(datos).subscribe({
-      next: async (resp) => {
-        try {
-          console.log("Respuesta:", resp);
+    const rol =  Number(localStorage.getItem('rolSeleccionado'));
+    if(rol == 2){
+      this.UserInteractionService.showLoading('Guardando...');
+      this.service.putInactivarUsuarioInterv(datos).subscribe({
+        next: async (resp) => {
+          try {
+            console.log("Respuesta:", resp);
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast('Inactivación realizada', TypeThemeColor.SUCCESS);
+            await this.colaboradores();
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast('Inactivación realizada', TypeThemeColor.SUCCESS);
-          await this.colaboradores();
-        } catch (error) {
-          console.error("Error al procesar respuesta:", error);
-          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
-      },
-      error: (err) => {
-        console.error("Error al enviar formulario:", err);
-        this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
-      }
-    });
+      });
+    }else{
+      this.UserInteractionService.showLoading('Guardando...');
+      this.service.putInactivarUsuario(datos).subscribe({
+        next: async (resp) => {
+          try {
+            console.log("Respuesta:", resp);
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast('Inactivación realizada', TypeThemeColor.SUCCESS);
+            await this.colaboradores();
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err);
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        }
+      });
+    }
+    
   }
 
   async activar(data:any){
@@ -426,26 +449,49 @@ export class ListadoColaboradoresPage implements OnInit {
   }
 
   async activacionConfirmada(datos:any){
-    
-    this.UserInteractionService.showLoading('Guardando...');
-    this.service.putActivarColaborador(datos).subscribe({
-      next: async (resp) => {
-        try {
-          console.log("Respuesta:", resp);
+    const rol =  Number(localStorage.getItem('rolSeleccionado'));
+    if(rol == 2){
+      this.UserInteractionService.showLoading('Guardando...');
+      this.service.putActivarColaboradorInterv(datos).subscribe({
+        next: async (resp) => {
+          try {
+            console.log("Respuesta:", resp);
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast('Activación realizada', TypeThemeColor.SUCCESS);
+            await this.colaboradores();
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast('Activación realizada', TypeThemeColor.SUCCESS);
-          await this.colaboradores();
-        } catch (error) {
-          console.error("Error al procesar respuesta:", error);
-          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
-      },
-      error: (err) => {
-        console.error("Error al enviar formulario:", err);
-        this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
-      }
-    });
+      });
+    }else{
+      this.UserInteractionService.showLoading('Guardando...');
+      this.service.putActivarColaborador(datos).subscribe({
+        next: async (resp) => {
+          try {
+            console.log("Respuesta:", resp);
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast('Activación realizada', TypeThemeColor.SUCCESS);
+            await this.colaboradores();
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err);
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        }
+      });
+    }
+    
   }
 
     async enviar(identificacion:string){

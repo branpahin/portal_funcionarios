@@ -839,155 +839,294 @@ export class ModalEditarFuncionarioPage implements OnInit {
   }
 
   async guardarEmpleado() {
+    const rol =  Number(localStorage.getItem('rolSeleccionado'));
     console.log("datos: ",this.empleadoForm.value)
     if (this.empleadoForm.invalid) {
       this.empleadoForm.markAllAsTouched();
       return;
     }
-
     if (this.empleadoForm.valid) {
-      const hoy = new Date();
-      const fechaFormateada = hoy.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+      if(rol==2){
+        await this.enviarColaboradorInterventor()
+      }else{
+        await this.enviarColaborador();
+      }
     
-      this.empleadoForm.patchValue({
-        FECHA_ACTUALIZACION: fechaFormateada
-      });
-      const formData = new FormData();
+    }
+  }
 
-      Object.keys(this.empleadoForm.value).forEach((key) => {
-        if (
-          this.empleadoForm.value[key] !== null &&
-          this.empleadoForm.value[key] !== undefined &&
-          key !== 'HIJOS_COLABORADOR_JSON' && 
-          key !== 'ID_PROFESION' &&
-          key !== 'ID_POSTGRADO' && 
-          key !== 'APLICACIONES'
-        ) {
-          formData.append(key, this.empleadoForm.value[key]);
-        }
-      });
+  async enviarColaboradorInterventor(){
+    const hoy = new Date();
+    const fechaFormateada = hoy.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+  
+    this.empleadoForm.patchValue({
+      FECHA_ACTUALIZACION: fechaFormateada
+    });
+    const formData = new FormData();
 
-      // HIJOS_COLABORADOR_JSON
-      const hijosJson = JSON.stringify(this.HIJOS_COLABORADOR_JSON.value);
-      formData.append('HIJOS_COLABORADOR_JSON', hijosJson);
+    // Object.keys(this.empleadoForm.value).forEach((key) => {
+    //   if (
+    //     this.empleadoForm.value[key] !== null &&
+    //     this.empleadoForm.value[key] !== undefined &&
+    //     key !== 'HIJOS_COLABORADOR_JSON' && 
+    //     key !== 'ID_PROFESION' &&
+    //     key !== 'ID_POSTGRADO' && 
+    //     key !== 'APLICACIONES'
+    //   ) {
+    //     formData.append(key, this.empleadoForm.value[key]);
+    //   }
+    // });
 
-      // ID_PROFESION uno por uno
-      
+    // // HIJOS_COLABORADOR_JSON
+    // const hijosJson = JSON.stringify(this.HIJOS_COLABORADOR_JSON.value);
+    // formData.append('HIJOS_COLABORADOR_JSON', hijosJson);
+
+    // // ID_PROFESION uno por uno
     
-      const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
-      profesionesSeleccionadas.forEach((id: number) => {
-        formData.append('ID_PROFESION', id.toString());
-      });
+  
+    // const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
+    // profesionesSeleccionadas.forEach((id: number) => {
+    //   formData.append('ID_PROFESION', id.toString());
+    // });
 
-      const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
-      postgradoSeleccionadas.forEach((id: number) => {
-        formData.append('ID_POSTGRADO', id.toString());
-      });
-      console.log("this.empleadoForm: ",this.empleadoForm.value)
-      const aplicacionesSeleccionadas: number[] = this.empleadoForm.get('APLICACIONES')?.value || [];
-      aplicacionesSeleccionadas.forEach((id: number) => {
-        formData.append('APLICACIONES', id.toString());
-      });
-      
-    console.log("DATA: ",formData.getAll)
-      if (this.imagenSeleccionada) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext('2d');
+    // const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
+    // postgradoSeleccionadas.forEach((id: number) => {
+    //   formData.append('ID_POSTGRADO', id.toString());
+    // });
+    // console.log("this.empleadoForm: ",this.empleadoForm.value)
+    // const aplicacionesSeleccionadas: number[] = this.empleadoForm.get('APLICACIONES')?.value || [];
+    // aplicacionesSeleccionadas.forEach((id: number) => {
+    //   formData.append('APLICACIONES', id.toString());
+    // });
+    
+    if (this.imagenSeleccionada) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
 
-            if (ctx) {
-              ctx.drawImage(img, 0, 0);
+          if (ctx) {
+            ctx.drawImage(img, 0, 0);
 
-              // Convertimos a Blob en formato JPEG
-              canvas.toBlob(async (blob) => {
-                if (blob) {
-                  const jpgFile = new File([blob], 'imagen.jpg', { type: 'image/jpeg' });
+            // Convertimos a Blob en formato JPEG
+            canvas.toBlob(async (blob) => {
+              if (blob) {
+                const jpgFile = new File([blob], 'imagen.jpg', { type: 'image/jpeg' });
 
-                  // 🔹 Crear nuevo FormData en el formato requerido
-                  const nuevoFormData = new FormData();
-                  nuevoFormData.append('ESTADO', formData.get('ESTADO') || '');
-                  nuevoFormData.append('Foto', jpgFile);
+                // 🔹 Crear nuevo FormData en el formato requerido
+                const nuevoFormData = new FormData();
+                nuevoFormData.append('ESTADO', formData.get('ESTADO') || '');
+                nuevoFormData.append('Foto', jpgFile);
 
-                  // Construir ModeloJson manteniendo arrays si hay claves repetidas
-                  const modelo: any = {};
-                  formData.forEach((valor, clave) => {
-                    if (clave !== 'foto') {
-                      if(clave!=='ID_POSTGRADO' && clave!=='ID_PROFESION' && clave!=='APLICACIONES'){
-                        if (modelo[clave]) {
-                          if (!Array.isArray(modelo[clave])) {
-                            modelo[clave] = [modelo[clave]];
-                          }
-                          modelo[clave].push(valor);
-                        } else {
-                          modelo[clave] = valor;
-                        }
-                      }else{
-                        if (!modelo[clave]) {
-                          modelo[clave] = [];
-                        }
-                        modelo[clave].push(valor.toString());
+                // Construir ModeloJson manteniendo arrays si hay claves repetidas
+                const modelo: any = {};
+                formData.forEach((valor, clave) => {
+                  if (clave !== 'foto') {
+                    // if(clave!=='ID_POSTGRADO' && clave!=='ID_PROFESION' && clave!=='APLICACIONES'){
+                    //   if (modelo[clave]) {
+                    //     if (!Array.isArray(modelo[clave])) {
+                    //       modelo[clave] = [modelo[clave]];
+                    //     }
+                    //     modelo[clave].push(valor);
+                    //   } else {
+                    //     modelo[clave] = valor;
+                    //   }
+                    // }else{
+                      if (!modelo[clave]) {
+                        modelo[clave] = [];
                       }
-                    }
-                  });
+                      modelo[clave].push(valor.toString());
+                    // }
+                  }
+                });
 
-                  nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
+                nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
 
-                  // Depuración opcional
-                  console.log("ModeloJson:", modelo);
-                  nuevoFormData.forEach((valor, clave) => {
-                    console.log(`${clave}:`, valor);
-                  });
-                  
-                  await this.enviar(nuevoFormData);
-                } else {
-                  console.error("No se pudo convertir la imagen a blob.");
-                }
-              }, 'image/jpeg');
-            }
-          };
-
-          img.src = e.target.result; // Cargar imagen desde base64
+                // Depuración opcional
+                console.log("ModeloJson:", modelo);
+                nuevoFormData.forEach((valor, clave) => {
+                  console.log(`${clave}:`, valor);
+                });
+                
+                await this.enviar2(nuevoFormData);
+              } else {
+                console.error("No se pudo convertir la imagen a blob.");
+              }
+            }, 'image/jpeg');
+          }
         };
 
-        reader.readAsDataURL(this.imagenSeleccionada); // Leer imagen como base64
-        } else {
-        // 🔹 Si no hay imagen, también adaptamos al nuevo formato
-        const nuevoFormData = new FormData();
-        nuevoFormData.append('ESTADO', formData.get('ESTADO') || '');
+        img.src = e.target.result; // Cargar imagen desde base64
+      };
 
-        const modelo: any = {};
-        formData.forEach((valor, clave) => {
-          if (clave !== 'foto') {
-            if(clave!=='ID_POSTGRADO' && clave!=='ID_PROFESION' && clave!=='APLICACIONES'){
-              if (modelo[clave]) {
-                if (!Array.isArray(modelo[clave])) {
-                  modelo[clave] = [modelo[clave]];
-                }
-                modelo[clave].push(valor);
-              } else {
-                modelo[clave] = valor;
-              }
-            }else{
-              if (!modelo[clave]) {
-                modelo[clave] = [];
-              }
-              modelo[clave].push(valor.toString());
-            }
+      reader.readAsDataURL(this.imagenSeleccionada); // Leer imagen como base64
+    } else {
+      // 🔹 Si no hay imagen, también adaptamos al nuevo formato
+      const nuevoFormData = new FormData();
+      nuevoFormData.append('ESTADO', formData.get('ESTADO') || '');
+
+      const modelo: any = {};
+      formData.forEach((valor, clave) => {
+        if (clave !== 'foto') {
+          if (!modelo[clave]) {
+            modelo[clave] = [];
           }
-        });
-
-
-        nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
-
-        console.log("ModeloJson:", modelo);
-        await this.enviar(nuevoFormData);
+          modelo[clave].push(valor.toString());
+          
         }
+      });
+      nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
+
+      console.log("ModeloJson:", modelo);
+      await this.enviar2(nuevoFormData);
+    }
+  }
+
+  async enviarColaborador(){
+    const hoy = new Date();
+    const fechaFormateada = hoy.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+  
+    this.empleadoForm.patchValue({
+      FECHA_ACTUALIZACION: fechaFormateada
+    });
+    const formData = new FormData();
+
+    Object.keys(this.empleadoForm.value).forEach((key) => {
+      if (
+        this.empleadoForm.value[key] !== null &&
+        this.empleadoForm.value[key] !== undefined &&
+        key !== 'HIJOS_COLABORADOR_JSON' && 
+        key !== 'ID_PROFESION' &&
+        key !== 'ID_POSTGRADO' && 
+        key !== 'APLICACIONES'
+      ) {
+        formData.append(key, this.empleadoForm.value[key]);
       }
+    });
+
+    // HIJOS_COLABORADOR_JSON
+    const hijosJson = JSON.stringify(this.HIJOS_COLABORADOR_JSON.value);
+    formData.append('HIJOS_COLABORADOR_JSON', hijosJson);
+
+    // ID_PROFESION uno por uno
+    
+  
+    const profesionesSeleccionadas: number[] = this.empleadoForm.get('ID_PROFESION')?.value || [];
+    profesionesSeleccionadas.forEach((id: number) => {
+      formData.append('ID_PROFESION', id.toString());
+    });
+
+    const postgradoSeleccionadas: number[] = this.empleadoForm.get('ID_POSTGRADO')?.value || [];
+    postgradoSeleccionadas.forEach((id: number) => {
+      formData.append('ID_POSTGRADO', id.toString());
+    });
+    console.log("this.empleadoForm: ",this.empleadoForm.value)
+    const aplicacionesSeleccionadas: number[] = this.empleadoForm.get('APLICACIONES')?.value || [];
+    aplicacionesSeleccionadas.forEach((id: number) => {
+      formData.append('APLICACIONES', id.toString());
+    });
+    
+    if (this.imagenSeleccionada) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+
+          if (ctx) {
+            ctx.drawImage(img, 0, 0);
+
+            // Convertimos a Blob en formato JPEG
+            canvas.toBlob(async (blob) => {
+              if (blob) {
+                const jpgFile = new File([blob], 'imagen.jpg', { type: 'image/jpeg' });
+
+                // 🔹 Crear nuevo FormData en el formato requerido
+                const nuevoFormData = new FormData();
+                nuevoFormData.append('ESTADO', formData.get('ESTADO') || '');
+                nuevoFormData.append('Foto', jpgFile);
+
+                // Construir ModeloJson manteniendo arrays si hay claves repetidas
+                const modelo: any = {};
+                formData.forEach((valor, clave) => {
+                  if (clave !== 'foto') {
+                    if(clave!=='ID_POSTGRADO' && clave!=='ID_PROFESION' && clave!=='APLICACIONES'){
+                      if (modelo[clave]) {
+                        if (!Array.isArray(modelo[clave])) {
+                          modelo[clave] = [modelo[clave]];
+                        }
+                        modelo[clave].push(valor);
+                      } else {
+                        modelo[clave] = valor;
+                      }
+                    }else{
+                      if (!modelo[clave]) {
+                        modelo[clave] = [];
+                      }
+                      modelo[clave].push(valor.toString());
+                    }
+                  }
+                });
+
+                nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
+
+                // Depuración opcional
+                console.log("ModeloJson:", modelo);
+                nuevoFormData.forEach((valor, clave) => {
+                  console.log(`${clave}:`, valor);
+                });
+                
+                await this.enviar(nuevoFormData);
+              } else {
+                console.error("No se pudo convertir la imagen a blob.");
+              }
+            }, 'image/jpeg');
+          }
+        };
+
+        img.src = e.target.result; // Cargar imagen desde base64
+      };
+
+      reader.readAsDataURL(this.imagenSeleccionada); // Leer imagen como base64
+      } else {
+      // 🔹 Si no hay imagen, también adaptamos al nuevo formato
+      const nuevoFormData = new FormData();
+      nuevoFormData.append('ESTADO', formData.get('ESTADO') || '');
+
+      const modelo: any = {};
+      formData.forEach((valor, clave) => {
+        if (clave !== 'foto') {
+          if(clave!=='ID_POSTGRADO' && clave!=='ID_PROFESION' && clave!=='APLICACIONES'){
+            if (modelo[clave]) {
+              if (!Array.isArray(modelo[clave])) {
+                modelo[clave] = [modelo[clave]];
+              }
+              modelo[clave].push(valor);
+            } else {
+              modelo[clave] = valor;
+            }
+          }else{
+            if (!modelo[clave]) {
+              modelo[clave] = [];
+            }
+            modelo[clave].push(valor.toString());
+          }
+        }
+      });
+
+
+      nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
+
+      console.log("ModeloJson:", modelo);
+      await this.enviar(nuevoFormData);
+    }
   }
 
   async enviar(formData:any){
@@ -1041,6 +1180,73 @@ export class ModalEditarFuncionarioPage implements OnInit {
                 }
               ]
             );
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading();
+            this.cerrarModal();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err.error.data.error);
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.cerrarModal();
+        }
+      });
+  }
+
+  async enviar2(formData:any){
+    this.UserInteractionService.showLoading('Guardando...');
+      this.service.putActualizarColaboradorInterv(formData).subscribe({
+        next: async (resp) => {
+          try {
+            this.UserInteractionService.dismissLoading();
+            console.log("Respuesta:", resp);
+            this.UserInteractionService.presentToast('Usuario editado con exito',TypeThemeColor.SUCCESS);
+            // let action2 :IAlertAction[] =[
+            //   {
+            //     text: 'Cancelar',
+            //     handler: async () => {}
+            //   }, 
+            //   {
+            //     text: 'Rechazar',
+            //     handler: async (data) => {
+            //       await this.aprobar(data.observacion,'R');
+            //       this.UserInteractionService.presentToast('Usuario editado con exito, pero no aprobado',TypeThemeColor.SUCCESS);
+            //     }
+            //   }
+            // ]
+
+            // let action :IAlertAction[] =[
+            //   {
+            //     text: 'Rechazar',
+            //     handler: async () => {
+            //       this.UserInteractionService.presentAlertActions(
+            //       '¡Se ha realizado un cambio en el formulario!',
+            //       action2)
+            //     }
+            //   },
+            //   {
+            //     text: 'Aprobar',
+            //     handler: async (data) => {
+            //       await this.aprobar(data.observacion,'A');
+            //       this.UserInteractionService.presentToast('Usuario editado con exito',TypeThemeColor.SUCCESS);
+            //     }
+            //   }
+            // ]
+            // this.UserInteractionService.presentAlertActions(
+            //   '¡Se ha realizado un cambio en el formulario!',
+            //   action,
+            //   false,
+            //   'Notificación',
+            //   [
+            //     {
+            //       name: 'observacion',
+            //       type: 'textarea', 
+            //       placeholder: 'Escriba su observación'
+            //     }
+            //   ]
+            // );
           } catch (error) {
             console.error("Error al procesar respuesta:", error);
             this.UserInteractionService.dismissLoading();

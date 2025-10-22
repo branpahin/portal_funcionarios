@@ -480,17 +480,17 @@ export class ModalCrearFuncionarioPage implements OnInit {
 
   async enviarColaboradorInterventor(){
     const formData = new FormData();
-    // Object.keys(this.empleadoForm.value).forEach((key) => {
-    //   if (
-    //     this.empleadoForm.value[key] !== null &&
-    //     this.empleadoForm.value[key] !== undefined &&
-    //     key !== 'HIJOS_COLABORADOR_JSON' &&
-    //     key !== 'ID_PROFESION' &&
-    //     key !== 'ID_POSTGRADO'
-    //   ) {
-    //     formData.append(key, this.empleadoForm.value[key]);
-    //   }
-    // });
+    Object.keys(this.empleadoForm.value).forEach((key) => {
+      if (
+        this.empleadoForm.value[key] !== null &&
+        this.empleadoForm.value[key] !== undefined &&
+        key !== 'HIJOS_COLABORADOR_JSON' &&
+        key !== 'ID_PROFESION' &&
+        key !== 'ID_POSTGRADO'
+      ) {
+        formData.append(key, this.empleadoForm.value[key]);
+      }
+    });
 
     // HIJOS_COLABORADOR_JSON
     // const hijosJson = JSON.stringify(this.HIJOS_COLABORADOR_JSON.value);
