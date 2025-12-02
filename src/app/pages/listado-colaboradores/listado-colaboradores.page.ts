@@ -62,7 +62,7 @@ export class ListadoColaboradoresPage implements OnInit {
     this.UserInteractionService.showLoading('Cargando...');
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
     const rol =  Number(localStorage.getItem('rolSeleccionado'));
-    if(rol==2){
+    if(rol==153){
       this.service.getColaboradoresInterventor(rol).subscribe({
         next:async(resp)=>{
           try{
@@ -158,7 +158,7 @@ export class ListadoColaboradoresPage implements OnInit {
 
   formCrear(){
     const rol =  Number(localStorage.getItem('rolSeleccionado'));
-    if(rol == 2){
+    if(rol == 153){
       return this.empleadoForm = this.fb.group({
         ID: [0, Validators.required],
         TIPO_IDENTIFICACION : [null, [Validators.required, Validators.maxLength(50)]],
@@ -330,7 +330,7 @@ export class ListadoColaboradoresPage implements OnInit {
 
   async inactivacionConfirmada(datos:any){
     const rol =  Number(localStorage.getItem('rolSeleccionado'));
-    if(rol == 2){
+    if(rol == 153){
       this.UserInteractionService.showLoading('Guardando...');
       this.service.putInactivarUsuarioInterv(datos).subscribe({
         next: async (resp) => {
@@ -450,7 +450,7 @@ export class ListadoColaboradoresPage implements OnInit {
 
   async activacionConfirmada(datos:any){
     const rol =  Number(localStorage.getItem('rolSeleccionado'));
-    if(rol == 2){
+    if(rol == 153){
       this.UserInteractionService.showLoading('Guardando...');
       this.service.putActivarColaboradorInterv(datos).subscribe({
         next: async (resp) => {

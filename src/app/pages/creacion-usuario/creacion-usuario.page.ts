@@ -106,7 +106,7 @@ export class CreacionUsuarioPage implements OnInit {
       this.empleadoForm.patchValue({
         ID_EMPRESA: Number(data.iD_EMPRESA),
         IDENTIFICACION: data.identificacion,
-        CIUDAD: data.ciudaD_TRABAJO,
+        CIUDAD: [Number(data.ciudaD_TRABAJO)],
         ROL: data.rol,
         ESTADO_PROCESO: data.estadO_PROCESO,
       });
@@ -176,6 +176,7 @@ export class CreacionUsuarioPage implements OnInit {
 
   guardarUsuario(){
     
+    console.log("formValue :",this.empleadoForm.value)
     if(this.empleadoForm.valid){
       this.UserInteractionService.showLoading('Guardando...');
       const formValue = this.empleadoForm.value;

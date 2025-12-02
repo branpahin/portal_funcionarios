@@ -77,7 +77,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
   formulario(){
     const rol =  Number(localStorage.getItem('rolSeleccionado'));
-    if(rol == 2){
+    if(rol == 153){
       this.empleadoForm = this.fb.group({
         ID: [0, Validators.required],
         TIPO_IDENTIFICACION : [null, [Validators.required, Validators.maxLength(50)]],
@@ -166,9 +166,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
         ENTIDAD_POSTGRADO: [''],
         CORREO_PERSONAL : ['', [Validators.required, Validators.email]],
         CORREO_CORPORATIVO: ['', Validators.required],
-        PAZ_SALVO_ACTIVOS: ['', Validators.required],
-        ENTREGA_TARJETA_INGRESO: ['', Validators.required],
-        CAMBIO_CARGO: ['', Validators.required],
+        PAZ_SALVO_ACTIVOS: [''],
+        ENTREGA_TARJETA_INGRESO: [''],
+        CAMBIO_CARGO: [''],
         FECHA_ACTUALIZACION: ['', Validators.required],
         ESTADO: [],
         ARL : ['', Validators.required],
@@ -389,7 +389,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
     if(this.idColaborador){
       this.UserInteractionService.showLoading('Cargando...');
       const rol = Number(localStorage.getItem('rolSeleccionado'));
-      if(rol == 2){
+      if(rol == 153){
         this.service.getInfoColaboradoresInterventor(this.idColaborador).subscribe({
           next:async(resp)=>{
             try{
@@ -430,7 +430,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
                 });
 
                 // ✅ Deshabilitar todo el grupo hijo
-                hijoFormGroup.disable();
+                // hijoFormGroup.disable();
 
                 hijosFormArray.push(hijoFormGroup);
               });
@@ -508,7 +508,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
                 });
 
                 // ✅ Deshabilitar todo el grupo hijo
-                hijoFormGroup.disable();
+                // hijoFormGroup.disable();
 
                 hijosFormArray.push(hijoFormGroup);
               });
@@ -552,7 +552,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
   async consultaEstados(estado:number) {
     
     this.UserInteractionService.showLoading('Cargando...');
-    this.service.getCamposEstado(estado).subscribe({
+    const rol = Number(localStorage.getItem('rolSeleccionado'));
+    this.service.getCamposEstado(estado, rol).subscribe({
       next:async(resp)=>{
         try{
           this.camposConfig=resp.data.datos.listadoCampos
@@ -570,8 +571,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
   getCampoConfig(nombreCampo: string) {
     const existeControl = this.empleadoForm.get(nombreCampo);
-    if (!existeControl) {
+    if (!existeControl && nombreCampo!='FOTO') {
       // Si no existe, no intentamos remover ni deshabilitar nada
+      console.log("entro: ",nombreCampo)
       return { visible: false, editable: false, required: false };
     }
     const campo = this.camposConfig.find(
@@ -591,7 +593,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
     if (control) {
       if (campo.activo !== 'S') {
-        
+
           console.log('c.campo:',campo.campo)
           this.empleadoForm.removeControl(campo.campo);
           control.disable({ emitEvent: false });
@@ -846,7 +848,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
       return;
     }
     if (this.empleadoForm.valid) {
-      if(rol==2){
+      if(rol==153){
         await this.enviarColaboradorInterventor()
       }else{
         await this.enviarColaborador();
@@ -1167,19 +1169,24 @@ export class ModalEditarFuncionarioPage implements OnInit {
                 }
               }
             ]
-            this.UserInteractionService.presentAlertActions(
-              '¡Se ha realizado un cambio en el formulario!',
-              action,
-              false,
-              'Notificación',
-              [
-                {
-                  name: 'observacion',
-                  type: 'textarea', 
-                  placeholder: 'Escriba su observación'
-                }
-              ]
-            );
+            if(this.empleadoForm.get("ESTADO")?.value!="7"){
+              this.UserInteractionService.presentAlertActions(
+                '¡Se ha realizado un cambio en el formulario!',
+                action,
+                false,
+                'Notificación',
+                [
+                  {
+                    name: 'observacion',
+                    type: 'textarea', 
+                    placeholder: 'Escriba su observación'
+                  }
+                ]
+              );
+            }else{
+              this.cerrarModal();
+            }
+            
           } catch (error) {
             console.error("Error al procesar respuesta:", error);
             this.UserInteractionService.dismissLoading();

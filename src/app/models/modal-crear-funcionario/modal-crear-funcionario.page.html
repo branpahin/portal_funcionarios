@@ -328,7 +328,7 @@
             <ion-input label="¿Tiene hijos?" labelPlacement="floating" [value]="getGeneroDescripcion('TIENE_HIJOS', tieneHijos) || 'Seleccione...'" readonly></ion-input>
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
-          <ion-button *ngIf="empleadoForm.get('HIJOS_COLABORADOR_JSON') && empleadoForm.get('TIENE_HIJOS')?.value === 1" fill="clear" (click)="motrarHijos()" class="link-button">
+          <ion-button *ngIf="empleadoForm.get('HIJOS_COLABORADOR_JSON') && empleadoForm.get('TIENE_HIJOS')?.value === 122" fill="clear" (click)="motrarHijos()" class="link-button">
             Mostrar Hijos
           </ion-button>
           <app-error-mensaje [control]="empleadoForm.get('TIENE_HIJOS')"></app-error-mensaje>

@@ -77,8 +77,8 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.colaboradoresInterventor+"?idRol="+idRol);
   }
 
-  getCamposEstado(estado:number): Observable<any>{
-    return this.httpService.GetParamsCore(this.GetCamposEstado+"?estado="+estado);
+  getCamposEstado(estado:number,rol:number): Observable<any>{
+    return this.httpService.GetParamsCore(this.GetCamposEstado+"?estado="+estado+"&IdRol="+rol);
   }
 
   getConsultatUsuarios(): Observable<any>{

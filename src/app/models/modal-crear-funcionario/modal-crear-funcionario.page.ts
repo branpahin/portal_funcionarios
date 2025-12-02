@@ -335,7 +335,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
     if (this.empleadoForm.valid) {
       console.log("entro")
       if (this.imagenSeleccionada) {
-        if(rol==2){
+        if(rol==153){
           await this.enviarColaboradorInterventor()
         }else{
           await this.enviar();
@@ -350,7 +350,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
             {
               text: 'Si, enviar',
               handler: async () => {
-                if(rol==2){
+                if(rol==153){
                   await this.enviarColaboradorInterventor()
                 }else{
                   await this.enviar();
