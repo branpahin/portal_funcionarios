@@ -14,6 +14,7 @@ export enum TypeServicio{
     consultarColaboradorCedula = 'Funcionario/ObtenerInfoColaboradorCC',
     getInfoColaborador = 'Colaboradores/GetInfoColaborador',
     getInfoColaboradorIntenventor = 'Interventor/GetInfoColaboradorInterv',
+    getInfoColaboradorUsuario = 'Colaboradores/GetInfoColaboradorUsuario',
     getGerencias = 'Colaboradores/GetGerencias',
     getGetAreas = 'Colaboradores/GetAreas',
     getGetCCO = 'Colaboradores/GetCCO',

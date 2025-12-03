@@ -28,7 +28,12 @@ const routes: Routes = [
         path: 'listado-usuarios',
         loadComponent: () => import('../pages/listado-usuarios/listado-usuarios.page').then( m => m.ListadoUsuariosPage),
         canActivate: [authGuard]
-      }
+      },
+      {
+        path: 'modal-editar-funcionario',
+        loadComponent: () => import('../models/modal-editar-funcionario/modal-editar-funcionario.page').then( m => m.ModalEditarFuncionarioPage),
+        canActivate: [authGuard]
+      },
     ],
   }
 ];

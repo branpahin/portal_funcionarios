@@ -10,6 +10,8 @@ import { PortalService } from 'src/services/portal.service';
 import { ModuleService } from 'src/services/modulos/module.service';
 import { PermisosService } from 'src/services/permisos.service';
 import { UserInteractionService } from 'src/services/user-interaction-service.service';
+import { ModalEditarFuncionarioPage } from '../models/modal-editar-funcionario/modal-editar-funcionario.page';
+import { ModalController } from '@ionic/angular';
 
 interface MenuItem {
   name: string
@@ -47,6 +49,7 @@ export class LayoutPage implements OnInit {
     private cdr: ChangeDetectorRef,
     private permisosService:PermisosService,
     private UserInteractionService: UserInteractionService,
+    private modalController: ModalController,
   ) {addIcons({ home, people, person, chevronDown, chevronUp, chevronBack, options, filter}); this.params()
   this.router.events.subscribe(() => {
       this.isHome = this.router.url === '/layout/home';
@@ -207,6 +210,26 @@ export class LayoutPage implements OnInit {
       // location.reload();
     });
     
+  }
+
+  async abrirModalEditarFuncionario(id:number, editar:boolean, data:any) {
+    this.permisosService.setPermisos(data);
+    localStorage.setItem('permisos',JSON.stringify(data));
+    const modal = await this.modalController.create({
+      component: ModalEditarFuncionarioPage,
+      componentProps: { idColaborador: id, editar: editar}
+    });
+
+    modal.style.cssText = `
+    --height: 90%;
+    --max-height: 90%;
+    --width: 90%;
+    --max-width: 90%;
+    --border-radius: 10px;
+  `;
+    await modal.present();
+    await modal.onWillDismiss();
+    this.ngOnInit();
   }
 
   logout(){

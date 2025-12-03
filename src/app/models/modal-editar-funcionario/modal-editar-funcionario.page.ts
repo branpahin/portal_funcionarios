@@ -298,12 +298,13 @@ export class ModalEditarFuncionarioPage implements OnInit {
             this.cco =resp.data.datos.areas
             this.UserInteractionService.dismissLoading();
           }catch(error){
-            console.error("Respuesta Login: ", error)
+            console.error("Respuesta ", error)
             this.UserInteractionService.dismissLoading();
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          console.error("Respuesta", err.error.data.error)
+          // this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -380,15 +381,16 @@ export class ModalEditarFuncionarioPage implements OnInit {
         }
       },error:(err)=>{
         this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        console.error(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }
 
   async colaboradores() {
+    this.UserInteractionService.showLoading('Cargando...');
+    const rol = Number(localStorage.getItem('rolSeleccionado'));
     if(this.idColaborador){
-      this.UserInteractionService.showLoading('Cargando...');
-      const rol = Number(localStorage.getItem('rolSeleccionado'));
+      
       if(rol == 153){
         this.service.getInfoColaboradoresInterventor(this.idColaborador).subscribe({
           next:async(resp)=>{
@@ -467,8 +469,88 @@ export class ModalEditarFuncionarioPage implements OnInit {
             this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
           }
         })
-      }else{
+      } else{
         this.service.getInfoColaboradores(this.idColaborador).subscribe({
+          next:async(resp)=>{
+            try{
+              console.log("datos: ",resp.data.datos)
+
+              // Llena el FormArray de hijos
+              const datos = resp.data.datos;
+              await this.consultaEstados(Number(datos.estado))
+              if(datos.foto){
+                console.log("entro")
+                this.imagenPreview = `data:image/png;base64,${datos.foto}`;
+              }
+              datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
+              datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
+              datos.aplicaciones = this.convertirStringArray(datos.aplicaciones);
+              if(datos.ciudaD_TRABAJO && datos.iD_GERENCIA && datos.iD_AREA){
+                await this.CCO(datos.ciudaD_TRABAJO,datos.iD_GERENCIA, datos.iD_AREA);
+              }
+              // Luego aplicas patchValue con las claves en mayúscula si es necesario
+              this.empleadoForm.patchValue(this.convertirClavesMayus(datos));
+              const hijosFormArray = this.empleadoForm.get('HIJOS_COLABORADOR_JSON') as FormArray;
+              hijosFormArray.clear();
+
+              (resp.data.datos.hijoS_COLABORADOR || []).forEach((hijo: any) => {
+                const hijoFormGroup = this.fb.group({
+                  ID: [hijo.id],
+                  ID_COLABORADOR: [hijo.iD_COLABORADOR],
+                  NOMBRE_COMPLETO: [hijo.nombrE_COMPLETO],
+                  EDAD: [hijo.edad],
+                  FECHA_NACIMIENTO: [hijo.fechA_NACIMIENTO],
+                  GENERO: [hijo.genero],
+                  RH: [hijo.rh],
+                  AñO_NACIMIENTO: [hijo.anO_NACIMIENTO],
+                  MES_NACIMIENTO: [hijo.meS_NACIMIENTO],
+                  DIA_NACIMIENTO: [hijo.diA_NACIMIENTO],
+                  DOCUMENTO: [hijo.documento],
+                  ID_TP_DOCUMENTO: [hijo.iD_TP_DOCUMENTO],
+                });
+
+                // ✅ Deshabilitar todo el grupo hijo
+                // hijoFormGroup.disable();
+
+                hijosFormArray.push(hijoFormGroup);
+              });
+
+              // ✅ Mostrar formulario completo (incluye campos deshabilitados)
+              console.log("form2 (raw): ", this.empleadoForm.getRawValue());
+
+              // Obtener claves de hijos (opcional)
+              const clavesHijos = Object.keys(hijosFormArray.controls[0]?.value || {});
+
+              // ✅ Usa getRawValue() también aquí si necesitas recorrer el formulario completo
+              const formCompleto = this.empleadoForm.getRawValue();
+              Object.keys(formCompleto).forEach((key) => {
+                if (key !== 'HIJOS_COLABORADOR_JSON') {
+                  console.log("raza: ",key)
+                  this.selec(key, 'idPadre');
+                }
+              });
+
+              // Recorrer hijos normalmente
+              for (let hijo of formCompleto.HIJOS_COLABORADOR_JSON || []) {
+                Object.keys(hijo).forEach((key) => {
+                  this.selec(key);
+                });
+              }
+              this.UserInteractionService.dismissLoading()
+
+            }catch(error){
+              console.error("Respuesta Login: ", error)
+              this.UserInteractionService.dismissLoading()
+            }
+          },error:(err)=>{
+            this.UserInteractionService.dismissLoading()
+            this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          }
+        })
+      }
+    }else{
+      if(rol == 236){
+        this.service.getInfoColaboradoresUsuario().subscribe({
           next:async(resp)=>{
             try{
               console.log("datos: ",resp.data.datos)

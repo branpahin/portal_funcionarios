@@ -21,6 +21,7 @@ export class PortalService {
   private consultarColaboradorCedula = TypeServicio.consultarColaboradorCedula
   private getInfoColaborador = TypeServicio.getInfoColaborador
   private getInfoColaboradorIntenventor = TypeServicio.getInfoColaboradorIntenventor
+  private getInfoColaboradorUsuario = TypeServicio.getInfoColaboradorUsuario
   private getGerencia = TypeServicio.getGerencias
   private getGetAreas = TypeServicio.getGetAreas
   private getGetCCO = TypeServicio.getGetCCO
@@ -119,6 +120,9 @@ export class PortalService {
 
   getInfoColaboradoresInterventor(idColaborador:number): Observable<any>{
     return this.httpService.GetParamsCore(this.getInfoColaboradorIntenventor+"?id_colaborador="+idColaborador);
+  }
+  getInfoColaboradoresUsuario(): Observable<any>{
+    return this.httpService.GetCore(this.getInfoColaboradorUsuario);
   }
 
   getConsultarColaboradorCedula(data: any): Observable<any>{
