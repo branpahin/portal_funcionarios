@@ -22,3 +22,46 @@ ion-content {
   }
 }
   
+
+.home-content {
+  justify-items: center;
+  align-items: center;
+  text-align: center;
+}
+
+.welcome-container {
+  margin-top: 40px;
+  max-width: 600px;
+}
+
+.welcome-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #E46A09; /* Naranja institucional */
+}
+
+.welcome-text {
+  font-size: 1rem;
+  color: #444;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.greeting {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #777;
+  margin-top: 10px;
+}
+
+.quick-actions {
+  width: 100%;
+  max-width: 700px;
+  margin-top: 30px;
+}
+
+.action-card {
+  border-radius: 12px;
+  margin-bottom: 16px;
+  cursor: pointer;
+}

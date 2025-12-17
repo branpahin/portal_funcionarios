@@ -1,3 +1,47 @@
-<ion-content class="ion-padding">
+<ion-content class="home-content ion-padding">
+    <div class="home-content">
+        <div class="welcome-container">
+            <h1 class="welcome-title">¡Bienvenido al Portal de Funcionarios!</h1>
+            <p class="welcome-text">
+            Aquí podrás gestionar tus solicitudes, revisar información institucional y acceder a las herramientas internas.
+            </p>
 
+            <!-- Mensaje dinámico -->
+            <p class="greeting">{{ greetingMessage }}</p>
+        </div>
+
+        <div class="quick-actions">
+            <ion-card class="action-card"
+                *ngFor="let item of homeMenuItems"
+                        
+                [routerLink]="item.href !== '/layout/modal-editar-funcionario' ? item.href : null"
+                [state]="item.href !== '/layout/modal-editar-funcionario' 
+                        ? { fromMenu: true, permisos: item.permisos } 
+                        : {}"
+                routerDirection="root"
+
+                (click)="item.href === '/layout/modal-editar-funcionario' 
+                            ? abrirModalEditarFuncionario(0, true, item.permisos) 
+                            : null">
+
+                <ion-card-header>
+                <ion-card-title>{{ item.name }}</ion-card-title>
+                </ion-card-header>
+
+                <ion-card-content>
+
+                <!-- Descripción si viene -->
+                {{ item.descripcion || 'Accede a esta funcionalidad.' }}
+
+                <!-- Badge especial si es colaboradores -->
+                <!-- <ion-badge color="danger" *ngIf="item.href=='/layout/listado-colaboradores' && funcionarios.length > 0">
+                    {{funcionarios.length}}
+                </ion-badge> -->
+
+            </ion-card-content>
+
+        </ion-card>
+
+        </div>
+    </div>
 </ion-content>

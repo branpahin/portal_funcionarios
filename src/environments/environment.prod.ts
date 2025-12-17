@@ -2,7 +2,7 @@ import { TypeUrlDev } from "src/app/enums/TypeUrl";
 
 export const environment = {
   production: true,
-  mensaje: 'Estamos en desarrollo',
-	server: TypeUrlDev.portal,
+  mensaje: 'Estamos en producción',
+	server: TypeUrlDev.portalPROD,
   version: "1.0"
 };

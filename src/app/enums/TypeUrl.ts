@@ -1,5 +1,6 @@
 export enum TypeUrlDev{
-    portal = 'https://localhost:44326/api/'
+    portal = 'https://localhost:44326/api/',
+    portalPROD = 'http://172.25.2.2:3000/api/'
 }
 
 export enum TypeServicio{

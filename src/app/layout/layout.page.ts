@@ -12,6 +12,7 @@ import { PermisosService } from 'src/services/permisos.service';
 import { UserInteractionService } from 'src/services/user-interaction-service.service';
 import { ModalEditarFuncionarioPage } from '../models/modal-editar-funcionario/modal-editar-funcionario.page';
 import { ModalController } from '@ionic/angular';
+import { MenuStateService } from 'src/services/menu-state.service';
 
 interface MenuItem {
   name: string
@@ -50,6 +51,7 @@ export class LayoutPage implements OnInit {
     private permisosService:PermisosService,
     private UserInteractionService: UserInteractionService,
     private modalController: ModalController,
+    private menuState: MenuStateService,
   ) {addIcons({ home, people, person, chevronDown, chevronUp, chevronBack, options, filter}); this.params()
   this.router.events.subscribe(() => {
       this.isHome = this.router.url === '/layout/home';
@@ -149,6 +151,7 @@ export class LayoutPage implements OnInit {
           console.log("resp: ",resp)
           this.rolesSelec=resp
           this.rolSeleccionado=resp[0].id
+          localStorage.setItem('rolSeleccionado',String(this.rolSeleccionado));
           await this.menu(this.rolSeleccionado!)
         } catch (error) {
           console.error("Error en listarUsuarios:", error);
@@ -168,7 +171,6 @@ export class LayoutPage implements OnInit {
           
           console.log("resp: ",data)
           const resp=data.data.menus
-          localStorage.setItem('rolSeleccionado',String(rol));
           this.menuItems = resp.map((item: any) => ({
             name: item.descripcion,
             href: item.controlador,
@@ -176,6 +178,8 @@ export class LayoutPage implements OnInit {
             accion: item.accion,
             permisos: item.permisos
           }));
+          this.menuState.setMenu(this.menuItems);
+
           await this.router.navigate(['/layout/home']);
           const colaboradoresItem = this.menuItems.find(
             (item) => item.href === '/layout/listado-colaboradores'
