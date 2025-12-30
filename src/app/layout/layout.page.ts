@@ -13,6 +13,7 @@ import { UserInteractionService } from 'src/services/user-interaction-service.se
 import { ModalEditarFuncionarioPage } from '../models/modal-editar-funcionario/modal-editar-funcionario.page';
 import { ModalController } from '@ionic/angular';
 import { MenuStateService } from 'src/services/menu-state.service';
+import { SecureStorageService } from 'src/services/secure-storage.service';
 
 interface MenuItem {
   name: string
@@ -52,10 +53,11 @@ export class LayoutPage implements OnInit {
     private UserInteractionService: UserInteractionService,
     private modalController: ModalController,
     private menuState: MenuStateService,
+    private secureStorage: SecureStorageService
   ) {addIcons({ home, people, person, chevronDown, chevronUp, chevronBack, options, filter}); this.params()
-  this.router.events.subscribe(() => {
-      this.isHome = this.router.url === '/layout/home';
-    });}
+    this.router.events.subscribe(() => {
+        this.isHome = this.router.url === '/layout/home';
+      });}
 
   async ngOnInit() {
     console.log("this.isHome: ",this.isHome)
@@ -77,6 +79,7 @@ export class LayoutPage implements OnInit {
   async colaboradores() {
     
     this.UserInteractionService.showLoading('Cargando...');
+    console.log("this.param.estado_Proceso: ",this.param)
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
     if(this.rolSeleccionado==2){
       this.service.getColaboradoresInterventor(this.rolSeleccionado).subscribe({
@@ -85,6 +88,7 @@ export class LayoutPage implements OnInit {
             console.log("Respuesta Colaboradores: ", resp)
             this.UserInteractionService.dismissLoading();
             this.funcionarios=resp.data.datos.listadoColaboradores
+            this.secureStorage.set('colaboradores',this.funcionarios)
           }catch(error){
             console.error("Respuesta: ", error)
             this.UserInteractionService.dismissLoading();
@@ -101,6 +105,7 @@ export class LayoutPage implements OnInit {
             console.log("Respuesta Colaboradores: ", resp)
             this.UserInteractionService.dismissLoading();
             this.funcionarios=resp.data.datos.listadoColaboradores
+            this.secureStorage.set('colaboradores',this.funcionarios)
           }catch(error){
             console.error("Respuesta: ", error)
             this.UserInteractionService.dismissLoading();
@@ -115,7 +120,7 @@ export class LayoutPage implements OnInit {
 
   
   async params() {
-    this.param=this.moduleService.getParam();
+    this.param= await this.moduleService.getParam();
     console.log("params: ",this.param)
     this.service.getCaposFiltro().subscribe({
       next:async(resp)=>{
@@ -151,7 +156,7 @@ export class LayoutPage implements OnInit {
           console.log("resp: ",resp)
           this.rolesSelec=resp
           this.rolSeleccionado=resp[0].id
-          localStorage.setItem('rolSeleccionado',String(this.rolSeleccionado));
+          this.secureStorage.set('rolSeleccionado',String(this.rolSeleccionado))
           await this.menu(this.rolSeleccionado!)
         } catch (error) {
           console.error("Error en listarUsuarios:", error);
@@ -203,7 +208,7 @@ export class LayoutPage implements OnInit {
     this.permisosFiltros = data
     console.log("permisosFiltros",this.permisosFiltros)
     this.permisosService.setPermisos(data);
-    localStorage.setItem('permisos',JSON.stringify(data));
+    this.secureStorage.set('permisos',data)
     this.filtrosAbiertos = !this.filtrosAbiertos;
   }
 
@@ -218,7 +223,7 @@ export class LayoutPage implements OnInit {
 
   async abrirModalEditarFuncionario(id:number, editar:boolean, data:any) {
     this.permisosService.setPermisos(data);
-    localStorage.setItem('permisos',JSON.stringify(data));
+    this.secureStorage.set('permisos',data)
     const modal = await this.modalController.create({
       component: ModalEditarFuncionarioPage,
       componentProps: { idColaborador: id, editar: editar}

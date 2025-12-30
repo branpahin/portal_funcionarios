@@ -13,6 +13,7 @@ import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
 import { ComponenteBusquedaComponent } from 'src/app/components/componente-busqueda/componente-busqueda.component';
 import { IAlertAction } from 'src/interfaces/IAlertOptions';
 import { PermisosService } from 'src/services/permisos.service';
+import { SecureStorageService } from 'src/services/secure-storage.service';
 
 @Component({
   selector: 'app-modal-editar-funcionario',
@@ -69,14 +70,14 @@ export class ModalEditarFuncionarioPage implements OnInit {
   
   constructor(private cdRef: ChangeDetectorRef, private fb: FormBuilder, private moduleService:ModuleService, 
     private service:PortalService, private modalCtrl: ModalController, private UserInteractionService: UserInteractionService,
-    public permisosService: PermisosService
+    private secureStorage: SecureStorageService, public permisosService: PermisosService
   ) { 
     addIcons({ pencil, eye, close, add});
     this.formulario();
   }
 
-  formulario(){
-    const rol =  Number(localStorage.getItem('rolSeleccionado'));
+  async formulario(){
+    const rol = await this.secureStorage.get<number>('rolSeleccionado');
     if(rol == 153){
       this.empleadoForm = this.fb.group({
         ID: [0, Validators.required],
@@ -388,7 +389,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
   async colaboradores() {
     this.UserInteractionService.showLoading('Cargando...');
-    const rol = Number(localStorage.getItem('rolSeleccionado'));
+    const rol = await this.secureStorage.get<number>('rolSeleccionado');
     if(this.idColaborador){
       
       if(rol == 153){
@@ -634,7 +635,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
   async consultaEstados(estado:number) {
     
     this.UserInteractionService.showLoading('Cargando...');
-    const rol = Number(localStorage.getItem('rolSeleccionado'));
+    const rol = Number(await this.secureStorage.get('rolSeleccionado'));
     this.service.getCamposEstado(estado, rol).subscribe({
       next:async(resp)=>{
         try{
@@ -749,8 +750,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
   }
 
 
-  selec(lista:string, dato?:string){
-    this.param=this.moduleService.getFiltros();
+  async selec(lista:string, dato?:string){
+    this.param= await this.moduleService.getFiltros();
     if (lista === 'ID_NIVEL_EDUCATIVO') {
       lista = 'nivelEducativo'
       this.nivelesEducativos = this.param[lista] || [];
@@ -923,7 +924,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
   }
 
   async guardarEmpleado() {
-    const rol =  Number(localStorage.getItem('rolSeleccionado'));
+    const rol = await this.secureStorage.get<number>('rolSeleccionado');
     console.log("datos: ",this.empleadoForm.value)
     if (this.empleadoForm.invalid) {
       this.empleadoForm.markAllAsTouched();

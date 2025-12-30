@@ -41,8 +41,8 @@ export class ListadoUsuariosPage implements OnInit {
       public permisosService: PermisosService) {}
 
   async ngOnInit() {
-    this.param=this.moduleService.getParam();
-    this.filtros=this.moduleService.getFiltros();
+    this.param= await this.moduleService.getParam();
+    this.filtros= await this.moduleService.getFiltros();
     this.estadosProcesoCatalogo = this.filtros['estados_Proceso'] || [];
     await this.colaboradores()
   }

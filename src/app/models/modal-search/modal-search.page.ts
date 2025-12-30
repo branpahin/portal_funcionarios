@@ -21,7 +21,7 @@ export class ModalSearchPage implements OnInit {
 
   constructor(private modalCtrl: ModalController, private service:PortalService, private moduleService:ModuleService,) {}
   async ngOnInit() {
-    this.param=this.moduleService.getParam();
+    this.param= await this.moduleService.getParam();
     this.listarUsuarios();
   }
 

@@ -44,7 +44,7 @@ export class CreacionUsuarioPage implements OnInit {
 
   async ngOnInit() {
     console.log("usuario: ",this.usuario)
-    this.param=this.moduleService.getFiltros();
+    this.param= await this.moduleService.getFiltros();
     this.empleadoForm.get('ID_EMPRESA')?.valueChanges.subscribe(value => {
       this.selec('empresas');
     });
@@ -160,8 +160,8 @@ export class CreacionUsuarioPage implements OnInit {
     })
   }
 
-  selec(lista:string, dato?:string){
-    this.param=this.moduleService.getFiltros();
+  async selec(lista:string, dato?:string){
+    this.param= await this.moduleService.getFiltros();
     if (lista === 'ciudadTrabajo') {
       this.ciudadTrabajo = this.param[lista] || [];
     } else if (lista === 'empresas') {

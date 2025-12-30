@@ -19,6 +19,7 @@ export enum TypeServicio{
     getGerencias = 'Colaboradores/GetGerencias',
     getGetAreas = 'Colaboradores/GetAreas',
     getGetCCO = 'Colaboradores/GetCCO',
+    GenerarReporteXlsx = 'Colaboradores/GenerarReporteXlsx',
     ActualizarEstadoColaborador = 'Colaboradores/ActualizarEstadoColaborador',
     putInfoColaborador = 'Colaboradores/ActualizarColaborador',
     putInfoColaboradorInterv = 'Interventor/ActualizarColaboradorInterv',

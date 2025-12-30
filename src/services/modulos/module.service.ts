@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { SecureStorageService } from '../secure-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -6,28 +7,26 @@ import { Injectable } from '@angular/core';
 export class ModuleService {
   private params:any
   private filtros:any
-  constructor() { }
+  constructor(private secureStorage: SecureStorageService) { }
 
   setParam(datos:any):void {
     this.params=datos
-    localStorage.setItem('params', JSON.stringify(datos));
+    this.secureStorage.set('params',datos)
   }
-  getParam(){
+  async getParam(){
     if (!this.params) {
-      const storedData = localStorage.getItem('params');
-      this.params = storedData ? JSON.parse(storedData) : null;
+      this.params = await this.secureStorage.get<any>('params');
     }
     return this.params
   }
 
   setFiltros(datos:any):void {
     this.filtros=datos
-    localStorage.setItem('filtros', JSON.stringify(datos));
+    this.secureStorage.set('filtros',datos)
   }
-  getFiltros(){
+  async getFiltros(){
     if (!this.filtros) {
-      const storedData = localStorage.getItem('filtros');
-      this.filtros = storedData ? JSON.parse(storedData) : null;
+      this.filtros = await this.secureStorage.get<any>('filtros');
     }
     return this.filtros
   }

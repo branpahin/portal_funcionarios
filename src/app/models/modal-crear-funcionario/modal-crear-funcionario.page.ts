@@ -14,6 +14,7 @@ import { BuscadorSelectWrapperComponent } from 'src/app/components/buscador-sele
 import { ComponenteBusquedaComponent } from 'src/app/components/componente-busqueda/componente-busqueda.component';
 import { PermisosService } from 'src/services/permisos.service';
 import { IAlertAction } from 'src/interfaces/IAlertOptions';
+import { SecureStorageService } from 'src/services/secure-storage.service';
 
 @Component({
   selector: 'app-modal-crear-funcionario',
@@ -66,7 +67,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
 
   constructor(private fb: FormBuilder, private moduleService:ModuleService, private service:PortalService, 
     private modalCtrl: ModalController, private UserInteractionService: UserInteractionService,
-    public permisosService: PermisosService) 
+    private secureStorage: SecureStorageService, public permisosService: PermisosService) 
   {
     addIcons({ pencil, eye, close, add}); 
   }
@@ -97,8 +98,8 @@ export class ModalCrearFuncionarioPage implements OnInit {
     return control?.invalid && control?.touched ? true : false;
   }
 
-  ngOnInit() {
-    this.param=this.moduleService.getFiltros();
+  async ngOnInit() {
+    this.param= await this.moduleService.getFiltros();
     this.empleadoForm.get('TIENE_HIJOS')?.valueChanges.subscribe(value => {
       if (value === 1) { // Suponiendo que "1" significa "Sí, tiene hijos"
         this.agregarHijo(); // Llamamos a la función para agregar el formulario de hijos
@@ -327,7 +328,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
   
 
   async guardarEmpleado() {
-    const rol =  Number(localStorage.getItem('rolSeleccionado'));
+    const rol = await this.secureStorage.get<number>('rolSeleccionado');
     if (this.empleadoForm.invalid) {
       this.empleadoForm.markAllAsTouched();
       return;

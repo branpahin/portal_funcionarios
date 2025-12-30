@@ -7,6 +7,7 @@ import { ModuleService } from 'src/services/modulos/module.service';
 import { HttpClient } from '@angular/common/http';
 import { UserInteractionService } from 'src/services/user-interaction-service.service';
 import { Router } from '@angular/router';
+import { SecureStorageService } from 'src/services/secure-storage.service';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,8 @@ import { Router } from '@angular/router';
 export class LoginPage implements OnInit {
   form: FormGroup;
   private router = inject(Router)
-  constructor(private fb: FormBuilder, private service:PortalService, private moduleService:ModuleService, private UserInteractionService: UserInteractionService) { 
+  constructor(private fb: FormBuilder, private service:PortalService, private moduleService:ModuleService, 
+    private UserInteractionService: UserInteractionService) { 
     this.form = this.fb.group({
       usuario_equipo: ['', [Validators.required]],
       password: ['', [Validators.required]],

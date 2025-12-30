@@ -61,7 +61,15 @@ ion-content {
 }
 
 .action-card {
+  position: relative;
   border-radius: 12px;
   margin-bottom: 16px;
   cursor: pointer;
+}
+
+.card-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
 }

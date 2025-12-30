@@ -34,7 +34,7 @@ export class ModalCrearFiltroPage implements OnInit {
     }
 
   async ngOnInit() {
-    this.param=this.moduleService.getFiltros();
+    this.param= await this.moduleService.getFiltros();
     console.log("usuario: ",this.data)
     if(this.data && this.editar==true){
       this.filtroForm.patchValue({

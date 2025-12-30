@@ -11,6 +11,7 @@ import { UserInteractionService } from 'src/services/user-interaction-service.se
 import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
 import { IAlertAction } from 'src/interfaces/IAlertOptions';
 import { PermisosService } from 'src/services/permisos.service';
+import { SecureStorageService } from 'src/services/secure-storage.service';
 
 @Component({
   selector: 'app-listado-colaboradores',
@@ -48,20 +49,22 @@ export class ListadoColaboradoresPage implements OnInit {
     private modalController: ModalController,
     private fb: FormBuilder,
     private UserInteractionService: UserInteractionService,
-    public permisosService: PermisosService
+    private secureStorage: SecureStorageService,
+    public permisosService: PermisosService,
   ) 
     {}
 
   async ngOnInit() {
-    this.param=this.moduleService.getParam();
+    this.param= await this.moduleService.getParam();
     await this.colaboradores()
   }
 
   async colaboradores() {
     
     this.UserInteractionService.showLoading('Cargando...');
+    console.log("this.param.estado_Proceso: ",this.param)
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
-    const rol =  Number(localStorage.getItem('rolSeleccionado'));
+    const rol =  await this.secureStorage.get<number>('rolSeleccionado');
     if(rol==153){
       this.service.getColaboradoresInterventor(rol).subscribe({
         next:async(resp)=>{
@@ -156,8 +159,9 @@ export class ListadoColaboradoresPage implements OnInit {
     }
   }
 
-  formCrear(){
-    const rol =  Number(localStorage.getItem('rolSeleccionado'));
+  async formCrear(){
+    const rol =  await this.secureStorage.get<number>('rolSeleccionado');
+    console.log("rol: ",rol)
     if(rol == 153){
       return this.empleadoForm = this.fb.group({
         ID: [0, Validators.required],
@@ -258,7 +262,7 @@ export class ListadoColaboradoresPage implements OnInit {
   async abrirModalCrearFuncionario() {
     const modal = await this.modalController.create({
       component: ModalCrearFuncionarioPage,
-      componentProps: { empleadoForm: this.formCrear() }
+      componentProps: { empleadoForm: await this.formCrear() }
     });
 
     modal.style.cssText = `
@@ -329,7 +333,7 @@ export class ListadoColaboradoresPage implements OnInit {
   }
 
   async inactivacionConfirmada(datos:any){
-    const rol =  Number(localStorage.getItem('rolSeleccionado'));
+    const rol =  await this.secureStorage.get<number>('rolSeleccionado');
     if(rol == 153){
       this.UserInteractionService.showLoading('Guardando...');
       this.service.putInactivarUsuarioInterv(datos).subscribe({
@@ -408,7 +412,7 @@ export class ListadoColaboradoresPage implements OnInit {
   }
 
   private async mostrarAlertEstados(data: any, observacion: string) {
-    const filtros = this.moduleService.getFiltros();
+    const filtros = await this.moduleService.getFiltros();
     const estados = filtros['estados_Proceso'] || [];
 
     const alertInputs = estados.map((e: any) => ({
@@ -449,7 +453,7 @@ export class ListadoColaboradoresPage implements OnInit {
   }
 
   async activacionConfirmada(datos:any){
-    const rol =  Number(localStorage.getItem('rolSeleccionado'));
+    const rol =  await this.secureStorage.get<number>('rolSeleccionado');
     if(rol == 153){
       this.UserInteractionService.showLoading('Guardando...');
       this.service.putActivarColaboradorInterv(datos).subscribe({

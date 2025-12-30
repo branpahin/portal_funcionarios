@@ -25,6 +25,7 @@ export class PortalService {
   private getGerencia = TypeServicio.getGerencias
   private getGetAreas = TypeServicio.getGetAreas
   private getGetCCO = TypeServicio.getGetCCO
+  private generarReporteXlsx = TypeServicio.GenerarReporteXlsx
   private ActualizarEstadoColaborador = TypeServicio.ActualizarEstadoColaborador
   private putInfoColaborador = TypeServicio.putInfoColaborador
   private putInfoColaboradorInterv = TypeServicio.putInfoColaboradorInterv
@@ -100,6 +101,10 @@ export class PortalService {
 
   getGetAplicativos(): Observable<any>{
     return this.httpService.GetCore(this.GetAplicativos);
+  }
+
+  getGenerarReporte(): Observable<any>{
+    return this.httpService.GetCore(this.generarReporteXlsx);
   }
 
   getGerencias(idGerencia:number): Observable<any>{

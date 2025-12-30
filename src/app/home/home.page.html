@@ -24,23 +24,24 @@
                             ? abrirModalEditarFuncionario(0, true, item.permisos) 
                             : null">
 
+                <ion-badge
+                    *ngIf="item.href=='/layout/listado-colaboradores' && funcionarios.length > 0"
+                    class="card-badge"
+                    color="danger">
+                    {{ funcionarios.length }}
+                </ion-badge>
                 <ion-card-header>
-                <ion-card-title>{{ item.name }}</ion-card-title>
+                    <ion-card-title>{{ item.name }}</ion-card-title>
                 </ion-card-header>
 
                 <ion-card-content>
 
-                <!-- Descripción si viene -->
-                {{ item.descripcion || 'Accede a esta funcionalidad.' }}
+                    <!-- Descripción si viene -->
+                    {{ item.descripcion || 'Accede a esta funcionalidad.' }}
 
-                <!-- Badge especial si es colaboradores -->
-                <!-- <ion-badge color="danger" *ngIf="item.href=='/layout/listado-colaboradores' && funcionarios.length > 0">
-                    {{funcionarios.length}}
-                </ion-badge> -->
+                </ion-card-content>
 
-            </ion-card-content>
-
-        </ion-card>
+            </ion-card>
 
         </div>
     </div>

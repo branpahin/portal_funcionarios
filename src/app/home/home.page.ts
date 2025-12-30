@@ -10,6 +10,7 @@ import { ModalController } from '@ionic/angular';
 import { MenuStateService } from 'src/services/menu-state.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SecureStorageService } from 'src/services/secure-storage.service';
 
 interface MenuItem {
   name: string
@@ -30,6 +31,7 @@ export class HomePage {
   greetingMessage: string = '';
   homeMenuItems:any;
   menuSub: any;
+  funcionarios:any[]=[];
 
   constructor(private service:PortalService, 
     private moduleService:ModuleService,
@@ -38,19 +40,23 @@ export class HomePage {
     private permisosService:PermisosService,
     private UserInteractionService: UserInteractionService,
     private modalController: ModalController,
+    private secureStorage: SecureStorageService,
     private menuState: MenuStateService) {}
 
   ngOnInit() {
     this.setGreetingMessage();
-    this.menuSub = this.menuState.menuItems$.subscribe(menu => {
+    this.menuSub = this.menuState.menuItems$.subscribe(async menu => {
 
       this.homeMenuItems = menu.filter(item =>
         (item.accion === 'I' || item.href === '/layout/modal-editar-funcionario')
          && item.href !== '/layout/home'
         
       );
+      const data = await this.secureStorage.get<any[]>('colaboradores');
+      this.funcionarios = data ?? [];
 
     });
+    
   }
 
   ngOnDestroy() {
@@ -72,7 +78,7 @@ export class HomePage {
 
   async abrirModalEditarFuncionario(id:number, editar:boolean, data:any) {
     this.permisosService.setPermisos(data);
-    localStorage.setItem('permisos',JSON.stringify(data));
+    this.secureStorage.set('permisos',data)
     const modal = await this.modalController.create({
       component: ModalEditarFuncionarioPage,
       componentProps: { idColaborador: id, editar: editar}
