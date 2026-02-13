@@ -35,14 +35,12 @@ export class ComponenteBusquedaComponent {
     if(!this.multiple){
       this.selectedItems = [this.selec];
     }else{
-      console.log("seleccion:",this.selec)
       for(let data of this.selec)
       this.selectedItems.push(data);
     }
   }
 
   toggleSelect(item: any) {
-    console.log("selecciona: ",this.selectedItems)
     if (this.multiple) {
       const index = this.selectedItems.findIndex(sel => sel === item);
       if (index > -1) this.selectedItems.splice(index, 1);

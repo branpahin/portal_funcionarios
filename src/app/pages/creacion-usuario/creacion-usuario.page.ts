@@ -43,7 +43,7 @@ export class CreacionUsuarioPage implements OnInit {
     }
 
   async ngOnInit() {
-    console.log("usuario: ",this.usuario)
+    //console.log("usuario: ",this.usuario)
     this.param= await this.moduleService.getFiltros();
     this.empleadoForm.get('ID_EMPRESA')?.valueChanges.subscribe(value => {
       this.selec('empresas');
@@ -57,7 +57,7 @@ export class CreacionUsuarioPage implements OnInit {
     this.empleadoForm.get('ESTADO_PROCESO')?.valueChanges.subscribe(value => {
       this.selec('estados_Proceso');
     });
-    console.log("usuario: ",this.usuario)
+    //console.log("usuario: ",this.usuario)
     if(this.usuario){
       this.empleadoForm.patchValue({
         ID_EMPRESA: Number(this.usuario.empresa),
@@ -100,7 +100,7 @@ export class CreacionUsuarioPage implements OnInit {
     const { data } = await modal.onWillDismiss();
     if (data) {
       this.cedulaSeleccionada = data;
-      console.log("datos: ",data)
+      //console.log("datos: ",data)
       this.nombre=data.nombres
       this.apellido=data.apellidos
       this.empleadoForm.patchValue({
@@ -118,7 +118,7 @@ export class CreacionUsuarioPage implements OnInit {
       next:async(data)=>{
         try {
           const resp=data.data.datos.listadoColaboradores
-          console.log("resp: ",resp)
+          //console.log("resp: ",resp)
           // Buscar coincidencia por cedula (identificacion)
           const coincidencia = resp.find((item: any) => item.identificacion === String(this.usuario.identificacion));
 
@@ -176,7 +176,7 @@ export class CreacionUsuarioPage implements OnInit {
 
   guardarUsuario(){
     
-    console.log("formValue :",this.empleadoForm.value)
+    //console.log("formValue :",this.empleadoForm.value)
     if(this.empleadoForm.valid){
       this.UserInteractionService.showLoading('Guardando...');
       const formValue = this.empleadoForm.value;
@@ -190,7 +190,7 @@ export class CreacionUsuarioPage implements OnInit {
         this.service.postCrearUsuario(payload).subscribe({
           next: async (resp) => {
             try {
-              console.log("Respuesta:", resp);
+              //console.log("Respuesta:", resp);
               this.UserInteractionService.dismissLoading()
               this.UserInteractionService.presentToast('Información guardada',TypeThemeColor.SUCCESS)
               this.cerrarModal();
@@ -211,7 +211,7 @@ export class CreacionUsuarioPage implements OnInit {
         this.service.putActualizarUsuario(payload).subscribe({
           next: async (resp) => {
             try {
-              console.log("Respuesta:", resp);
+              //console.log("Respuesta:", resp);
               this.UserInteractionService.dismissLoading()
               this.UserInteractionService.presentToast('Actualización realizada',TypeThemeColor.SUCCESS)
               this.cerrarModal();

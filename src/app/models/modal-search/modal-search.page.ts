@@ -31,7 +31,7 @@ export class ModalSearchPage implements OnInit {
     this.service.getListarUsuariosAgregar().subscribe({
       next:async(resp)=>{
         try{
-          console.log("Respuesta Login: ", resp)
+          //console.log("Respuesta Login: ", resp)
           this.funcionarios=resp.data.datos.listadoColaboradores
           this.cedulasFiltradas= this.funcionarios;
         }catch(error){

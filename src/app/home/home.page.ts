@@ -73,7 +73,6 @@ export class HomePage {
 
   goTo(route: string) {
     // Aquí navegas a la página que quieras
-    console.log("Navegar a:", route);
   }
 
   async abrirModalEditarFuncionario(id:number, editar:boolean, data:any) {

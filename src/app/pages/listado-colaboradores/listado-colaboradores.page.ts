@@ -62,14 +62,14 @@ export class ListadoColaboradoresPage implements OnInit {
   async colaboradores() {
     
     this.UserInteractionService.showLoading('Cargando...');
-    console.log("this.param.estado_Proceso: ",this.param)
+    //console.log("this.param.estado_Proceso: ",this.param)
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
     const rol =  await this.secureStorage.get<number>('rolSeleccionado');
     if(rol==153){
       this.service.getColaboradoresInterventor(rol).subscribe({
         next:async(resp)=>{
           try{
-            console.log("Respuesta Colaboradores: ", resp)
+            //console.log("Respuesta Colaboradores: ", resp)
             this.UserInteractionService.dismissLoading();
             this.funcionarios=resp.data.datos.listadoColaboradores
           }catch(error){
@@ -85,7 +85,7 @@ export class ListadoColaboradoresPage implements OnInit {
       this.service.getColaboradores(this.param.estado_Proceso,this.param.ciudad).subscribe({
         next:async(resp)=>{
           try{
-            console.log("Respuesta Colaboradores: ", resp)
+            //console.log("Respuesta Colaboradores: ", resp)
             this.UserInteractionService.dismissLoading();
             this.funcionarios=resp.data.datos.listadoColaboradores
           }catch(error){
@@ -161,7 +161,7 @@ export class ListadoColaboradoresPage implements OnInit {
 
   async formCrear(){
     const rol =  await this.secureStorage.get<number>('rolSeleccionado');
-    console.log("rol: ",rol)
+    //console.log("rol: ",rol)
     if(rol == 153){
       return this.empleadoForm = this.fb.group({
         ID: [0, Validators.required],
@@ -339,7 +339,7 @@ export class ListadoColaboradoresPage implements OnInit {
       this.service.putInactivarUsuarioInterv(datos).subscribe({
         next: async (resp) => {
           try {
-            console.log("Respuesta:", resp);
+            //console.log("Respuesta:", resp);
             this.UserInteractionService.dismissLoading();
             this.UserInteractionService.presentToast('Inactivación realizada', TypeThemeColor.SUCCESS);
             await this.colaboradores();
@@ -359,7 +359,7 @@ export class ListadoColaboradoresPage implements OnInit {
       this.service.putInactivarUsuario(datos).subscribe({
         next: async (resp) => {
           try {
-            console.log("Respuesta:", resp);
+            //console.log("Respuesta:", resp);
             this.UserInteractionService.dismissLoading();
             this.UserInteractionService.presentToast('Inactivación realizada', TypeThemeColor.SUCCESS);
             await this.colaboradores();
@@ -459,7 +459,7 @@ export class ListadoColaboradoresPage implements OnInit {
       this.service.putActivarColaboradorInterv(datos).subscribe({
         next: async (resp) => {
           try {
-            console.log("Respuesta:", resp);
+            //console.log("Respuesta:", resp);
             this.UserInteractionService.dismissLoading();
             this.UserInteractionService.presentToast('Activación realizada', TypeThemeColor.SUCCESS);
             await this.colaboradores();
@@ -479,7 +479,7 @@ export class ListadoColaboradoresPage implements OnInit {
       this.service.putActivarColaborador(datos).subscribe({
         next: async (resp) => {
           try {
-            console.log("Respuesta:", resp);
+            //console.log("Respuesta:", resp);
             this.UserInteractionService.dismissLoading();
             this.UserInteractionService.presentToast('Activación realizada', TypeThemeColor.SUCCESS);
             await this.colaboradores();
@@ -555,7 +555,7 @@ export class ListadoColaboradoresPage implements OnInit {
       this.service.postAprobarRechazarColaborador(data).subscribe({
           next: async (resp) => {
             try {
-              console.log("Respuesta:", resp);
+              //console.log("Respuesta:", resp);
               this.UserInteractionService.dismissLoading();
               this.ngOnInit();
             } catch (error) {

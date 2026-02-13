@@ -33,7 +33,6 @@ export class BuscadorSelectWrapperComponent {
   }
 
   async abrirModal() {
-    console.log("this.options: ",this.options)
     const modal = await this.modalCtrl.create({
       component: ComponenteBusquedaComponent,
       componentProps: {
@@ -48,7 +47,6 @@ export class BuscadorSelectWrapperComponent {
 
     const { data } = await modal.onWillDismiss();
     if (data) {
-      console.log("data: ",data)
       this.selectedItems = this.multiple ? data : [data];
       this.seleccion.emit(data);
     }

@@ -48,7 +48,7 @@ export class ListadoUsuariosPage implements OnInit {
   }
 
   async estadoProceso(response:any){
-    console.log("procesos: ",this.estadosProcesoCatalogo)
+    //console.log("procesos: ",this.estadosProcesoCatalogo)
     this.funcionarios = response.map((f:any) => {
       const ids = f.estadO_PROCESO.split(',').map((id: string) => parseInt(id.trim(), 10));
       const descripciones = this.estadosProcesoCatalogo
@@ -67,7 +67,7 @@ export class ListadoUsuariosPage implements OnInit {
     this.service.getConsultatUsuarios().subscribe({
       next:async(resp)=>{
         try{
-          console.log("Respuesta Login: ", resp)
+          //console.log("Respuesta Login: ", resp)
           this.funcionarios=resp.data.datos.listadoUsuariosAPP
           await this.estadoProceso(this.funcionarios)
           this.UserInteractionService.dismissLoading()

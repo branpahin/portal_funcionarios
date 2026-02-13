@@ -20,7 +20,6 @@ export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: R
     const navigation = router.getCurrentNavigation();
     
     const navigationState = navigation?.extras?.state as { fromMenu?: boolean };
-    console.log("navigation: ",navigationState)
     const permisos = navigation?.extras?.state?.['permisos'] || {};
     permisosService.setPermisos(permisos);
 

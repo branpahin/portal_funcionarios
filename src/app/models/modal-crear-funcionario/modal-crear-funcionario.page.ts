@@ -124,7 +124,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
   
   async abrirModal(label:string, options:any, displayProperty:string, multiple:boolean) {
     const datos = await this.getDataSeleccion(label, options);
-    console.log("datos: ",options)
     const modal = await this.modalCtrl.create({
       component: ComponenteBusquedaComponent,
       componentProps: {
@@ -139,7 +138,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
     await modal.present();
 
     const { data } = await modal.onWillDismiss();
-    console.log(data)
     if (data) {
       if (multiple) {
         const idsSeleccionados = data.map((item: any) => item.id);
@@ -173,10 +171,8 @@ export class ModalCrearFuncionarioPage implements OnInit {
     this.service.getGerencias(idCiudad).subscribe({
         next:async(resp)=>{
           try{
-            console.log("resp: ",resp)
             this.gerencias =resp.data.datos.gerencias
             this.param['gerencias'] = [...this.gerencias];
-            console.log("params: ",this.param)
             this.UserInteractionService.dismissLoading();
           }catch(error){
             console.error("Respuesta Login: ", error)
@@ -195,10 +191,8 @@ export class ModalCrearFuncionarioPage implements OnInit {
     this.service.getAreas(idCiudad, idGerencia).subscribe({
         next:async(resp)=>{
           try{
-            console.log("resp: ",resp)
             this.areas =resp.data.datos.areas
             this.param['areas'] = [...this.areas];
-            console.log("params: ",this.param)
             this.UserInteractionService.dismissLoading();
           }catch(error){
             console.error("Respuesta Login: ", error)
@@ -217,7 +211,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
     this.service.getCCO(idCiudad,idGerencia,idArea).subscribe({
         next:async(resp)=>{
           try{
-            console.log("resp: ",resp)
             this.cco =resp.data.datos.areas
             this.UserInteractionService.dismissLoading();
           }catch(error){
@@ -322,7 +315,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
 
   motrarHijos(){
     this.mostrarHijo=!this.mostrarHijo
-    console.log(this.empleadoForm.value)
   }
 
   
@@ -334,7 +326,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
       return;
     }
     if (this.empleadoForm.valid) {
-      console.log("entro")
       if (this.imagenSeleccionada) {
         if(rol==153){
           await this.enviarColaboradorInterventor()
@@ -367,7 +358,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
           );
       }
 
-      console.log(this.empleadoForm.value);
     }
   }
 
@@ -426,7 +416,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
                 this.service.postCrearColaborador(formData).subscribe({
                   next: async (resp) => {
                     try {
-                      console.log("Respuesta:", resp);
                       this.UserInteractionService.dismissLoading();
                       this.UserInteractionService.presentToast('Usuario creado con exito', TypeThemeColor.SUCCESS);
                       this.cerrarModal();
@@ -459,7 +448,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
       this.service.postCrearColaborador(formData).subscribe({
         next: async (resp) => {
           try {
-            console.log("Respuesta:", resp);
             this.UserInteractionService.dismissLoading();
             this.UserInteractionService.presentToast('Usuario creado con exito', TypeThemeColor.SUCCESS);
             this.cerrarModal();
@@ -534,7 +522,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
                 this.service.postCrearColaboradorInterventor(formData).subscribe({
                   next: async (resp) => {
                     try {
-                      console.log("Respuesta:", resp);
                       this.UserInteractionService.dismissLoading();
                       this.UserInteractionService.presentToast('Usuario creado con exito', TypeThemeColor.SUCCESS);
                       this.cerrarModal();
@@ -567,7 +554,6 @@ export class ModalCrearFuncionarioPage implements OnInit {
       this.service.postCrearColaboradorInterventor(formData).subscribe({
         next: async (resp) => {
           try {
-            console.log("Respuesta:", resp);
             this.UserInteractionService.dismissLoading();
             this.UserInteractionService.presentToast('Usuario creado con exito', TypeThemeColor.SUCCESS);
             this.cerrarModal();

@@ -7,7 +7,7 @@ import { TypeUrlDev } from "src/app/enums/TypeUrl";
 export const environment = {
   production: false,
   mensaje: 'Estamos en desarrollo',
-	server: TypeUrlDev.portal,
+	server: TypeUrlDev.portalPROD,
   version: "1.0"
 };
 

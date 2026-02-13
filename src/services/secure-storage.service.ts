@@ -5,19 +5,30 @@ import { Injectable } from "@angular/core";
 })
 export class SecureStorageService {
 
-  private secret = 'MI_CLAVE_SUPER_SECRETA'; // ⚠️ mejor derivarla dinámicamente
+  private secret = 'MI_CLAVE_SUPER_SECRETA';
+  private canUseCrypto = window.isSecureContext && !!window.crypto?.subtle;
 
   async set(key: string, value: any) {
-    const encrypted = await this.encrypt(JSON.stringify(value));
-    localStorage.setItem(key, encrypted);
+    const text = JSON.stringify(value);
+
+    if (this.canUseCrypto) {
+      const encrypted = await this.encrypt(text);
+      localStorage.setItem(key, encrypted);
+    } else {
+      localStorage.setItem(key, btoa(text));
+    }
   }
 
   async get<T>(key: string): Promise<T | null> {
     const data = localStorage.getItem(key);
     if (!data) return null;
 
-    const decrypted = await this.decrypt(data);
-    return JSON.parse(decrypted);
+    if (this.canUseCrypto) {
+      const decrypted = await this.decrypt(data);
+      return JSON.parse(decrypted);
+    } else {
+      return JSON.parse(atob(data));
+    }
   }
 
   remove(key: string) {
@@ -29,7 +40,7 @@ export class SecureStorageService {
   }
 
   // ===========================
-  // ENCRIPTACIÓN
+  // ENCRIPTACIÓN (solo HTTPS)
   // ===========================
 
   private async encrypt(text: string): Promise<string> {
@@ -61,20 +72,20 @@ export class SecureStorageService {
     return new TextDecoder().decode(decrypted);
   }
 
-    private async getKey(): Promise<CryptoKey> {
-        const keyMaterial = await crypto.subtle.digest(
-            'SHA-256',
-            new TextEncoder().encode(this.secret)
-        );
+  private async getKey(): Promise<CryptoKey> {
+    const keyMaterial = await crypto.subtle.digest(
+      'SHA-256',
+      new TextEncoder().encode(this.secret)
+    );
 
-        return crypto.subtle.importKey(
-            'raw',
-            keyMaterial,
-            { name: 'AES-GCM' },
-            false,
-            ['encrypt', 'decrypt']
-        );
-    }
+    return crypto.subtle.importKey(
+      'raw',
+      keyMaterial,
+      { name: 'AES-GCM' },
+      false,
+      ['encrypt', 'decrypt']
+    );
+  }
 
   private bufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
     return btoa(String.fromCharCode(...new Uint8Array(buffer)));
@@ -85,9 +96,9 @@ export class SecureStorageService {
     const bytes = new Uint8Array(binary.length);
 
     for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
+      bytes[i] = binary.charCodeAt(i);
     }
 
     return bytes.buffer;
-    }
+  }
 }

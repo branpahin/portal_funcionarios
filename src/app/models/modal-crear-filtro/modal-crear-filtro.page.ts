@@ -35,7 +35,6 @@ export class ModalCrearFiltroPage implements OnInit {
 
   async ngOnInit() {
     this.param= await this.moduleService.getFiltros();
-    console.log("usuario: ",this.data)
     if(this.data && this.editar==true){
       this.filtroForm.patchValue({
         id: Number(this.data.id),
@@ -62,18 +61,15 @@ export class ModalCrearFiltroPage implements OnInit {
   guardarFiltro(){
     this.UserInteractionService.showLoading('Guardando...');
     
-    console.log('editar: ',this.editar)
     if(this.editar==false){
       this.filtroForm.removeControl('id');
     }
     const formValue = this.filtroForm.value;
-    console.log("formValue: ",formValue)
   
     if(!this.editar){
       this.service.postCrearFiltroDet(formValue).subscribe({
         next: async (resp) => {
           try {
-            console.log("Respuesta:", resp);
             this.UserInteractionService.dismissLoading()
             this.UserInteractionService.presentToast('Información guardada',TypeThemeColor.SUCCESS)
             this.cerrarModal();
@@ -94,7 +90,6 @@ export class ModalCrearFiltroPage implements OnInit {
       this.service.putActualzarFiltroDet(formValue).subscribe({
         next: async (resp) => {
           try {
-            console.log("Respuesta:", resp);
             this.UserInteractionService.dismissLoading()
             this.UserInteractionService.presentToast('Actualización realizada',TypeThemeColor.SUCCESS)
             this.cerrarModal();

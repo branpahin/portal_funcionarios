@@ -60,7 +60,6 @@ export class LayoutPage implements OnInit {
       });}
 
   async ngOnInit() {
-    console.log("this.isHome: ",this.isHome)
     await this.checkScreenSize();
     await this.roles()
   }
@@ -79,13 +78,11 @@ export class LayoutPage implements OnInit {
   async colaboradores() {
     
     this.UserInteractionService.showLoading('Cargando...');
-    console.log("this.param.estado_Proceso: ",this.param)
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
     if(this.rolSeleccionado==2){
       this.service.getColaboradoresInterventor(this.rolSeleccionado).subscribe({
         next:async(resp)=>{
           try{
-            console.log("Respuesta Colaboradores: ", resp)
             this.UserInteractionService.dismissLoading();
             this.funcionarios=resp.data.datos.listadoColaboradores
             this.secureStorage.set('colaboradores',this.funcionarios)
@@ -102,7 +99,6 @@ export class LayoutPage implements OnInit {
       this.service.getColaboradores(this.param.estado_Proceso,this.param.ciudad).subscribe({
         next:async(resp)=>{
           try{
-            console.log("Respuesta Colaboradores: ", resp)
             this.UserInteractionService.dismissLoading();
             this.funcionarios=resp.data.datos.listadoColaboradores
             this.secureStorage.set('colaboradores',this.funcionarios)
@@ -121,7 +117,6 @@ export class LayoutPage implements OnInit {
   
   async params() {
     this.param= await this.moduleService.getParam();
-    console.log("params: ",this.param)
     this.service.getCaposFiltro().subscribe({
       next:async(resp)=>{
         try{
@@ -137,7 +132,6 @@ export class LayoutPage implements OnInit {
     this.service.getNombresFiltros().subscribe({
       next:async(resp)=>{
         try{
-          console.log("datos: ",resp)
           this.filtros=resp.data.datos.nombres_Filtros;
           // this.moduleService.setFiltros(resp.data.datos)
           this.filtroKeys = this.filtros;
@@ -153,7 +147,6 @@ export class LayoutPage implements OnInit {
       next:async(data)=>{
         try {
           const resp=data.data.rolesUsuario
-          console.log("resp: ",resp)
           this.rolesSelec=resp
           this.rolSeleccionado=resp[0].id
           this.secureStorage.set('rolSeleccionado',String(this.rolSeleccionado))
@@ -174,7 +167,6 @@ export class LayoutPage implements OnInit {
       next:async(data)=>{
         try {
           
-          console.log("resp: ",data)
           const resp=data.data.menus
           this.menuItems = resp.map((item: any) => ({
             name: item.descripcion,
@@ -206,7 +198,6 @@ export class LayoutPage implements OnInit {
 
   toggleFiltros(data:any) {
     this.permisosFiltros = data
-    console.log("permisosFiltros",this.permisosFiltros)
     this.permisosService.setPermisos(data);
     this.secureStorage.set('permisos',data)
     this.filtrosAbiertos = !this.filtrosAbiertos;

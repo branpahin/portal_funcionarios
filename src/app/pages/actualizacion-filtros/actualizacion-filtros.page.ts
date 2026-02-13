@@ -61,7 +61,7 @@ export class ActualizacionFiltrosPage implements OnInit {
     this.service.getNombresFiltrosDet(this.tipoFiltro).subscribe({
       next:async(resp)=>{
         try{
-          console.log("datos: ",resp)
+          //console.log("datos: ",resp)
           this.filtros=resp.data.datos.filtros;
           this.cargando=false
         }catch(error){
