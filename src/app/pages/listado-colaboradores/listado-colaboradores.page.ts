@@ -24,9 +24,11 @@ import { SecureStorageService } from 'src/services/secure-storage.service';
 export class ListadoColaboradoresPage implements OnInit {
   param:any;
   funcionarios:any[]=[];
-  empleadoForm: FormGroup = new FormGroup({});
-  pageSize = 10; // Tamaño por página (10, 50, 100)
   currentPage = 1;
+  pageSize = 20;
+  totalRecords = 0;
+  serverSide = false;
+  empleadoForm: FormGroup = new FormGroup({});
   esPC: boolean | undefined;
   searchText = '';
   sortColumn = '';
@@ -60,48 +62,70 @@ export class ListadoColaboradoresPage implements OnInit {
   }
 
   async colaboradores() {
-    
+
     this.UserInteractionService.showLoading('Cargando...');
-    //console.log("this.param.estado_Proceso: ",this.param)
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
-    const rol =  await this.secureStorage.get<number>('rolSeleccionado');
-    if(rol==153){
+    const rol = await this.secureStorage.get<number>('rolSeleccionado');
+    if (rol == 153) {
+      this.serverSide = false;
       this.service.getColaboradoresInterventor(rol).subscribe({
-        next:async(resp)=>{
-          try{
-            //console.log("Respuesta Colaboradores: ", resp)
-            this.UserInteractionService.dismissLoading();
-            this.funcionarios=resp.data.datos.listadoColaboradores
-          }catch(error){
-            console.error("Respuesta: ", error)
-            this.UserInteractionService.dismissLoading();
-          }
-        },error:(err)=>{
+        next: async (resp) => {
+
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
-        }
-      })
-    }else{
-      this.service.getColaboradores(this.param.estado_Proceso,this.param.ciudad).subscribe({
-        next:async(resp)=>{
-          try{
-            //console.log("Respuesta Colaboradores: ", resp)
-            this.UserInteractionService.dismissLoading();
-            this.funcionarios=resp.data.datos.listadoColaboradores
-          }catch(error){
-            console.error("Respuesta: ", error)
-            this.UserInteractionService.dismissLoading();
-          }
-        },error:(err)=>{
+          this.funcionarios =
+            resp.data.datos.listadoColaboradores;
+          this.totalRecords = this.funcionarios.length;
+        },
+        error: (err) => {
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
-      })
+      });
+
+    } else {
+      this.serverSide = true;
+      
+      const payload = {
+        first: (this.currentPage - 1) * this.pageSize,
+        rows: this.pageSize,
+        sortField: this.sortColumn,
+        sortOrder: this.sortDirection === 'asc' ? 1 : 2,
+        filters: this.searchText
+          ? {
+              Nombres: [
+                {
+                  value: this.searchText,
+                  matchMode: 'contains',
+                  operator: 'and'
+                }
+              ]
+            }
+          : {}
+      };
+
+      console.log("payload: ",payload)
+
+      this.service.getColaboradoresPag(
+        JSON.stringify(payload)
+      ).subscribe({
+        next: async (resp) => {
+
+          this.UserInteractionService.dismissLoading();
+          this.funcionarios = resp.data.datos.listadoColaboradores;
+          this.totalRecords = resp.data.totalRecords;
+        },
+        error: (err) => {
+          this.UserInteractionService.dismissLoading();
+        }
+      });
     }
-    
   }
   
   get totalPages(): number {
+
+    if (this.serverSide) {
+      return Math.ceil(this.totalRecords / this.pageSize);
+    }
+
     return Math.ceil(this.funcionarios.length / this.pageSize);
   }
 
@@ -109,17 +133,31 @@ export class ListadoColaboradoresPage implements OnInit {
   //   const start = (this.currentPage - 1) * this.pageSize;
   //   return this.funcionarios.slice(start, start + this.pageSize);
   // }
+
+  onPageSizeChange() {
+    this.currentPage = 1;
+
+    if (this.serverSide) {
+      this.colaboradores();
+    }
+  }
+
   getSortIcon(column: string): string {
     if (this.sortColumn !== column) return 'swap-vertical-outline';
     return this.sortDirection === 'asc' ? 'chevron-up-outline' : 'chevron-down-outline';
   }
 
   get paginatedFuncionarios() {
+
+    if (this.serverSide) {
+      return this.funcionarios;
+    }
+
     let data = [...this.funcionarios];
 
-    // Filtro de búsqueda
     if (this.searchText) {
       const text = this.searchText.toLowerCase();
+
       data = data.filter(item =>
         Object.values(item).some(val =>
           val?.toString().toLowerCase().includes(text)
@@ -127,20 +165,25 @@ export class ListadoColaboradoresPage implements OnInit {
       );
     }
 
-    // Ordenamiento
     if (this.sortColumn) {
+
       data.sort((a, b) => {
+
         const valA = a[this.sortColumn];
         const valB = b[this.sortColumn];
+
         if (valA == null) return 1;
         if (valB == null) return -1;
+
         return this.sortDirection === 'asc'
           ? valA.toString().localeCompare(valB.toString(), 'es', { numeric: true })
           : valB.toString().localeCompare(valA.toString(), 'es', { numeric: true });
+
       });
     }
 
     const start = (this.currentPage - 1) * this.pageSize;
+
     return data.slice(start, start + this.pageSize);
   }
 
@@ -151,11 +194,16 @@ export class ListadoColaboradoresPage implements OnInit {
       this.sortColumn = column;
       this.sortDirection = 'asc';
     }
+    this.colaboradores();
   }
 
   changePage(page: number) {
-    if (page > 0 && page <= this.totalPages) {
-      this.currentPage = page;
+    if (page <= 0 || page > this.totalPages) {
+      return;
+    }
+    this.currentPage = page;
+    if (this.serverSide) {
+      this.colaboradores();
     }
   }
 

@@ -123,16 +123,40 @@
   </div>
 
   <div class="pagination">
-    <ion-button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
-      Anterior
-    </ion-button>
-    
-    <span>Página {{ currentPage }} de {{ totalPages }}</span>
-    
-    <ion-button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
-      Siguiente
-    </ion-button>
+
+  <div class="page-size">
+    <ion-label>Filas:</ion-label>
+
+    <ion-select
+      interface="popover"
+      [(ngModel)]="pageSize"
+      (ionChange)="onPageSizeChange()">
+
+      <ion-select-option [value]="10">10</ion-select-option>
+      <ion-select-option [value]="20">20</ion-select-option>
+      <ion-select-option [value]="50">50</ion-select-option>
+      <ion-select-option [value]="100">100</ion-select-option>
+
+    </ion-select>
   </div>
+
+  <ion-button
+    (click)="changePage(currentPage - 1)"
+    [disabled]="currentPage === 1">
+    Anterior
+  </ion-button>
+
+  <span>
+    Página {{ currentPage }} de {{ totalPages }}
+  </span>
+
+  <ion-button
+    (click)="changePage(currentPage + 1)"
+    [disabled]="currentPage === totalPages">
+    Siguiente
+  </ion-button>
+
+</div>
 
 
 </main>

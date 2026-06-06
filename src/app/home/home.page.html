@@ -25,10 +25,10 @@
                             : null">
 
                 <ion-badge
-                    *ngIf="item.href=='/layout/listado-colaboradores' && funcionarios.length > 0"
+                    *ngIf="item.href=='/layout/listado-colaboradores' && funcionarios"
                     class="card-badge"
                     color="danger">
-                    {{ funcionarios.length }}
+                    {{ funcionarios}}
                 </ion-badge>
                 <ion-card-header>
                     <ion-card-title>{{ item.name }}</ion-card-title>

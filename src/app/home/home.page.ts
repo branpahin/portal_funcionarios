@@ -31,7 +31,7 @@ export class HomePage {
   greetingMessage: string = '';
   homeMenuItems:any;
   menuSub: any;
-  funcionarios:any[]=[];
+  funcionarios:number = 0;
 
   constructor(private service:PortalService, 
     private moduleService:ModuleService,
@@ -52,8 +52,8 @@ export class HomePage {
          && item.href !== '/layout/home'
         
       );
-      const data = await this.secureStorage.get<any[]>('colaboradores');
-      this.funcionarios = data ?? [];
+      const data = await this.secureStorage.get<number>('colaboradores');
+      this.funcionarios = data ?? 0;
 
     });
     

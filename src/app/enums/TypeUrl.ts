@@ -7,6 +7,7 @@ export enum TypeServicio{
     login = 'Login/Loguear',
     camposFiltro = 'Colaboradores/GetCamposFiltros',
     colaboradores = 'Colaboradores/GetColaboradores',
+    colaboradoresPag = 'Colaboradores/GetColaboradoresPag',
     colaboradoresInterventor = 'Interventor/GetColaboradoresInterv',
     crearColaboradores = 'Colaboradores/CreateColaborador',
     crearColaboradoresInterv = 'Interventor/CreateColaboradorInterv',

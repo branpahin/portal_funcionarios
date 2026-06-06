@@ -13,6 +13,7 @@ export class PortalService {
   private login = TypeServicio.login
   private camposFiltro = TypeServicio.camposFiltro
   private colaboradores = TypeServicio.colaboradores
+  private colaboradoresPag = TypeServicio.colaboradoresPag
   private colaboradoresInterventor = TypeServicio.colaboradoresInterventor
   private CrearColaboradores = TypeServicio.crearColaboradores
   private crearColaboradoresInterv = TypeServicio.crearColaboradoresInterv
@@ -71,8 +72,12 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.GetMenu+"?Rol="+rol);
   }
 
-  getColaboradores(estado:number, ciudad:number): Observable<any>{
+  getColaboradores(): Observable<any>{
     return this.httpService.GetParamsCore(this.colaboradores);
+  }
+
+  getColaboradoresPag(pag:string): Observable<any>{
+    return this.httpService.GetParamsCore(this.colaboradoresPag+"?ServerSide="+pag);
   }
 
   getColaboradoresInterventor(idRol:number): Observable<any>{

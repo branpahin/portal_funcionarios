@@ -34,7 +34,7 @@ interface MenuItem {
 })
 export class LayoutPage implements OnInit {
   menuItems: MenuItem[] = []
-  funcionarios:any[]=[];
+  funcionarios:number=0;
   param:any;
   filtros:any;
   filtroKeys:any;
@@ -96,11 +96,19 @@ export class LayoutPage implements OnInit {
         }
       })
     }else{
-      this.service.getColaboradores(this.param.estado_Proceso,this.param.ciudad).subscribe({
+
+      const payload = {
+        first: 0,
+        rows: 20,
+        sortField: '',
+        sortOrder: '',
+        filters: {}
+      };
+      this.service.getColaboradoresPag(JSON.stringify(payload)).subscribe({
         next:async(resp)=>{
           try{
             this.UserInteractionService.dismissLoading();
-            this.funcionarios=resp.data.datos.listadoColaboradores
+            this.funcionarios=resp.data.totalRecords
             this.secureStorage.set('colaboradores',this.funcionarios)
           }catch(error){
             console.error("Respuesta: ", error)
