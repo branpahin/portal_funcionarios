@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { ModuleService } from 'src/services/modulos/module.service';
@@ -12,6 +12,7 @@ import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
 import { IAlertAction } from 'src/interfaces/IAlertOptions';
 import { PermisosService } from 'src/services/permisos.service';
 import { SecureStorageService } from 'src/services/secure-storage.service';
+import { IonSearchbar } from '@ionic/angular';
 
 @Component({
   selector: 'app-listado-colaboradores',
@@ -22,14 +23,20 @@ import { SecureStorageService } from 'src/services/secure-storage.service';
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ListadoColaboradoresPage implements OnInit {
+
+  @ViewChild('searchBar')
+  searchBar!: IonSearchbar;
+
   param:any;
   funcionarios:any[]=[];
+  estados_Proceso: any[] = [];
   currentPage = 1;
   pageSize = 20;
   totalRecords = 0;
-  serverSide = false;
+  serverSide = true;
   empleadoForm: FormGroup = new FormGroup({});
   esPC: boolean | undefined;
+  searchField = 'Nombres';
   searchText = '';
   sortColumn = '';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -58,55 +65,38 @@ export class ListadoColaboradoresPage implements OnInit {
 
   async ngOnInit() {
     this.param= await this.moduleService.getParam();
+    const param= await this.moduleService.getFiltros();
+    this.estados_Proceso = param["estados_Proceso"] || [];
     await this.colaboradores()
   }
 
   async colaboradores() {
-
     this.UserInteractionService.showLoading('Cargando...');
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
     const rol = await this.secureStorage.get<number>('rolSeleccionado');
-    if (rol == 153) {
-      this.serverSide = false;
-      this.service.getColaboradoresInterventor(rol).subscribe({
-        next: async (resp) => {
-
-          this.UserInteractionService.dismissLoading();
-          this.funcionarios =
-            resp.data.datos.listadoColaboradores;
-          this.totalRecords = this.funcionarios.length;
-        },
-        error: (err) => {
-          this.UserInteractionService.dismissLoading();
+    const filters: any = {};
+    this.searchText=String(this.searchText)
+    if (this.searchText?.trim()) {
+      filters[this.searchField] = [
+        {
+          value: this.searchText.trim(),
+          matchMode: 'contains',
+          operator: 'and'
         }
-      });
+      ];
+    }
+    
+    const payload = {
+      first: (this.currentPage - 1) * this.pageSize,
+      rows: this.pageSize,
+      sortField: this.sortColumn,
+      sortOrder: this.sortDirection === 'asc' ? 1 : 2,
+      filters
+    };
 
-    } else {
-      this.serverSide = true;
-      
-      const payload = {
-        first: (this.currentPage - 1) * this.pageSize,
-        rows: this.pageSize,
-        sortField: this.sortColumn,
-        sortOrder: this.sortDirection === 'asc' ? 1 : 2,
-        filters: this.searchText
-          ? {
-              Nombres: [
-                {
-                  value: this.searchText,
-                  matchMode: 'contains',
-                  operator: 'and'
-                }
-              ]
-            }
-          : {}
-      };
-
-      console.log("payload: ",payload)
-
-      this.service.getColaboradoresPag(
-        JSON.stringify(payload)
-      ).subscribe({
+    console.log("payload: ",payload)
+    if (rol == 153) {
+      this.service.getColaboradoresInterventorPag(JSON.stringify(payload)).subscribe({
         next: async (resp) => {
 
           this.UserInteractionService.dismissLoading();
@@ -117,6 +107,36 @@ export class ListadoColaboradoresPage implements OnInit {
           this.UserInteractionService.dismissLoading();
         }
       });
+
+    } else {
+      
+      this.service.getColaboradoresPag(
+        JSON.stringify(payload)
+      ).subscribe({
+        next: async (resp) => {
+
+          this.UserInteractionService.dismissLoading();
+          this.funcionarios = resp.data.datos.listadoColaboradores;
+          this.totalRecords = resp.data.totalRecords;
+          setTimeout(async () => {
+            await this.searchBar?.setFocus();
+          }, 100);
+        },
+        error: (err) => {
+          this.UserInteractionService.dismissLoading();
+          setTimeout(async () => {
+            await this.searchBar?.setFocus();
+          }, 100);
+        }
+      });
+    }
+  }
+
+  onSearch() {
+    this.currentPage = 1;
+
+    if (this.serverSide) {
+      this.colaboradores();
     }
   }
   
@@ -305,6 +325,49 @@ export class ListadoColaboradoresPage implements OnInit {
         HIJOS_COLABORADOR_JSON: this.fb.array([]) // Para agregar hijos dinámicamente
       });
     }
+  }
+
+  async generarReporte() {
+
+    this.UserInteractionService.showLoading('Generando reporte...');
+
+    this.service.getGenerarReporte().subscribe({
+      next: async (resp: any) => {
+
+        this.UserInteractionService.dismissLoading();
+
+        const blob = resp.body;
+
+        let fileName = 'Funcionarios.xlsx';
+
+        const contentDisposition =
+          resp.headers.get('content-disposition');
+
+        if (contentDisposition) {
+
+          const match =
+            contentDisposition.match(/filename="?([^"]+)"?/);
+
+          if (match?.[1]) {
+            fileName = match[1];
+          }
+        }
+
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+
+      error: (err) => {
+        this.UserInteractionService.dismissLoading();
+        console.error(err);
+      }
+    });
   }
 
   async abrirModalCrearFuncionario() {

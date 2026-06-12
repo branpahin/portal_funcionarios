@@ -15,13 +15,26 @@
       <ion-title size="large">Listado Colaboradores</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-searchbar
+  <ion-item>
+    <ion-select
+      label="Buscar por.." 
+      label-placement="floating"
+      interface="popover"
+      slot="start"
+      [(ngModel)]="searchField">
+
+      <ion-select-option value="Identificacion">Cédula</ion-select-option>
+      <ion-select-option value="CorreO_CORPORATIVO">Correo</ion-select-option>
+
+    </ion-select>
+
+    <ion-searchbar
+      #searchBar
       [(ngModel)]="searchText"
-      name="searchText"
-      placeholder="Buscar colaborador"
-      debounce="300"
-      showCancelButton="focus">
+      debounce="500"
+      (ionInput)="onSearch()">
     </ion-searchbar>
+  </ion-item>
   <div class="table-desktop">
     <ion-grid>
       <ion-row class="header-row">
@@ -92,15 +105,39 @@
   </div>
 
   <div class="pagination">
-    <ion-button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+
+    <div class="page-size">
+      <ion-label>Filas:</ion-label>
+
+      <ion-select
+        interface="popover"
+        [(ngModel)]="pageSize"
+        (ionChange)="onPageSizeChange()">
+
+        <ion-select-option [value]="10">10</ion-select-option>
+        <ion-select-option [value]="20">20</ion-select-option>
+        <ion-select-option [value]="50">50</ion-select-option>
+        <ion-select-option [value]="100">100</ion-select-option>
+
+      </ion-select>
+    </div>
+
+    <ion-button
+      (click)="changePage(currentPage - 1)"
+      [disabled]="currentPage === 1">
       Anterior
     </ion-button>
-    
-    <span>Página {{ currentPage }} de {{ totalPages }}</span>
-    
-    <ion-button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+
+    <span>
+      Página {{ currentPage }} de {{ totalPages }}
+    </span>
+
+    <ion-button
+      (click)="changePage(currentPage + 1)"
+      [disabled]="currentPage === totalPages">
       Siguiente
     </ion-button>
+
   </div>
 
 </main>

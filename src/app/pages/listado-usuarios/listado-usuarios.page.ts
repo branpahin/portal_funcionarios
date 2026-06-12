@@ -25,10 +25,13 @@ export class ListadoUsuariosPage implements OnInit {
   filtros:any;
   funcionarios:any[]=[];
   estadosProcesoCatalogo:any[]=[];
-  // empleadoForm: FormGroup = new FormGroup({});
-  pageSize = 10; // Tamaño por página (10, 50, 100)
   currentPage = 1;
+  pageSize = 20;
+  totalRecords = 0;
+  serverSide = true;
+  // empleadoForm: FormGroup = new FormGroup({});
   esPC: boolean | undefined;
+  searchField = 'Identificacion';
   searchText = '';
   sortColumn = '';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -64,11 +67,32 @@ export class ListadoUsuariosPage implements OnInit {
 
   async colaboradores() {
     this.UserInteractionService.showLoading('Cargando...');
-    this.service.getConsultatUsuarios().subscribe({
+    const filters: any = {};
+
+    if (this.searchText?.trim()) {
+      filters[this.searchField] = [
+        {
+          value: this.searchText.trim(),
+          matchMode: 'contains',
+          operator: 'and'
+        }
+      ];
+    }
+    
+    const payload = {
+      first: (this.currentPage - 1) * this.pageSize,
+      rows: this.pageSize,
+      sortField: this.sortColumn,
+      sortOrder: this.sortDirection === 'asc' ? 1 : 2,
+      filters
+    };
+    console.log("payload: ",payload)
+    this.service.getConsultaUsuariosPag(JSON.stringify(payload)).subscribe({
       next:async(resp)=>{
         try{
           //console.log("Respuesta Login: ", resp)
           this.funcionarios=resp.data.datos.listadoUsuariosAPP
+          this.totalRecords = resp.data.totalRecords;
           await this.estadoProceso(this.funcionarios)
           this.UserInteractionService.dismissLoading()
         }catch(error){
@@ -83,8 +107,27 @@ export class ListadoUsuariosPage implements OnInit {
     })
   }
 
+  onSearch() {
+    this.currentPage = 1;
+
+    if (this.serverSide) {
+      this.colaboradores();
+    }
+  }
+
   get totalPages(): number {
+    if (this.serverSide) {
+      return Math.ceil(this.totalRecords / this.pageSize);
+    }
     return Math.ceil(this.funcionarios.length / this.pageSize);
+  }
+
+  onPageSizeChange() {
+    this.currentPage = 1;
+
+    if (this.serverSide) {
+      this.colaboradores();
+    }
   }
 
   // get paginatedFuncionarios() {
@@ -98,11 +141,16 @@ export class ListadoUsuariosPage implements OnInit {
   }
 
   get paginatedFuncionarios() {
+
+    if (this.serverSide) {
+      return this.funcionarios;
+    }
+
     let data = [...this.funcionarios];
 
-    // Filtro de búsqueda
     if (this.searchText) {
       const text = this.searchText.toLowerCase();
+
       data = data.filter(item =>
         Object.values(item).some(val =>
           val?.toString().toLowerCase().includes(text)
@@ -110,20 +158,25 @@ export class ListadoUsuariosPage implements OnInit {
       );
     }
 
-    // Ordenamiento
     if (this.sortColumn) {
+
       data.sort((a, b) => {
+
         const valA = a[this.sortColumn];
         const valB = b[this.sortColumn];
+
         if (valA == null) return 1;
         if (valB == null) return -1;
+
         return this.sortDirection === 'asc'
           ? valA.toString().localeCompare(valB.toString(), 'es', { numeric: true })
           : valB.toString().localeCompare(valA.toString(), 'es', { numeric: true });
+
       });
     }
 
     const start = (this.currentPage - 1) * this.pageSize;
+
     return data.slice(start, start + this.pageSize);
   }
 
@@ -134,11 +187,16 @@ export class ListadoUsuariosPage implements OnInit {
       this.sortColumn = column;
       this.sortDirection = 'asc';
     }
+    this.colaboradores();
   }
 
   changePage(page: number) {
-    if (page > 0 && page <= this.totalPages) {
-      this.currentPage = page;
+    if (page <= 0 || page > this.totalPages) {
+      return;
+    }
+    this.currentPage = page;
+    if (this.serverSide) {
+      this.colaboradores();
     }
   }
 

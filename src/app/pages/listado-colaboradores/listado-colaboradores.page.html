@@ -4,7 +4,23 @@
     <ion-title>
       <div class="responsive-title">Listado Colaboradores</div>
     </ion-title>
-    <ion-button *ngIf="permisosService.puedeGrabar()" color="success" (click)="abrirModalCrearFuncionario()" slot="end" shape="round"><ion-icon name="add"></ion-icon> 
+    <ion-button
+      *ngIf="permisosService.puedeConsultar()"
+      color="secundary"
+      (click)="generarReporte()"
+      slot="end"
+      shape="round">
+      <ion-icon name="download"></ion-icon>
+      <span class="texto-boton">Generar Reporte</span>
+    </ion-button>
+
+    <ion-button
+      *ngIf="permisosService.puedeGrabar()"
+      color="success"
+      (click)="abrirModalCrearFuncionario()"
+      slot="end"
+      shape="round">
+      <ion-icon name="person-add"></ion-icon>
       <span class="texto-boton">Registrar Colaborador</span>
     </ion-button>
   </ion-toolbar>
@@ -16,13 +32,43 @@
     </ion-toolbar>
   </ion-header>
   <div class="table-desktop">
-    <ion-searchbar
-      [(ngModel)]="searchText"
-      name="searchText"
-      placeholder="Buscar colaborador"
-      debounce="300"
-      showCancelButton="focus">
-    </ion-searchbar>
+    <ion-item>
+      <ion-select
+        label="Buscar por.." 
+        label-placement="floating"
+        interface="popover"
+        slot="start"
+        [(ngModel)]="searchField">
+
+        <ion-select-option value="Identificacion">Cédula</ion-select-option>
+        <ion-select-option value="Nombres">Nombres</ion-select-option>
+        <ion-select-option value="Apellidos">Apellidos</ion-select-option>
+        <ion-select-option value="TelefonO_CELULAR">Teléfono</ion-select-option>
+        <ion-select-option value="Sede">Sede</ion-select-option>
+        <ion-select-option value="Empresa">Empresa</ion-select-option>
+        <ion-select-option value="Gerencia">Gerencia</ion-select-option>
+        <ion-select-option value="CorreO_CORPORATIVO">Correo</ion-select-option>
+        <ion-select-option value="Cargo">Cargo</ion-select-option>
+        <ion-select-option value="Estado">Estado</ion-select-option>
+
+      </ion-select>
+
+      <ion-searchbar
+        #searchBar
+        [(ngModel)]="searchText"
+        debounce="500"
+        (ionInput)="onSearch()"
+        *ngIf="searchField!='Estado'">
+      </ion-searchbar>
+      <ion-item *ngIf="searchField=='Estado'">
+        <ion-select label="Seleccionar estado" label-placement="stacked"  interface="popover"
+          [(ngModel)]="searchText" (ionChange)="onSearch()">
+          <ion-select-option *ngFor="let nivel of estados_Proceso" [value]="nivel.id">
+            {{ nivel.descripcion }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-item>
     <ion-grid>
       <ion-row class="header-row">
         <ion-col (click)="sortBy('nombres')" [class.active]="sortColumn === 'nombres'">
@@ -124,39 +170,39 @@
 
   <div class="pagination">
 
-  <div class="page-size">
-    <ion-label>Filas:</ion-label>
+    <div class="page-size">
+      <ion-label>Filas:</ion-label>
 
-    <ion-select
-      interface="popover"
-      [(ngModel)]="pageSize"
-      (ionChange)="onPageSizeChange()">
+      <ion-select
+        interface="popover"
+        [(ngModel)]="pageSize"
+        (ionChange)="onPageSizeChange()">
 
-      <ion-select-option [value]="10">10</ion-select-option>
-      <ion-select-option [value]="20">20</ion-select-option>
-      <ion-select-option [value]="50">50</ion-select-option>
-      <ion-select-option [value]="100">100</ion-select-option>
+        <ion-select-option [value]="10">10</ion-select-option>
+        <ion-select-option [value]="20">20</ion-select-option>
+        <ion-select-option [value]="50">50</ion-select-option>
+        <ion-select-option [value]="100">100</ion-select-option>
 
-    </ion-select>
+      </ion-select>
+    </div>
+
+    <ion-button
+      (click)="changePage(currentPage - 1)"
+      [disabled]="currentPage === 1">
+      Anterior
+    </ion-button>
+
+    <span>
+      Página {{ currentPage }} de {{ totalPages }}
+    </span>
+
+    <ion-button
+      (click)="changePage(currentPage + 1)"
+      [disabled]="currentPage === totalPages">
+      Siguiente
+    </ion-button>
+
   </div>
-
-  <ion-button
-    (click)="changePage(currentPage - 1)"
-    [disabled]="currentPage === 1">
-    Anterior
-  </ion-button>
-
-  <span>
-    Página {{ currentPage }} de {{ totalPages }}
-  </span>
-
-  <ion-button
-    (click)="changePage(currentPage + 1)"
-    [disabled]="currentPage === totalPages">
-    Siguiente
-  </ion-button>
-
-</div>
 
 
 </main>

@@ -79,12 +79,19 @@ export class LayoutPage implements OnInit {
     
     this.UserInteractionService.showLoading('Cargando...');
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
-    if(this.rolSeleccionado==2){
-      this.service.getColaboradoresInterventor(this.rolSeleccionado).subscribe({
+    const payload = {
+        first: 0,
+        rows: 20,
+        sortField: '',
+        sortOrder: '',
+        filters: {}
+      };
+    if(this.rolSeleccionado==153){
+      this.service.getColaboradoresInterventorPag(JSON.stringify(payload)).subscribe({
         next:async(resp)=>{
           try{
             this.UserInteractionService.dismissLoading();
-            this.funcionarios=resp.data.datos.listadoColaboradores
+            this.funcionarios=resp.data.totalRecords
             this.secureStorage.set('colaboradores',this.funcionarios)
           }catch(error){
             console.error("Respuesta: ", error)
@@ -97,13 +104,6 @@ export class LayoutPage implements OnInit {
       })
     }else{
 
-      const payload = {
-        first: 0,
-        rows: 20,
-        sortField: '',
-        sortOrder: '',
-        filters: {}
-      };
       this.service.getColaboradoresPag(JSON.stringify(payload)).subscribe({
         next:async(resp)=>{
           try{

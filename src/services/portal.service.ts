@@ -15,6 +15,7 @@ export class PortalService {
   private colaboradores = TypeServicio.colaboradores
   private colaboradoresPag = TypeServicio.colaboradoresPag
   private colaboradoresInterventor = TypeServicio.colaboradoresInterventor
+  private colaboradoresInterventorPag = TypeServicio.colaboradoresInterventorPag
   private CrearColaboradores = TypeServicio.crearColaboradores
   private crearColaboradoresInterv = TypeServicio.crearColaboradoresInterv
   private consultarColaboradores = TypeServicio.consultarColaboradores
@@ -35,6 +36,7 @@ export class PortalService {
   private InactivarColaboradorInterv = TypeServicio.PutInactivarColaboradorInterv
   private ActivarColaboradorInterv = TypeServicio.PutActivarColaboradorInterv
   private getUsuarios =TypeServicio.getUsuarios
+  private getUsuariosPag =TypeServicio.getUsuariosPag
   private CrearUsuario =TypeServicio.CrearUsuario
   private GetUsuarioSistema =TypeServicio.GetInfoUsuario
   private ActualizarUsuario =TypeServicio.ActualizarUsuario
@@ -84,12 +86,20 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.colaboradoresInterventor+"?idRol="+idRol);
   }
 
+  getColaboradoresInterventorPag(pag:string): Observable<any>{
+    return this.httpService.GetParamsCore(this.colaboradoresInterventorPag+"?ServerSide="+pag);
+  }
+
   getCamposEstado(estado:number,rol:number): Observable<any>{
     return this.httpService.GetParamsCore(this.GetCamposEstado+"?estado="+estado+"&IdRol="+rol);
   }
 
   getConsultatUsuarios(): Observable<any>{
     return this.httpService.GetParamsCore(this.getUsuarios);
+  }
+
+  getConsultaUsuariosPag(pag:string): Observable<any>{
+    return this.httpService.GetParamsCore(this.getUsuariosPag+"?ServerSide="+pag);
   }
 
   getListarUsuariosAgregar(): Observable<any>{
@@ -109,7 +119,7 @@ export class PortalService {
   }
 
   getGenerarReporte(): Observable<any>{
-    return this.httpService.GetCore(this.generarReporteXlsx);
+    return this.httpService.GetFile(this.generarReporteXlsx);
   }
 
   getGerencias(idGerencia:number): Observable<any>{

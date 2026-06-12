@@ -53,6 +53,18 @@ export class HttpService {
 		return this.http.get<any>(APIREST, this.getHttpOptions()).pipe(tap((resp) => {of(resp)}))
 	}
 
+	GetFile(rutaApi: string, alternativeUrl = false): Observable<any> {
+		const APIREST = alternativeUrl
+			? rutaApi
+			: `${this._baseApiUrl}${rutaApi}`;
+
+		return this.http.get(APIREST, {
+			...this.getHttpOptions(),
+			observe: 'response',
+			responseType: 'blob'
+		});
+	}
+
 	GetParamsCore(rutaApi: string): Observable<any> {
 		const APIREST = `${this._baseApiUrl}${rutaApi}`
 		//console.log("📡 Enviando petición GET con headers:", this.getHttpOptions());
