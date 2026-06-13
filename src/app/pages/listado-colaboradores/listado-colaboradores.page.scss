@@ -100,9 +100,42 @@ ion-header{
     display: none;
   }
 
-.responsive-title {
-  white-space: normal;
-}
+  .filtros-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .campo-filtro {
+    min-width: 180px;
+    max-width: 220px;
+  }
+
+  .valor-filtro {
+    flex: 1;
+    min-width: 250px;
+  }
+
+  .btn-agregar {
+    height: 42px;
+    min-width: 42px;
+  }
+
+  .contenedor-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .contenedor-chips ion-chip {
+    margin: 0;
+  }
+  .responsive-title {
+    white-space: normal;
+  }
 
   @media (max-width: 1670px) {
     .actions {
@@ -210,6 +243,20 @@ ion-header{
     --padding-start: 8px;
     --padding-end: 8px;
   }
+}
+
+@media (max-width: 768px) {
+
+  .pagination {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .page-size {
+    width: 100%;
+    justify-content: center;
+  }
+
 }
 
   

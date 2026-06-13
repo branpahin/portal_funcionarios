@@ -30,6 +30,10 @@ export class ListadoColaboradoresPage implements OnInit {
   param:any;
   funcionarios:any[]=[];
   estados_Proceso: any[] = [];
+  filtrosAplicados: {
+    campo: string;
+    valor: string;
+  }[] = [];
   currentPage = 1;
   pageSize = 20;
   totalRecords = 0;
@@ -74,18 +78,24 @@ export class ListadoColaboradoresPage implements OnInit {
     this.UserInteractionService.showLoading('Cargando...');
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
     const rol = await this.secureStorage.get<number>('rolSeleccionado');
-    const filters: any = {};
-    this.searchText=String(this.searchText)
-    if (this.searchText?.trim()) {
-      filters[this.searchField] = [
+
+    const filters: Record<string, any[]> = {};
+
+    this.filtrosAplicados.forEach(filtro => {
+
+      filters[filtro.campo] = [
         {
-          value: this.searchText.trim(),
-          matchMode: 'contains',
+          value: filtro.valor,
+          matchMode:
+            filtro.campo === 'Estado'
+              ? 'equals'
+              : 'contains',
           operator: 'and'
         }
       ];
-    }
-    
+
+    });
+
     const payload = {
       first: (this.currentPage - 1) * this.pageSize,
       rows: this.pageSize,
@@ -130,6 +140,55 @@ export class ListadoColaboradoresPage implements OnInit {
         }
       });
     }
+  }
+
+  agregarFiltro() {
+
+    if (!this.searchField || !this.searchText) {
+      return;
+    }
+
+    const filtroExistente = this.filtrosAplicados.find(
+      x => x.campo === this.searchField
+    );
+
+    if (filtroExistente) {
+
+      filtroExistente.valor = this.searchText;
+
+    } else {
+
+      this.filtrosAplicados.push({
+        campo: this.searchField,
+        valor: this.searchText
+      });
+
+    }
+
+    this.searchText = '';
+
+    this.onSearch();
+  }
+
+  eliminarFiltro(filtro: any) {
+
+    this.filtrosAplicados =
+      this.filtrosAplicados.filter(
+        x =>
+          !(x.campo === filtro.campo &&
+            x.valor === filtro.valor)
+      );
+
+    this.onSearch();
+  }
+
+  limpiarFiltros() {
+
+    this.filtrosAplicados = [];
+    this.searchText = '';
+    this.currentPage = 1;
+
+    this.onSearch();
   }
 
   onSearch() {

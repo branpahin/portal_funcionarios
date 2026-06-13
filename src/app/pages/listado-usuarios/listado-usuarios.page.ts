@@ -25,6 +25,10 @@ export class ListadoUsuariosPage implements OnInit {
   filtros:any;
   funcionarios:any[]=[];
   estadosProcesoCatalogo:any[]=[];
+    filtrosAplicados: {
+    campo: string;
+    valor: string;
+  }[] = [];
   currentPage = 1;
   pageSize = 20;
   totalRecords = 0;
@@ -67,18 +71,23 @@ export class ListadoUsuariosPage implements OnInit {
 
   async colaboradores() {
     this.UserInteractionService.showLoading('Cargando...');
-    const filters: any = {};
+    const filters: Record<string, any[]> = {};
 
-    if (this.searchText?.trim()) {
-      filters[this.searchField] = [
+    this.filtrosAplicados.forEach(filtro => {
+
+      filters[filtro.campo] = [
         {
-          value: this.searchText.trim(),
-          matchMode: 'contains',
+          value: filtro.valor,
+          matchMode:
+            filtro.campo === 'Estado'
+              ? 'equals'
+              : 'contains',
           operator: 'and'
         }
       ];
-    }
-    
+
+    });
+
     const payload = {
       first: (this.currentPage - 1) * this.pageSize,
       rows: this.pageSize,
@@ -105,6 +114,55 @@ export class ListadoUsuariosPage implements OnInit {
         this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
       }
     })
+  }
+
+  agregarFiltro() {
+
+    if (!this.searchField || !this.searchText) {
+      return;
+    }
+
+    const filtroExistente = this.filtrosAplicados.find(
+      x => x.campo === this.searchField
+    );
+
+    if (filtroExistente) {
+
+      filtroExistente.valor = this.searchText;
+
+    } else {
+
+      this.filtrosAplicados.push({
+        campo: this.searchField,
+        valor: this.searchText
+      });
+
+    }
+
+    this.searchText = '';
+
+    this.onSearch();
+  }
+
+  eliminarFiltro(filtro: any) {
+
+    this.filtrosAplicados =
+      this.filtrosAplicados.filter(
+        x =>
+          !(x.campo === filtro.campo &&
+            x.valor === filtro.valor)
+      );
+
+    this.onSearch();
+  }
+
+  limpiarFiltros() {
+
+    this.filtrosAplicados = [];
+    this.searchText = '';
+    this.currentPage = 1;
+
+    this.onSearch();
   }
 
   onSearch() {

@@ -15,26 +15,75 @@
       <ion-title size="large">Listado Colaboradores</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-item>
-    <ion-select
-      label="Buscar por.." 
-      label-placement="floating"
-      interface="popover"
-      slot="start"
-      [(ngModel)]="searchField">
+  <div class="filtros-toolbar">
+    <ion-item>
+      <ion-select
+        class="campo-filtro"
+        interface="popover"
+        [(ngModel)]="searchField"
+        (ionChange)="searchText=''">
 
-      <ion-select-option value="Identificacion">Cédula</ion-select-option>
-      <ion-select-option value="CorreO_CORPORATIVO">Correo</ion-select-option>
+        <ion-select-option value="Identificacion">Cédula</ion-select-option>
+        <ion-select-option value="CorreO_CORPORATIVO">Correo</ion-select-option>
 
-    </ion-select>
+      </ion-select>
+    </ion-item>
+    <div class="valor-filtro">
+      <ion-searchbar
+        *ngIf="searchField!='Estado'"
+        [(ngModel)]="searchText"
+        placeholder="Buscar"
+        (keyup.enter)="agregarFiltro()">
+      </ion-searchbar>
+    </div>
+    <ion-button
+      class="btn-agregar"
+      fill="solid"
+      shape="round"
+      color="primary"
+      (click)="agregarFiltro()">
 
-    <ion-searchbar
-      #searchBar
-      [(ngModel)]="searchText"
-      debounce="500"
-      (ionInput)="onSearch()">
-    </ion-searchbar>
-  </ion-item>
+      <ion-icon name="add"></ion-icon>
+
+    </ion-button>
+
+  </div>
+
+  <div
+    class="contenedor-chips"
+    *ngIf="filtrosAplicados.length">
+
+    <ion-chip
+      outline
+      color="primary"
+      *ngFor="let filtro of filtrosAplicados">
+
+      <ion-label>
+        {{ filtro.campo }}: {{ filtro.valor }}
+      </ion-label>
+
+      <ion-icon
+        name="close"
+        (click)="eliminarFiltro(filtro)">
+      </ion-icon>
+
+    </ion-chip>
+    <ion-button
+      *ngIf="filtrosAplicados.length > 0"
+      fill="clear"
+      color="danger"
+      size="small"
+      (click)="limpiarFiltros()">
+
+      <ion-icon
+        slot="start"
+        name="trash-outline">
+      </ion-icon>
+
+      Limpiar filtros
+
+    </ion-button>
+  </div>
   <div class="table-desktop">
     <ion-grid>
       <ion-row class="header-row">
