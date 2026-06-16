@@ -112,39 +112,51 @@
 
   </div>
 
-  <div
-    class="contenedor-chips"
-    *ngIf="filtrosAplicados.length">
+  <div class="contenedor-chips">
 
-    <ion-chip
-      color="primary"
-      *ngFor="let filtro of filtrosAplicados">
+    <ng-container *ngIf="filtrosAplicados.length; else sinFiltros">
 
-      <ion-label>
-        {{ filtro.campo }}:
-        {{ filtro.valor }}
-      </ion-label>
+      <ion-chip
+        outline
+        color="primary"
+        *ngFor="let filtro of filtrosAplicados">
 
-      <ion-icon
-        name="close"
-        (click)="eliminarFiltro(filtro)">
-      </ion-icon>
+        <ion-label>
+          {{ filtro.campo }}: {{ filtro.valor }}
+        </ion-label>
 
-    </ion-chip>
+        <ion-icon
+          name="close"
+          (click)="eliminarFiltro(filtro)">
+        </ion-icon>
 
-    <ion-button
-      fill="clear"
-      color="danger"
-      (click)="limpiarFiltros()">
+      </ion-chip>
 
-      <ion-icon
-        slot="start"
-        name="trash-outline">
-      </ion-icon>
+      <ion-button
+        fill="clear"
+        color="danger"
+        size="small"
+        (click)="limpiarFiltros()">
 
-      Limpiar
+        <ion-icon
+          slot="start"
+          name="trash-outline">
+        </ion-icon>
 
-    </ion-button>
+        Limpiar filtros
+
+      </ion-button>
+
+    </ng-container>
+
+    <ng-template #sinFiltros>
+
+      <ion-note color="medium">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        Sin filtros aplicados, se generará el reporte completo.
+      </ion-note>
+
+    </ng-template>
 
   </div>
 

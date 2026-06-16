@@ -14,5 +14,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 12px;
+  align-items: center;
+}
+
+.contenedor-chips ion-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-style: italic;
 }
