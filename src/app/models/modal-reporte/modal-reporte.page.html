@@ -1,0 +1,174 @@
+<ion-header>
+
+  <ion-toolbar color="primary">
+
+    <ion-title>
+      Generar Reporte Excel
+    </ion-title>
+
+    <ion-buttons slot="end">
+
+      <ion-button (click)="cancelar()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+
+    </ion-buttons>
+
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="filtros-toolbar">
+
+    <ion-item>
+
+      <ion-select
+        interface="popover"
+        [(ngModel)]="searchField"
+        (ionChange)="searchText=''">
+
+        <ion-select-option value="Identificacion">
+          Cédula
+        </ion-select-option>
+
+        <ion-select-option value="Nombres">
+          Nombres
+        </ion-select-option>
+
+        <ion-select-option value="Apellidos">
+          Apellidos
+        </ion-select-option>
+
+        <ion-select-option value="TelefonO_CELULAR">
+          Teléfono
+        </ion-select-option>
+
+        <ion-select-option value="Sede">
+          Sede
+        </ion-select-option>
+
+        <ion-select-option value="Empresa">
+          Empresa
+        </ion-select-option>
+
+        <ion-select-option value="Gerencia">
+          Gerencia
+        </ion-select-option>
+
+        <ion-select-option value="CorreO_CORPORATIVO">
+          Correo
+        </ion-select-option>
+
+        <ion-select-option value="Cargo">
+          Cargo
+        </ion-select-option>
+
+        <ion-select-option value="Estado">
+          Estado
+        </ion-select-option>
+
+      </ion-select>
+
+    </ion-item>
+
+    <div class="valor-filtro">
+
+      <ion-searchbar
+        *ngIf="searchField!='Estado'"
+        [(ngModel)]="searchText"
+        (keyup.enter)="agregarFiltro()">
+      </ion-searchbar>
+
+      <ion-item *ngIf="searchField=='Estado'">
+
+        <ion-select
+          interface="popover"
+          [(ngModel)]="searchText">
+
+          <ion-select-option
+            *ngFor="let estado of estados_Proceso"
+            [value]="estado.id">
+
+            {{ estado.descripcion }}
+
+          </ion-select-option>
+
+        </ion-select>
+
+      </ion-item>
+
+    </div>
+
+    <ion-button
+      color="primary"
+      shape="round"
+      (click)="agregarFiltro()">
+
+      <ion-icon name="add"></ion-icon>
+
+    </ion-button>
+
+  </div>
+
+  <div
+    class="contenedor-chips"
+    *ngIf="filtrosAplicados.length">
+
+    <ion-chip
+      color="primary"
+      *ngFor="let filtro of filtrosAplicados">
+
+      <ion-label>
+        {{ filtro.campo }}:
+        {{ filtro.valor }}
+      </ion-label>
+
+      <ion-icon
+        name="close"
+        (click)="eliminarFiltro(filtro)">
+      </ion-icon>
+
+    </ion-chip>
+
+    <ion-button
+      fill="clear"
+      color="danger"
+      (click)="limpiarFiltros()">
+
+      <ion-icon
+        slot="start"
+        name="trash-outline">
+      </ion-icon>
+
+      Limpiar
+
+    </ion-button>
+
+  </div>
+
+</ion-content>
+
+<ion-footer>
+
+  <ion-toolbar>
+
+      
+      <ion-button
+        (click)="generar()"
+        color="success"
+        slot="end">
+        
+        <ion-icon
+          slot="start"
+          name="download">
+        </ion-icon>
+
+        Generar Excel
+
+      </ion-button>
+
+  </ion-toolbar>
+
+</ion-footer>

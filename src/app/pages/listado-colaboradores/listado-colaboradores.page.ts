@@ -13,6 +13,7 @@ import { IAlertAction } from 'src/interfaces/IAlertOptions';
 import { PermisosService } from 'src/services/permisos.service';
 import { SecureStorageService } from 'src/services/secure-storage.service';
 import { IonSearchbar } from '@ionic/angular';
+import { ModalReportePage } from 'src/app/models/modal-reporte/modal-reporte.page';
 
 @Component({
   selector: 'app-listado-colaboradores',
@@ -386,11 +387,18 @@ export class ListadoColaboradoresPage implements OnInit {
     }
   }
 
-  async generarReporte() {
+  async generarReporte(filters: any) {
 
     this.UserInteractionService.showLoading('Generando reporte...');
+    const payload = {
+      first: (this.currentPage - 1) * this.pageSize,
+      rows: this.pageSize,
+      sortField: this.sortColumn,
+      sortOrder: this.sortDirection === 'asc' ? 1 : 2,
+      filters
+    };
 
-    this.service.getGenerarReporte().subscribe({
+    this.service.getGenerarReporte(JSON.stringify(payload)).subscribe({
       next: async (resp: any) => {
 
         this.UserInteractionService.dismissLoading();
@@ -427,6 +435,28 @@ export class ListadoColaboradoresPage implements OnInit {
         console.error(err);
       }
     });
+  }
+
+  async abrirModalReporte() {
+
+    const modal = await this.modalController.create({
+      component: ModalReportePage,
+      componentProps: {
+        estados_Proceso: this.estados_Proceso
+      }
+    });
+    modal.style.cssText = `
+      --border-radius: 10px;
+    `;
+    await modal.present();
+
+    const { data } = await modal.onDidDismiss();
+
+    if (!data) {
+      return;
+    }
+
+    this.generarReporte(data);
   }
 
   async abrirModalCrearFuncionario() {

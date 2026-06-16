@@ -118,8 +118,8 @@ export class PortalService {
     return this.httpService.GetCore(this.GetAplicativos);
   }
 
-  getGenerarReporte(): Observable<any>{
-    return this.httpService.GetFile(this.generarReporteXlsx);
+  getGenerarReporte(pag:string): Observable<any>{
+    return this.httpService.GetFile(this.generarReporteXlsx+"?ServerSide="+pag);
   }
 
   getGerencias(idGerencia:number): Observable<any>{
