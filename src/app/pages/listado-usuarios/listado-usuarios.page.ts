@@ -55,7 +55,6 @@ export class ListadoUsuariosPage implements OnInit {
   }
 
   async estadoProceso(response:any){
-    //console.log("procesos: ",this.estadosProcesoCatalogo)
     this.funcionarios = response.map((f:any) => {
       const ids = f.estadO_PROCESO.split(',').map((id: string) => parseInt(id.trim(), 10));
       const descripciones = this.estadosProcesoCatalogo
@@ -95,11 +94,9 @@ export class ListadoUsuariosPage implements OnInit {
       sortOrder: this.sortDirection === 'asc' ? 1 : 2,
       filters
     };
-    console.log("payload: ",payload)
     this.service.getConsultaUsuariosPag(JSON.stringify(payload)).subscribe({
       next:async(resp)=>{
         try{
-          //console.log("Respuesta Login: ", resp)
           this.funcionarios=resp.data.datos.listadoUsuariosAPP
           this.totalRecords = resp.data.totalRecords;
           await this.estadoProceso(this.funcionarios)

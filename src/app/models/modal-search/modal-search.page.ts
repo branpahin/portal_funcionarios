@@ -5,6 +5,7 @@ import { ModalController } from '@ionic/angular';
 import { IONIC_COMPONENTS } from 'src/app/imports/ionic-imports';
 import { PortalService } from 'src/services/portal.service';
 import { ModuleService } from 'src/services/modulos/module.service';
+import { UserInteractionService } from 'src/services/user-interaction-service.service';
 
 @Component({
   selector: 'app-modal-search',
@@ -19,7 +20,8 @@ export class ModalSearchPage implements OnInit {
   cedulasFiltradas: any[] = [...this.funcionarios];
   param:any;
 
-  constructor(private modalCtrl: ModalController, private service:PortalService, private moduleService:ModuleService,) {}
+  constructor(private modalCtrl: ModalController, private service:PortalService, 
+    private moduleService:ModuleService, private UserInteractionService: UserInteractionService,) {}
   async ngOnInit() {
     this.param= await this.moduleService.getParam();
     this.listarUsuarios();
@@ -27,14 +29,16 @@ export class ModalSearchPage implements OnInit {
 
   
   listarUsuarios(){
+    this.UserInteractionService.showLoading('Cargando...');
     this.param.estado_Proceso = this.param.estado_Proceso.replaceAll(';', ',');
     this.service.getListarUsuariosAgregar().subscribe({
       next:async(resp)=>{
         try{
-          //console.log("Respuesta Login: ", resp)
+          this.UserInteractionService.dismissLoading();
           this.funcionarios=resp.data.datos.listadoColaboradores
           this.cedulasFiltradas= this.funcionarios;
         }catch(error){
+          this.UserInteractionService.dismissLoading();
           console.error("Respuesta Login: ", error)
         }
       }

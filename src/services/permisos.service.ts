@@ -11,7 +11,6 @@ export class PermisosService {
 
   setPermisos(permisos: any) {
     this.permisos = permisos;
-    //console.log("permisos: ",this.permisos)
   }
 
   async getPermisos(): Promise<any> {

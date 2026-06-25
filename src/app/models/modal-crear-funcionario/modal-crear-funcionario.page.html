@@ -377,7 +377,7 @@
                 <app-error-mensaje [control]="hijo.get('FECHA_NACIMIENTO')"></app-error-mensaje>
                 
                 <ion-item>
-                  <ion-select label="Genero" label-placement="floating" formControlName="GENERO" (click)="selec('generos')">
+                  <ion-select interface="popover" label="Genero" label-placement="floating" formControlName="GENERO" (click)="selec('generos')">
                     <ion-select-option *ngFor="let nivel of generos" [value]="nivel.id">
                       {{ nivel.descripcion }}
                     </ion-select-option>
@@ -386,7 +386,7 @@
                 <app-error-mensaje [control]="hijo.get('GENERO')"></app-error-mensaje>
                 
                 <ion-item>
-                  <ion-select label="RH" label-placement="floating" formControlName="RH" (click)="selec('rh')">
+                  <ion-select interface="popover" label="RH" label-placement="floating" formControlName="RH" (click)="selec('rh')">
                     <ion-select-option *ngFor="let nivel of rh" [value]="nivel.descripcion">
                       {{ nivel.descripcion }}
                     </ion-select-option>
@@ -394,7 +394,7 @@
                 </ion-item>
                 <app-error-mensaje [control]="hijo.get('RH')"></app-error-mensaje>
                 <ion-item>
-                  <ion-select label="Tipo Documento" label-placement="floating" formControlName="ID_TP_DOCUMENTO" (click)="selec('tipoIdentificacion')">
+                  <ion-select interface="popover" label="Tipo Documento" label-placement="floating" formControlName="ID_TP_DOCUMENTO" (click)="selec('tipoIdentificacion')">
                     <ion-select-option *ngFor="let nivel of tipoDocumento" [value]="nivel.id">
                       {{ nivel.descripcion }}
                     </ion-select-option>

@@ -216,7 +216,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
     await modal.present();
 
     const { data } = await modal.onWillDismiss();
-    //console.log(data)
     if (data) {
       if (multiple) {
         const idsSeleccionados = data.map((item: any) => item.id);
@@ -250,10 +249,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
     this.service.getGerencias(idCiudad).subscribe({
         next:async(resp)=>{
           try{
-            //console.log("resp: ",resp)
             this.gerencias =resp.data.datos.gerencias
             this.param['gerencias'] = [...this.gerencias];
-            //console.log("params: ",this.param)
             this.UserInteractionService.dismissLoading();
           }catch(error){
             console.error("Respuesta Login: ", error)
@@ -272,10 +269,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
     this.service.getAreas(idCiudad, idGerencia).subscribe({
         next:async(resp)=>{
           try{
-            //console.log("resp: ",resp)
             this.areas =resp.data.datos.areas
             this.param['areas'] = [...this.areas];
-            //console.log("params: ",this.param)
             this.UserInteractionService.dismissLoading();
           }catch(error){
             console.error("Respuesta Login: ", error)
@@ -294,7 +289,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
     this.service.getCCO(idCiudad,idGerencia,idArea).subscribe({
         next:async(resp)=>{
           try{
-            //console.log("resp: ",resp)
             this.cco =resp.data.datos.areas
             this.UserInteractionService.dismissLoading();
           }catch(error){
@@ -395,13 +389,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
         this.service.getInfoColaboradoresInterventor(this.idColaborador).subscribe({
           next:async(resp)=>{
             try{
-              //console.log("datos: ",resp.data.datos)
-
-              // Llena el FormArray de hijos
               const datos = resp.data.datos;
               await this.consultaEstados(Number(datos.estado))
               if(datos.foto){
-                //console.log("entro")
                 this.imagenPreview = `data:image/png;base64,${datos.foto}`;
               }
               datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
@@ -410,7 +400,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
               if(datos.ciudaD_TRABAJO && datos.iD_GERENCIA && datos.iD_AREA){
                 await this.CCO(datos.ciudaD_TRABAJO,datos.iD_GERENCIA, datos.iD_AREA);
               }
-              // Luego aplicas patchValue con las claves en mayúscula si es necesario
               this.empleadoForm.patchValue(this.convertirClavesMayus(datos));
               const hijosFormArray = this.empleadoForm.get('HIJOS_COLABORADOR_JSON') as FormArray;
               hijosFormArray.clear();
@@ -438,7 +427,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
               });
 
               // ✅ Mostrar formulario completo (incluye campos deshabilitados)
-              //console.log("form2 (raw): ", this.empleadoForm.getRawValue());
 
               // Obtener claves de hijos (opcional)
               const clavesHijos = Object.keys(hijosFormArray.controls[0]?.value || {});
@@ -447,7 +435,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
               const formCompleto = this.empleadoForm.getRawValue();
               Object.keys(formCompleto).forEach((key) => {
                 if (key !== 'HIJOS_COLABORADOR_JSON') {
-                  //console.log("raza: ",key)
                   this.selec(key, 'idPadre');
                 }
               });
@@ -473,13 +460,11 @@ export class ModalEditarFuncionarioPage implements OnInit {
         this.service.getInfoColaboradores(this.idColaborador).subscribe({
           next:async(resp)=>{
             try{
-              //console.log("datos: ",resp.data.datos)
 
               // Llena el FormArray de hijos
               const datos = resp.data.datos;
               await this.consultaEstados(Number(datos.estado))
               if(datos.foto){
-                //console.log("entro")
                 this.imagenPreview = `data:image/png;base64,${datos.foto}`;
               }
               datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
@@ -516,7 +501,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
               });
 
               // ✅ Mostrar formulario completo (incluye campos deshabilitados)
-              //console.log("form2 (raw): ", this.empleadoForm.getRawValue());
 
               // Obtener claves de hijos (opcional)
               const clavesHijos = Object.keys(hijosFormArray.controls[0]?.value || {});
@@ -525,7 +509,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
               const formCompleto = this.empleadoForm.getRawValue();
               Object.keys(formCompleto).forEach((key) => {
                 if (key !== 'HIJOS_COLABORADOR_JSON') {
-                  //console.log("raza: ",key)
                   this.selec(key, 'idPadre');
                 }
               });
@@ -553,13 +536,11 @@ export class ModalEditarFuncionarioPage implements OnInit {
         this.service.getInfoColaboradoresUsuario().subscribe({
           next:async(resp)=>{
             try{
-              //console.log("datos: ",resp.data.datos)
 
               // Llena el FormArray de hijos
               const datos = resp.data.datos;
               await this.consultaEstados(Number(datos.estado))
               if(datos.foto){
-                //console.log("entro")
                 this.imagenPreview = `data:image/png;base64,${datos.foto}`;
               }
               datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
@@ -596,7 +577,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
               });
 
               // ✅ Mostrar formulario completo (incluye campos deshabilitados)
-              //console.log("form2 (raw): ", this.empleadoForm.getRawValue());
 
               // Obtener claves de hijos (opcional)
               const clavesHijos = Object.keys(hijosFormArray.controls[0]?.value || {});
@@ -605,7 +585,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
               const formCompleto = this.empleadoForm.getRawValue();
               Object.keys(formCompleto).forEach((key) => {
                 if (key !== 'HIJOS_COLABORADOR_JSON') {
-                  //console.log("raza: ",key)
                   this.selec(key, 'idPadre');
                 }
               });
@@ -655,7 +634,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
     const existeControl = this.empleadoForm.get(nombreCampo);
     if (!existeControl && nombreCampo!='FOTO') {
       // Si no existe, no intentamos remover ni deshabilitar nada
-      //console.log("entro: ",nombreCampo)
       return { visible: false, editable: false, required: false };
     }
     const campo = this.camposConfig.find(
@@ -675,8 +653,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
     if (control) {
       if (campo.activo !== 'S') {
-
-          //console.log('c.campo:',campo.campo)
           this.empleadoForm.removeControl(campo.campo);
           control.disable({ emitEvent: false });
       } if (campo.modificable === 'N') {
@@ -774,7 +750,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
       this.discapacidades = this.param[lista] || [];
     } else if (lista === 'ID_RAZA') {
       lista = 'razas'
-      //console.log("raza: ",this.param)
       this.razas = this.param[lista] || [];
     } else if (lista === 'TIENE_HIJOS') {
       lista = 'tieneHijos'
@@ -885,7 +860,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
   motrarHijos(){
     this.mostrarHijo=!this.mostrarHijo
     this.cargandoHijos=true
-    //console.log(this.empleadoForm.value)
   }
 
   onFechaNacimientoChange(event: any) {
@@ -924,7 +898,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
   async guardarEmpleado() {
     const rol = await this.secureStorage.get<number>('rolSeleccionado');
-    //console.log("datos: ",this.empleadoForm.value)
     if (this.empleadoForm.invalid) {
       this.empleadoForm.markAllAsTouched();
       return;
@@ -977,7 +950,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
     // postgradoSeleccionadas.forEach((id: number) => {
     //   formData.append('ID_POSTGRADO', id.toString());
     // });
-    // //console.log("this.empleadoForm: ",this.empleadoForm.value)
     // const aplicacionesSeleccionadas: number[] = this.empleadoForm.get('APLICACIONES')?.value || [];
     // aplicacionesSeleccionadas.forEach((id: number) => {
     //   formData.append('APLICACIONES', id.toString());
@@ -1031,9 +1003,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
                 nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
 
                 // Depuración opcional
-                //console.log("ModeloJson:", modelo);
                 nuevoFormData.forEach((valor, clave) => {
-                  //console.log(`${clave}:`, valor);
                 });
                 
                 await this.enviar2(nuevoFormData);
@@ -1065,7 +1035,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
       });
       nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
 
-      //console.log("ModeloJson:", modelo);
       await this.enviar2(nuevoFormData);
     }
   }
@@ -1108,7 +1077,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
     postgradoSeleccionadas.forEach((id: number) => {
       formData.append('ID_POSTGRADO', id.toString());
     });
-    //console.log("this.empleadoForm: ",this.empleadoForm.value)
     const aplicacionesSeleccionadas: number[] = this.empleadoForm.get('APLICACIONES')?.value || [];
     aplicacionesSeleccionadas.forEach((id: number) => {
       formData.append('APLICACIONES', id.toString());
@@ -1162,9 +1130,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
                 nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
 
                 // Depuración opcional
-                //console.log("ModeloJson:", modelo);
                 nuevoFormData.forEach((valor, clave) => {
-                  //console.log(`${clave}:`, valor);
                 });
                 
                 await this.enviar(nuevoFormData);
@@ -1208,7 +1174,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
       nuevoFormData.append('ModeloJson', JSON.stringify(modelo));
 
-      //console.log("ModeloJson:", modelo);
       await this.enviar(nuevoFormData);
     }
   }
@@ -1219,7 +1184,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
         next: async (resp) => {
           try {
             this.UserInteractionService.dismissLoading();
-            //console.log("Respuesta:", resp);
             let action2 :IAlertAction[] =[
               {
                 text: 'Cancelar',
@@ -1290,7 +1254,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
         next: async (resp) => {
           try {
             this.UserInteractionService.dismissLoading();
-            //console.log("Respuesta:", resp);
             this.UserInteractionService.presentToast('Usuario editado con exito',TypeThemeColor.SUCCESS);
             // let action2 :IAlertAction[] =[
             //   {
@@ -1361,7 +1324,6 @@ export class ModalEditarFuncionarioPage implements OnInit {
     this.service.postAprobarRechazarColaborador(data).subscribe({
         next: async (resp) => {
           try {
-            //console.log("Respuesta:", resp);
             this.UserInteractionService.dismissLoading();
             this.cerrarModal();
           } catch (error) {

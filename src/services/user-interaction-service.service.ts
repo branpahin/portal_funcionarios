@@ -45,7 +45,7 @@ export class UserInteractionService {
       this.showAlert = true;
 
       const alert = await this.alertCtrl.create({
-        backdropDismiss: false,
+        backdropDismiss: true,
         header,
         message,
         buttons: actions,

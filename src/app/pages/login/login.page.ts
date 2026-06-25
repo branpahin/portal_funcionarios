@@ -37,7 +37,6 @@ export class LoginPage implements OnInit {
       next:async(resp)=>{
         try{
           const token = resp.headers?.get('authorization');
-          //console.log("resp: ",resp)
           resp.body.data
           this.moduleService.setParam(resp.body.data)
           if (token) {

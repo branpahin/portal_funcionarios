@@ -39,7 +39,6 @@ export class ColaboradoresPublicoPage implements OnInit {
     this.url==true
     this.route.paramMap.subscribe(params => {
       const cedula = params.get('cedula') ?? undefined;
-      //console.log(cedula)
       if (cedula!=undefined) {
         this.url=true
         this.URLBuscar(cedula);
@@ -61,7 +60,6 @@ export class ColaboradoresPublicoPage implements OnInit {
       this.service.postConsultarColaborador(credentials).subscribe({
         next:async(resp)=>{
           try{
-            //console.log("resp: ",resp)
             this.UserInteractionService.dismissLoading();
             this.abrirModalInfoColaborador(resp.body.data.datos);
           }catch(error){
@@ -89,7 +87,6 @@ export class ColaboradoresPublicoPage implements OnInit {
       this.service.getConsultarColaboradorCedula(credentials).subscribe({
         next:async(resp)=>{
           try{
-            //console.log("resp: ",resp)
             this.UserInteractionService.dismissLoading();
             this.abrirModalInfoColaborador(resp.data.datos);
           }catch(error){

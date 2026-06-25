@@ -67,7 +67,6 @@ export class HttpService {
 
 	GetParamsCore(rutaApi: string): Observable<any> {
 		const APIREST = `${this._baseApiUrl}${rutaApi}`
-		//console.log("📡 Enviando petición GET con headers:", this.getHttpOptions());
 		return this.http.get<any>(APIREST, this.getHttpOptions()).pipe(tap((resp) => {of(resp)}))
 	}
 
