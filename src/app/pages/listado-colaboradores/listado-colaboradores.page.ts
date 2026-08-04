@@ -475,10 +475,10 @@ export class ListadoColaboradoresPage implements OnInit {
     this.ngOnInit();
   }
 
-  async abrirModalEditarFuncionario(id:number, editar:boolean) {
+  async abrirModalEditarFuncionario(id:number, editar:boolean, editarCargo?:boolean) {
     const modal = await this.modalController.create({
       component: ModalEditarFuncionarioPage,
-      componentProps: { idColaborador: id, editar: editar}
+      componentProps: { idColaborador: id, editar: editar, editarCargo: editarCargo}
     });
 
     modal.style.cssText = `

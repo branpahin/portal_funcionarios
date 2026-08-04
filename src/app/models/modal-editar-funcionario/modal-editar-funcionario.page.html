@@ -32,7 +32,7 @@
 
 
       <!-- Sección 1: Información Básica con Foto -->
-      <ion-row>
+      <ion-row *ngIf="!editarCargo">
         <ion-col>
           <ion-toolbar class="subtitulos">
             <ion-title>
@@ -42,7 +42,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!editarCargo">
         <!-- Columna de datos -->
         <ion-col size="12" size-md="8">
           <ion-row>
@@ -176,7 +176,7 @@
       </ion-row>
 
       <!-- Sección 2: Información de Contacto -->
-      <ion-row>
+      <ion-row *ngIf="!editarCargo">
         <ion-col>
           <ion-toolbar class="subtitulos">
             <ion-title>
@@ -186,7 +186,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!editarCargo">
         <ion-col size="12" size-md="6" *ngIf="getCampoConfig('CORREO_PERSONAL').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('CORREO_PERSONAL').editable">
             <ion-input label="Correo Personal" labelPlacement="floating" formControlName="CORREO_PERSONAL"></ion-input>
@@ -202,7 +202,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!editarCargo">
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('TELEFONO_CELULAR').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('TELEFONO_CELULAR').editable">
             <ion-input label="Numero Celular" labelPlacement="floating" formControlName="TELEFONO_CELULAR"></ion-input>
@@ -226,7 +226,7 @@
       </ion-row>
 
       <!-- Sección 3: Dirección -->
-      <ion-row>
+      <ion-row *ngIf="!editarCargo">
         <ion-col>
           <ion-toolbar class="subtitulos">
             <ion-title>
@@ -236,7 +236,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!editarCargo">
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('CIUDAD_RESIDENCIA').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('CIUDAD_RESIDENCIA').editable">
             <ion-input label="Ciudad de Residencia" labelPlacement="floating" formControlName="CIUDAD_RESIDENCIA"></ion-input>
@@ -253,7 +253,7 @@
       </ion-row>
 
       <!-- Sección 4: Educación -->
-      <ion-row>
+      <ion-row *ngIf="!editarCargo && !perfil">
         <ion-col>
           <ion-toolbar class="subtitulos">
             <ion-title>
@@ -263,7 +263,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!editarCargo && !perfil">
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_NIVEL_EDUCATIVO').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('ID_NIVEL_EDUCATIVO').editable" (mousedown)="abrirModal('ID_NIVEL_EDUCATIVO', nivelesEducativos, 'descripcion', false)">
             <ion-input label="Nivel Educativo" labelPlacement="floating" [value]="getGeneroDescripcion('ID_NIVEL_EDUCATIVO', nivelesEducativos) || 'Seleccione...'" readonly></ion-input>
@@ -287,7 +287,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!editarCargo && !perfil">
         <ion-col size="12" size-md="6" *ngIf="getCampoConfig('ID_PROFESION').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('ID_PROFESION').editable" (mousedown)="abrirModal('ID_PROFESION', profesiones, 'descripcion', true)">
             <ion-input label="Profesión" labelPlacement="floating" 
@@ -323,7 +323,7 @@
       </ion-row>
 
       <!-- Sección 5: Familia -->
-      <ion-row>
+      <ion-row *ngIf="!editarCargo">
         <ion-col>
           <ion-toolbar class="subtitulos">
             <ion-title>
@@ -333,7 +333,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!editarCargo">
         <ion-col size="12" size-md="6" *ngIf="getCampoConfig('TIENE_HIJOS').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('TIENE_HIJOS').editable" (mousedown)="abrirModal('TIENE_HIJOS', tieneHijos, 'descripcion', false)">
             <ion-input label="¿Tiene hijos?" labelPlacement="floating" [value]="getGeneroDescripcion('TIENE_HIJOS', tieneHijos) || 'Seleccione...'" readonly></ion-input>
@@ -347,7 +347,7 @@
       </ion-row>
 
       <!-- Sección de Hijos (condicional) -->
-      <ion-row *ngIf="mostrarHijo && getCampoConfig('TIENE_HIJOS').visible">
+      <ion-row *ngIf="mostrarHijo && getCampoConfig('TIENE_HIJOS').visible && !editarCargo">
         <ion-col class="col-hijos">
           <ion-row>
             <ion-col>
@@ -429,7 +429,7 @@
       </ion-row>
 
       <!-- Sección 6: Información de Empresa -->
-      <ion-row>
+      <ion-row *ngIf="!perfil">
         <ion-col>
           <ion-toolbar class="subtitulos">
             <ion-title>
@@ -439,7 +439,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!perfil">
         <ion-col size="12" size-md="6" *ngIf="getCampoConfig('FECHA_INGRESO').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('FECHA_INGRESO').editable">
             <ion-label position="fixed">Fecha de Ingreso</ion-label>
@@ -462,7 +462,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!perfil">
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_EMPRESA').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('ID_EMPRESA').editable" (mousedown)="abrirModal('ID_EMPRESA', empresas, 'descripcion', false)">
             <ion-input label="Empresa" labelPlacement="floating" [value]="getGeneroDescripcion('ID_EMPRESA', empresas) || 'Seleccione...'" readonly></ion-input>
@@ -488,7 +488,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!perfil">
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_GERENCIA').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('ID_GERENCIA').editable" (mousedown)="abrirModal('ID_GERENCIA', gerencias, 'descripcion', false)">
             <ion-input label="Gerencia" labelPlacement="floating" [value]="getGeneroDescripcion('ID_GERENCIA', gerencias) || 'Seleccione...'" readonly></ion-input>
@@ -514,7 +514,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!perfil">
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_ROL').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('ID_ROL').editable" (mousedown)="abrirModal('ID_ROL', roles, 'descripcion', false)">
             <ion-input label="Rol" labelPlacement="floating" [value]="getGeneroDescripcion('ID_ROL', roles) || 'Seleccione...'" readonly></ion-input>
@@ -539,7 +539,7 @@
           <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_CCO')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="4" *ngIf="getCampoConfig('CAMBIO_CARGO').visible">
+        <ion-col size="12" size-md="4" *ngIf="getCampoConfig('CAMBIO_CARGO').visible && !editarCargo">
           <ion-item [disabled]="!editar || !getCampoConfig('CAMBIO_CARGO').editable">
             <ion-select label="Cambio cargo" label-placement="floating" formControlName="CAMBIO_CARGO">
               <ion-select-option value="S">SI</ion-select-option>
@@ -551,7 +551,7 @@
       </ion-row>
 
       <!-- Sección 7: Dotación y Nómina -->
-      <ion-row>
+      <ion-row *ngIf="!perfil">
         <ion-col>
           <ion-toolbar class="subtitulos">
             <ion-title>
@@ -561,7 +561,7 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row *ngIf="!perfil">
         <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_TIPO_NOMINA').visible">
           <ion-item [disabled]="!editar || !getCampoConfig('ID_TIPO_NOMINA').editable" (mousedown)="abrirModal('ID_TIPO_NOMINA', tipoNomnina, 'descripcion', false)">
             <ion-input label="Nomina" labelPlacement="floating" [value]="getGeneroDescripcion('ID_TIPO_NOMINA', tipoNomnina) || 'Seleccione...'" readonly></ion-input>
@@ -588,7 +588,7 @@
       </ion-row>
 
       <!-- Sección 8: Seguridad y Documentación -->
-      <ion-row>
+      <ion-row *ngIf="!perfil">
         <ion-col>
           <ion-toolbar class="subtitulos">
             <ion-title>
@@ -598,8 +598,8 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
-        <ion-col size="12" size-md="3" *ngIf="getCampoConfig('PAZ_SALVO_ACTIVOS').visible">
+      <ion-row *ngIf="!perfil">
+        <ion-col size="12" size-md="3" *ngIf="getCampoConfig('PAZ_SALVO_ACTIVOS').visible && !editarCargo">
           <ion-item [disabled]="!editar || !getCampoConfig('PAZ_SALVO_ACTIVOS').editable">
             <ion-select label="Paz y Salvo" label-placement="floating" formControlName="PAZ_SALVO_ACTIVOS">
               <ion-select-option value="SI">SI</ion-select-option>
@@ -609,7 +609,7 @@
           <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('PAZ_SALVO_ACTIVOS')"></app-error-mensaje>
         </ion-col>
 
-        <ion-col size="12" size-md="3" *ngIf="getCampoConfig('ENTREGA_TARJETA_INGRESO').visible">
+        <ion-col size="12" size-md="3" *ngIf="getCampoConfig('ENTREGA_TARJETA_INGRESO').visible && !editarCargo">
           <ion-item [disabled]="!editar || !getCampoConfig('ENTREGA_TARJETA_INGRESO').editable">
             <ion-select label="Entrega tarjeta de ingreso" label-placement="floating" formControlName="ENTREGA_TARJETA_INGRESO">
               <ion-select-option value="SI">SI</ion-select-option>
@@ -629,7 +629,7 @@
 
         <ion-col [attr.size]="getListaSeleccion('APLICACIONES', apis).length > 0 ? '12' : '12'"
             [attr.size-md]="getListaSeleccion('APLICACIONES', apis).length > 0 ? '6' : '3'" 
-            *ngIf="getCampoConfig('APLICACIONES').visible">
+            *ngIf="getCampoConfig('APLICACIONES').visible && !editarCargo">
           <ion-item [disabled]="!editar || !getCampoConfig('APLICACIONES').editable" (mousedown)="abrirModal('APLICACIONES', apis, 'aplicacion', true)">
             <ion-input label="Aplicaciones" labelPlacement="floating" readonly
               [value]="getListaSeleccion('APLICACIONES', apis).length === 0 ? 'Seleccione...' : ''">
@@ -659,6 +659,6 @@
 
 <ion-footer>
   <ion-toolbar class="btn" color="medium">
-    <ion-button *ngIf="editar && permisosService.puedeEditar()" style="margin-right: 2%;"  (click)="guardarEmpleado()">Guardar</ion-button>
+    <ion-button *ngIf="(editar && permisosService.puedeEditar()) || perfil" style="margin-right: 2%;"  (click)="guardarEmpleado()">Guardar</ion-button>
   </ion-toolbar>
 </ion-footer>

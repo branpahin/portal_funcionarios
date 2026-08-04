@@ -31,6 +31,8 @@ export class PortalService {
   private ActualizarEstadoColaborador = TypeServicio.ActualizarEstadoColaborador
   private putInfoColaborador = TypeServicio.putInfoColaborador
   private putInfoColaboradorInterv = TypeServicio.putInfoColaboradorInterv
+  private putCargoColaborador = TypeServicio.putCargoColaborador
+  private putPerfilColaborador = TypeServicio.putPerfilColaborador
   private InactivarColaborador = TypeServicio.PutInactivarColaborador
   private ActivarColaborador = TypeServicio.PutActivarColaborador
   private InactivarColaboradorInterv = TypeServicio.PutInactivarColaboradorInterv
@@ -51,6 +53,7 @@ export class PortalService {
   private GetRolesUsuario = TypeServicio.GetRolesUsuario
   private GetAplicativos = TypeServicio.GetAplicativos
   private GetMenu = TypeServicio.GetMenu
+  private colaborador = TypeServicio.colaborador
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -76,6 +79,9 @@ export class PortalService {
 
   getColaboradores(): Observable<any>{
     return this.httpService.GetParamsCore(this.colaboradores);
+  }
+  getColaborador(): Observable<any>{
+    return this.httpService.GetParamsCore(this.colaborador);
   }
 
   getColaboradoresPag(pag:string): Observable<any>{
@@ -191,6 +197,14 @@ export class PortalService {
 
   putActualizarColaboradorInterv(data: any): Observable<any>{
     return this.httpService.PutFormDataCore(data,this.putInfoColaboradorInterv);
+  }
+
+  putActualizarCargoColaborador(data: any): Observable<any>{
+    return this.httpService.PutJsonCore(data,this.putCargoColaborador);
+  }
+
+  putActualizarPerfilColaborador(data: any): Observable<any>{
+    return this.httpService.PutJsonCore(data,this.putPerfilColaborador);
   }
 
   putInactivarUsuario(data: any): Observable<any>{

@@ -125,6 +125,7 @@ export class LayoutPage implements OnInit {
   
   async params() {
     this.param= await this.moduleService.getParam();
+    console.log("param: ",this.param)
     this.service.getCaposFiltro().subscribe({
       next:async(resp)=>{
         try{
@@ -220,12 +221,14 @@ export class LayoutPage implements OnInit {
     
   }
 
-  async abrirModalEditarFuncionario(id:number, editar:boolean, data:any) {
-    this.permisosService.setPermisos(data);
-    this.secureStorage.set('permisos',data)
+  async abrirModalEditarFuncionario(id:number, editar:boolean, data?:any, perfil?:boolean) {
+    if(data){
+      this.permisosService.setPermisos(data);
+      this.secureStorage.set('permisos',data)
+    }
     const modal = await this.modalController.create({
       component: ModalEditarFuncionarioPage,
-      componentProps: { idColaborador: id, editar: editar}
+      componentProps: { idColaborador: id, editar: editar, perfil: perfil}
     });
 
     modal.style.cssText = `

@@ -7,6 +7,7 @@ export enum TypeServicio{
     login = 'Login/Loguear',
     camposFiltro = 'Colaboradores/GetCamposFiltros',
     colaboradores = 'Colaboradores/GetColaboradores',
+    colaborador = 'Colaboradores/GetInfoColaboradorUsuario',
     colaboradoresPag = 'Colaboradores/GetColaboradoresPag',
     colaboradoresInterventor = 'Interventor/GetColaboradoresInterv',
     colaboradoresInterventorPag = 'Interventor/GetColaboradoresIntervPag',
@@ -25,6 +26,8 @@ export enum TypeServicio{
     ActualizarEstadoColaborador = 'Colaboradores/ActualizarEstadoColaborador',
     putInfoColaborador = 'Colaboradores/ActualizarColaborador',
     putInfoColaboradorInterv = 'Interventor/ActualizarColaboradorInterv',
+    putCargoColaborador = 'Colaboradores/UpdateCargoColaborador',
+    putPerfilColaborador = 'Colaboradores/UpdateInfoColaboradorUsuario',
     PutInactivarColaborador = 'Colaboradores/InactivarColaborador',
     PutInactivarColaboradorInterv = 'Interventor/InactivarColaboradorInterv',
     PutActivarColaborador = 'Colaboradores/ActivarColaborador',
@@ -44,5 +47,5 @@ export enum TypeServicio{
     GetCamposEstado='Colaboradores/GetCamposEstado',
     AprobarRechazarColaborador='Colaboradores/AprobarRechazarColaborador',
     GetAplicativos='Colaboradores/GetAplicativos',
-    GetMenu='Menu/ConsultarMenuPerfil'
+    GetMenu='Menu/ConsultarMenuPerfil',
 }

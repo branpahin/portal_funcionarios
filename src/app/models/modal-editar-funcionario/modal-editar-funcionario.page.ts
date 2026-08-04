@@ -26,6 +26,8 @@ import { SecureStorageService } from 'src/services/secure-storage.service';
 export class ModalEditarFuncionarioPage implements OnInit {
   @Input() idColaborador: number|undefined;
   @Input() editar: boolean|undefined;
+  @Input() editarCargo: boolean|undefined;
+  @Input() perfil: boolean|undefined;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   idCiudad:number=0
   idGerencia:number=0
@@ -532,7 +534,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         })
       }
     }else{
-      if(rol == 236){
+      // if(rol == 236){
         this.service.getInfoColaboradoresUsuario().subscribe({
           next:async(resp)=>{
             try{
@@ -606,7 +608,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
             this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
           }
         })
-      }
+      // }
     }
   }
 
@@ -898,18 +900,128 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
   async guardarEmpleado() {
     const rol = await this.secureStorage.get<number>('rolSeleccionado');
-    if (this.empleadoForm.invalid) {
+    if(this.editarCargo){
+      await this.enviarEditarCargo();
+    }else if(this.perfil){
+      await this.enviarActualizacionPerfil();
+    }
+    else if (this.empleadoForm.invalid) {
       this.empleadoForm.markAllAsTouched();
       return;
     }
-    if (this.empleadoForm.valid) {
+    else if (this.empleadoForm.valid) {
       if(rol==153){
-        await this.enviarColaboradorInterventor()
+        await this.enviarColaboradorInterventor();
       }else{
         await this.enviarColaborador();
       }
     
     }
+  }
+
+  async enviarActualizacionPerfil(){
+    const {
+      TIPO_IDENTIFICACION,
+      IDENTIFICACION,
+      NOMBRES,
+      APELLIDOS,
+      GENERO,
+      RH,
+      FECHA_NACIMIENTO,
+      TELEFONO_CELULAR,
+      CIUDAD_RESIDENCIA,
+      DIRECCION_RESIDENCIA,
+      TIENE_HIJOS,
+      ID_ESTADO_CIVIL,
+      CORREO_PERSONAL,
+      NOMBRE_CONTACTO,
+      TELEFONO_CONTACTO,
+      HIJOS_COLABORADOR_JSON,
+      ID
+    } = this.empleadoForm.getRawValue();
+
+    const formData = {
+      tipO_IDENTIFICACION: TIPO_IDENTIFICACION,
+      identificacion: IDENTIFICACION,
+      nombres: NOMBRES,
+      apellidos: APELLIDOS,
+      genero: GENERO,
+      rh: RH,
+      fechA_NACIMIENTO: FECHA_NACIMIENTO,
+      telefonO_CELULAR: TELEFONO_CELULAR,
+      ciudaD_RESIDENCIA: CIUDAD_RESIDENCIA,
+      direccioN_RESIDENCIA: DIRECCION_RESIDENCIA,
+      tienE_HIJOS: TIENE_HIJOS,
+      iD_ESTADO_CIVIL: ID_ESTADO_CIVIL,
+      correO_PERSONAL: CORREO_PERSONAL,
+      nombrE_CONTACTO: NOMBRE_CONTACTO,
+      telefonO_CONTACTO: TELEFONO_CONTACTO,
+      hijoS_COLABORADOR_JSON: JSON.stringify(HIJOS_COLABORADOR_JSON),
+      iD_USUARIO: ID
+    };
+    this.UserInteractionService.showLoading('Guardando...');
+      this.service.putActualizarPerfilColaborador(formData).subscribe({
+        next: async (resp) => {
+          try {
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast('Usuario editado con exito',TypeThemeColor.SUCCESS);
+            this.cerrarModal();
+            
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading();
+            this.cerrarModal();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err.error.data.error);
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.cerrarModal();
+        }
+      });
+  }
+
+  async enviarEditarCargo(){
+    const formData = {
+      id:this.empleadoForm.get('ID')?.value ,
+      iD_EMPRESA: this.empleadoForm.get('ID_EMPRESA')?.value,
+      ciudaD_TRABAJO: this.empleadoForm.get('CIUDAD_TRABAJO')?.value,
+      iD_SEDE: this.empleadoForm.get('ID_SEDE')?.value,
+      iD_GERENCIA: this.empleadoForm.get('ID_GERENCIA')?.value,
+      iD_CCO: this.empleadoForm.get('ID_CCO')?.value,
+      iD_AREA: this.empleadoForm.get('ID_AREA')?.value,
+      iD_RUBRO: this.empleadoForm.get('ID_RUBRO')?.value,
+      iD_CARGO: this.empleadoForm.get('ID_CARGO')?.value,
+      iD_TIPO_NOMINA: this.empleadoForm.get('ID_TIPO_NOMINA')?.value,
+      iD_ROL: this.empleadoForm.get('ID_ROL')?.value,
+      iD_TIPO_DOTACION: this.empleadoForm.get('ID_TIPO_DOTACION')?.value,
+      iD_NIVEL_DOTACION: this.empleadoForm.get('ID_NIVEL_DOTACION')?.value,
+      arl: this.empleadoForm.get('ARL')?.value,
+      iD_JEFE: this.empleadoForm.get('ID_JEFE')?.value,
+      iD_USUARIO: this.empleadoForm.get('ID')?.value
+    };
+    this.UserInteractionService.showLoading('Guardando...');
+      this.service.putActualizarCargoColaborador(formData).subscribe({
+        next: async (resp) => {
+          try {
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast('Usuario editado con exito',TypeThemeColor.SUCCESS);
+            this.cerrarModal();
+            
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading();
+            this.cerrarModal();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err.error.data.error);
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.cerrarModal();
+        }
+      });
   }
 
   async enviarColaboradorInterventor(){
