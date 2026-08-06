@@ -1,8 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      <div *ngIf="editar" class="responsive-title">Modificación de Empleado</div>
+      <div *ngIf="editar && !perfil" class="responsive-title">Modificación de Empleado</div>
       <div *ngIf="!editar" class="responsive-title">Información de Empleado</div>
+      <div *ngIf="perfil" class="responsive-title">Información de perfil</div>
     </ion-title>
     <ion-title>
       

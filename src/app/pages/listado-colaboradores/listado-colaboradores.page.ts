@@ -575,6 +575,46 @@ export class ListadoColaboradoresPage implements OnInit {
   }
 
   async activar(data:any){
+    console.log("data: ",data)
+    const actionObservacion: IAlertAction[] = [
+      {
+        text: 'Cancelar',
+        handler: async () => {}
+      },
+      {
+        text: 'Aceptar',
+        handler: async (d) => {
+          const observacion = d.observacion;
+
+          // 👉 ahora lanzamos el segundo alert con los estados
+          await this.mostrarAlertEstados(data, observacion);
+        }
+      }
+    ];
+
+    // Primer alert: observación
+    let titulo = '¡Se quiere activar el usuario!'
+    if(data.estado==8){
+      titulo='Entrega activos'
+    } else if(data.estado==9){
+      titulo='Entrega tarjeta de ingreso'
+    }
+    this.UserInteractionService.presentAlertActions(
+      titulo,
+      actionObservacion,
+      false,
+      'Notificación',
+      [
+        {
+          name: 'observacion',
+          type: 'textarea',
+          placeholder: 'Escriba su observación'
+        }
+      ]
+    );
+  }
+
+  async estado(data:any){
     const actionObservacion: IAlertAction[] = [
       {
         text: 'Cancelar',
@@ -606,6 +646,7 @@ export class ListadoColaboradoresPage implements OnInit {
       ]
     );
   }
+
 
   private async mostrarAlertEstados(data: any, observacion: string) {
     const filtros = await this.moduleService.getFiltros();
@@ -639,13 +680,34 @@ export class ListadoColaboradoresPage implements OnInit {
     ];
 
     // Segundo alert: selección de estado
-    this.UserInteractionService.presentAlertActions(
-      'Seleccione el estado',
-      actionEstados,
-      false,
-      'Estados',
-      alertInputs
-    );
+    if(data.estado==10){
+      this.UserInteractionService.presentAlertActions(
+        'Seleccione el estado',
+        actionEstados,
+        false,
+        'Estados',
+        alertInputs
+      );
+    } else if(data.estado==8){
+      const datos = {
+        IDENTIFICACION: Number(data.identificacion),
+        RESPONSABLE: Number(this.param.identificacion),
+        ID_USUARIO: data.id,
+        OBSERVACION: observacion,
+        ESTADO: 9
+      };
+      await this.activacionConfirmada(datos);
+    } else if(data.estado==9){
+      const datos = {
+        IDENTIFICACION: Number(data.identificacion),
+        RESPONSABLE: Number(this.param.identificacion),
+        ID_USUARIO: data.id,
+        OBSERVACION: observacion,
+        ESTADO: 10
+      };
+      await this.activacionConfirmada(datos);
+    } 
+    
   }
 
   async activacionConfirmada(datos:any){
