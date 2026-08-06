@@ -179,10 +179,11 @@
         <ion-col>{{datos.estadO_PROCESO}}</ion-col>
         <ion-col> 
           <ion-button title="Editar" *ngIf="permisosService.puedeEditar() && [1,3,5,7].includes(datos.estado)" class="btn-accion" color="medium" (click)="abrirModalEditarFuncionario(datos.id,true)"><ion-icon name="pencil"></ion-icon></ion-button>
-          <ion-button title="Validar proceso" *ngIf="permisosService.puedeEditar() && datos.estado!=1 && datos.estado!=3 && datos.estado!=5 && datos.estado!=8 && datos.estado!=9" class="btn-accion" color="medium" (click)="enviar(datos.identificacion)"><ion-icon name="checkmark-circle-outline"></ion-icon></ion-button>
+          <ion-button title="Validar proceso" *ngIf="permisosService.puedeEditar() && datos.estado!=1 && datos.estado!=3 && datos.estado!=5 && datos.estado!= 7&& datos.estado!=8 && datos.estado!=9 && datos.estado!=10" class="btn-accion" color="medium" (click)="enviar(datos.identificacion)"><ion-icon name="checkmark-circle-outline"></ion-icon></ion-button>
+          <ion-button title="Retirar colaborador" *ngIf="permisosService.puedeEditar() && datos.estado==7" class="btn-accion" color="danger" (click)="enviar(datos.identificacion)"><ion-icon name="close"></ion-icon></ion-button>
           <ion-button title="Visualizar información" *ngIf="permisosService.puedeConsultar()" class="btn-accion" color="success" (click)="abrirModalEditarFuncionario(datos.id,false)"><ion-icon name="eye"></ion-icon></ion-button>
           <ion-button title="Inactivar" *ngIf="permisosService.puedeBorrar() && datos.estado==9" class="btn-accion" color="danger" (click)="Inactivar(datos)"><ion-icon name="close"></ion-icon></ion-button>
-          <ion-button title="Entrega activos o tarjeta" *ngIf="permisosService.puedeEditar() && [8,9].includes(datos.estado)" class="btn-accion" color="primary" (click)="activar(datos)"><ion-icon name="checkmark-circle-outline"></ion-icon></ion-button>
+          <ion-button title="Entrega activos o tarjeta" *ngIf="permisosService.puedeEditar() && [8].includes(datos.estado)" class="btn-accion" color="primary" (click)="activar(datos)"><ion-icon name="checkmark-circle-outline"></ion-icon></ion-button>
           <ion-button title="Activar" *ngIf="permisosService.puedeEditar() && datos.estado==10" class="btn-accion" color="primary" (click)="activar(datos)"><ion-icon name="checkmark-donde-circle-outline"></ion-icon></ion-button>
           <ion-button title="Cambio de cargo" *ngIf="permisosService.puedeEditar() && datos.estado==7" class="btn-accion" color="primary" (click)="abrirModalEditarFuncionario(datos.id,true,true)"><ion-icon name="id-card-outline"></ion-icon></ion-button>
         </ion-col>
