@@ -697,16 +697,7 @@ export class ListadoColaboradoresPage implements OnInit {
         ESTADO: 9
       };
       await this.activacionConfirmada(datos);
-    } else if(data.estado==9){
-      const datos = {
-        IDENTIFICACION: Number(data.identificacion),
-        RESPONSABLE: Number(this.param.identificacion),
-        ID_USUARIO: data.id,
-        OBSERVACION: observacion,
-        ESTADO: 10
-      };
-      await this.activacionConfirmada(datos);
-    } 
+    }
     
   }
 
