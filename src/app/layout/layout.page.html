@@ -1,95 +1,231 @@
 
 <main>
 <ion-menu contentId="main-content" side="end">
-  <ion-header color="primary">
+
+  <ion-header>
     <ion-toolbar color="primary">
+
       <ion-title>Menú</ion-title>
+
       <ion-buttons slot="end">
-      <ion-select
-        placeholder="Seleccionar"
-        interface="popover"
-        [(ngModel)]="rolSeleccionado"
-        (ionChange)="menu($event.detail.value)"
-      >
-        <ion-select-option *ngFor="let rol of rolesSelec" [value]="rol.id">
-          {{ rol.descripcion }}
-        </ion-select-option>
-      </ion-select>
-    </ion-buttons>
+        <ion-select
+          placeholder="Seleccionar"
+          interface="popover"
+          [(ngModel)]="rolSeleccionado"
+          (ionChange)="menu($event.detail.value)"
+        >
+          <ion-select-option
+            *ngFor="let rol of rolesSelec"
+            [value]="rol.id"
+          >
+            {{ rol.descripcion }}
+          </ion-select-option>
+        </ion-select>
+      </ion-buttons>
+
     </ion-toolbar>
   </ion-header>
 
+
   <ion-content>
+
     <ion-list>
+
       <ng-container *ngFor="let item of menuItems">
-        <ion-menu-toggle auto-hide="false" *ngIf="item.accion=='I' && item.href!='/layout/modal-editar-funcionario'">
+
+        <!-- ================================= -->
+        <!-- OPCIONES NORMALES -->
+        <!-- ================================= -->
+
+        <ion-menu-toggle
+          auto-hide="false"
+          *ngIf="
+            item.accion == 'I' &&
+            item.href != '/layout/modal-editar-funcionario'
+          "
+        >
+
           <ion-item
             button
             [routerLink]="item.href"
-            [state]="{ fromMenu: true,
-                      permisos: item.permisos}"
+            [state]="{
+              fromMenu: true,
+              permisos: item.permisos
+            }"
             routerDirection="root"
             routerLinkActive="bg-orange-100 text-orange-600 font-semibold rounded-lg"
             [routerLinkActiveOptions]="{ exact: true }"
             class="my-2 rounded-lg transition-all duration-200 hover:bg-orange-50"
           >
+
             <ion-icon
               slot="start"
               [name]="item.icon"
               class="text-xl text-orange-500 me-2"
             ></ion-icon>
+
             <ion-label class="text-base">
               {{ item.name }}
             </ion-label>
+
             <div slot="end">
-              <ion-note *ngIf="item.href=='/layout/listado-colaboradores' && funcionarios" 
-                class="notification-badge" >
-                {{funcionarios}}
+
+              <ion-note
+                *ngIf="
+                  item.href == '/layout/listado-colaboradores' &&
+                  funcionarios
+                "
+                class="notification-badge"
+              >
+                {{ funcionarios }}
               </ion-note>
+
             </div>
 
           </ion-item>
+
         </ion-menu-toggle>
-        <ion-item class="cursor-custom"
-          *ngIf="item.accion=='A'"
-          (click)="toggleFiltros(item.permisos)">
-          <ion-icon name="options" slot="start"></ion-icon>
-          <ion-label>Actualizar Filtros</ion-label>
-          <ion-icon [name]="filtrosAbiertos ? 'chevron-up' : 'chevron-down'" slot="end"></ion-icon>
-        </ion-item>
-        <ion-item class="cursor-custom"
-          *ngIf="item.href=='/layout/modal-editar-funcionario'"
-          (click)="abrirModalEditarFuncionario(0,true,item.permisos)">
-          <ion-icon name="options" slot="start"></ion-icon>
-          <ion-label>{{ item.name }}</ion-label>
-        </ion-item>
-      </ng-container>
-      <ion-menu-toggle auto-hide="false">
-          <ng-container *ngIf="filtrosAbiertos">
-            <ion-item button class="cursor-custom" *ngFor="let key of filtroKeys" (click)="actualizarFiltros(key.campo)" style="padding-left: 30px;"
-              [state]="{ fromMenu: true}"
-              routerDirection="root"
-              [routerLinkActiveOptions]="{ exact: true }"
-                          >
-              <ion-icon name="chevron-back" slot="start"></ion-icon>
-              <ion-label>{{ key.campo | titlecase }}</ion-label>
-            </ion-item>
-          </ng-container>
-          <ion-item button class="cursor-custom"  (click)="logout()" routerDirection="root">
-            <ion-icon name="log-out-outline" slot="start"></ion-icon>
-            <ion-label>Cerrar sesión</ion-label>
+
+
+        <!-- ================================= -->
+        <!-- ACTUALIZAR FILTROS -->
+        <!-- ================================= -->
+
+        <ng-container *ngIf="item.accion == 'A'">
+
+          <ion-item
+            button
+            class="cursor-custom"
+            (click)="toggleFiltros(item.permisos)"
+          >
+
+            <ion-icon
+              name="options"
+              slot="start"
+            ></ion-icon>
+
+            <ion-label>
+              Actualizar Filtros
+            </ion-label>
+
+            <ion-icon
+              [name]="
+                filtrosAbiertos
+                  ? 'chevron-up'
+                  : 'chevron-down'
+              "
+              slot="end"
+            ></ion-icon>
+
           </ion-item>
-        </ion-menu-toggle>
+
+
+          <!-- SUBLISTA -->
+          <div
+            *ngIf="filtrosAbiertos"
+            class="sublista-filtros"
+          >
+
+            <ion-item
+              button
+              class="cursor-custom"
+              *ngFor="let key of filtroKeys"
+              (click)="actualizarFiltros(key.campo)"
+            >
+
+              <ion-icon
+                name="chevron-back"
+                slot="start"
+              ></ion-icon>
+
+              <ion-label>
+                {{ key.campo | titlecase }}
+              </ion-label>
+
+            </ion-item>
+
+          </div>
+
+        </ng-container>
+
+
+        <!-- ================================= -->
+        <!-- EDITAR FUNCIONARIO -->
+        <!-- ================================= -->
+
+        <ion-item
+          button
+          class="cursor-custom"
+          *ngIf="
+            item.href == '/layout/modal-editar-funcionario'
+          "
+          (click)="abrirModalEditarFuncionario(
+            0,
+            true,
+            item.permisos
+          )"
+        >
+
+          <ion-icon
+            name="options"
+            slot="start"
+          ></ion-icon>
+
+          <ion-label>
+            {{ item.name }}
+          </ion-label>
+
+        </ion-item>
+
+      </ng-container>
+
+
+      <!-- ================================= -->
+      <!-- CERRAR SESIÓN -->
+      <!-- ================================= -->
+
+      <ion-menu-toggle auto-hide="false">
+
+        <ion-item
+          button
+          class="cursor-custom"
+          (click)="logout()"
+        >
+
+          <ion-icon
+            name="log-out-outline"
+            slot="start"
+          ></ion-icon>
+
+          <ion-label>
+            Cerrar sesión
+          </ion-label>
+
+        </ion-item>
+
+      </ion-menu-toggle>
+
     </ion-list>
 
   </ion-content>
-  
+
+
   <ion-footer>
+
     <ion-toolbar color="primary">
-      <div style="flex: 1; text-align: center;">EEP ©2025</div>
-      <ion-title slot="end">V{{ version }}</ion-title>
+
+      <div style="flex: 1; text-align: center;">
+        EEP ©2025
+      </div>
+
+      <ion-title slot="end">
+        V{{ version }}
+      </ion-title>
+
     </ion-toolbar>
+
   </ion-footer>
+
 </ion-menu>
 
 <!-- Contenido Principal -->

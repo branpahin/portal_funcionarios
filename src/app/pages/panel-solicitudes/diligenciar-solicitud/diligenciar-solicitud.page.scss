@@ -1,0 +1,305 @@
+ion-toolbar{
+  border-radius: 20px;
+}
+ion-header{
+  border-radius: 20px;
+}
+
+.realizar-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px;
+}
+
+.html-inline {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.page-header {
+  margin-bottom: 25px;
+
+  h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    font-size: 15px;
+  }
+}
+
+.selector-card {
+  margin: 0 0 25px;
+  border-radius: 14px;
+}
+
+.selector-card ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+}
+
+.solicitud-container {
+  width: 100%;
+}
+
+.solicitud-header {
+  margin-bottom: 15px;
+
+  h2 {
+    margin: 0 0 5px;
+    font-size: 21px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    font-size: 14px;
+  }
+}
+
+.documento-card {
+  margin: 0;
+  border-radius: 14px;
+}
+
+.documento-card ion-card-content {
+  padding: 20px;
+}
+
+.documento {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+
+  padding: 45px 55px;
+
+  overflow-x: auto;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+  line-height: 1.7;
+
+  color: #333;
+  p {
+    font-weight: 400;
+    margin: 0 0 12px;
+  }
+
+  span {
+    font-weight: 400;
+  }
+
+  strong {
+    font-weight: 700;
+  }
+}
+
+.campo-inline {
+  display: inline-flex;
+
+  width: 170px;
+  min-width: 160px;
+
+  vertical-align: middle;
+  margin: 2px 4px;
+
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --padding-top: 0;
+  --padding-bottom: 0;
+
+  min-height: 32px;
+
+  font-size: 13px;
+}
+
+// ion-input{
+//   min-height: 30px !important;
+// }
+
+
+.campo-check {
+  display: inline-block;
+  width: auto;
+  height: auto;
+
+  margin: 0 4px;
+
+  vertical-align: middle;
+
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.checkbox-documento {
+  display: inline-block;
+
+  width: 22px;
+  height: 22px;
+
+  --size: 22px;
+
+  --border-width: 1.5px;
+  --border-color: #555;
+
+  --checkbox-background-checked: var(--ion-color-primary);
+  --border-color-checked: var(--ion-color-primary);
+
+  margin: 0;
+
+  vertical-align: middle;
+}
+
+.campo-number {
+  width: 100px;
+  min-width: 80px;
+  max-height: 16px !important;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 50px 20px;
+
+  color: var(--ion-color-medium);
+
+  ion-spinner {
+    margin-bottom: 10px;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  padding: 60px 20px;
+
+  ion-icon {
+    font-size: 50px;
+    color: var(--ion-color-medium);
+    margin-bottom: 15px;
+  }
+
+  h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+  }
+}
+
+.firma-container {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: middle;
+  margin: 6px 8px;
+  min-width: 280px;
+  max-width: 100%;
+}
+
+.firma-titulo {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.firma-canvas {
+  width: 100%;
+  height: 150px;
+  display: block;
+  background: #fff;
+  border: 1px dashed #999;
+  border-radius: 8px;
+  touch-action: none;
+}
+
+.firma-acciones {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+@media (max-width: 768px) {
+
+  .realizar-container {
+    padding: 15px 10px;
+  }
+
+  .page-header {
+
+    h1 {
+      font-size: 24px;
+    }
+  }
+
+  .documento-card ion-card-content {
+    padding: 10px;
+  }
+
+  .documento {
+    max-width: 100%;
+
+    padding: 25px 20px;
+
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .campo-inline {
+    width: 170px;
+    min-width: 120px;
+
+    font-size: 12px;
+  }
+
+  .campo-number {
+    width: 90px;
+    min-width: 80px;
+  }
+
+  .checkbox-documento {
+    --size: 22px;
+
+    width: 22px;
+    height: 22px;
+
+    margin: 0;
+  }
+
+  .acciones {
+    flex-direction: column-reverse;
+
+    ion-button {
+      width: 100%;
+    }
+  }
+}

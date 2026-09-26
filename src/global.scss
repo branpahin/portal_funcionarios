@@ -114,6 +114,15 @@ body, p, td, .tabla-celda {
   font-weight: 600 !important; // Esto usará Montserrat-SemiBold
 }
 
+.responsive-title {
+    white-space: normal;
+}
+
+@media (max-width: 576px) {
+    .responsive-title {
+        font-size: 1rem;
+    }
+}
 
 
 

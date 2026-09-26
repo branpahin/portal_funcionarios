@@ -34,6 +34,20 @@ const routes: Routes = [
         loadComponent: () => import('../models/modal-editar-funcionario/modal-editar-funcionario.page').then( m => m.ModalEditarFuncionarioPage),
         canActivate: [authGuard]
       },
+      {
+        path: 'panel-solicitudes',
+        loadComponent: () =>
+          import('../pages/panel-solicitudes/panel-solicitudes.page')
+            .then(m => m.PanelSolicitudesPage),
+        canActivate: [authGuard]
+      },
+
+      {
+        path: 'panel-solicitudes/realizar',
+        loadComponent: () =>
+          import('../pages/panel-solicitudes/diligenciar-solicitud/diligenciar-solicitud.page')
+            .then(m => m.DiligenciarSolicitudPage)
+      }
     ],
   }
 ];

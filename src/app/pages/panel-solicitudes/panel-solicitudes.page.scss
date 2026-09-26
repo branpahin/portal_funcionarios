@@ -1,0 +1,346 @@
+ion-toolbar{
+  border-radius: 20px;
+}
+ion-header{
+  border-radius: 20px;
+}
+
+.panel-solicitudes {
+  --background: var(--ion-color-light);
+}
+
+.panel-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px;
+}
+
+.panel-header {
+  margin-bottom: 25px;
+
+  h1 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    font-size: 15px;
+  }
+}
+
+
+/* =============================== */
+/* OPCIONES */
+/* =============================== */
+
+.opciones-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 35px;
+}
+
+.opcion-card {
+  margin: 0;
+  border-radius: 16px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+
+  ion-card-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 25px;
+  }
+}
+
+.icon-container {
+  min-width: 58px;
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  ion-icon {
+    font-size: 30px;
+  }
+
+  &.crear {
+    background: rgba(var(--ion-color-primary-rgb), 0.12);
+    color: var(--ion-color-primary);
+  }
+
+  &.realizar {
+    background: rgba(var(--ion-color-success-rgb), 0.12);
+    color: var(--ion-color-success);
+  }
+}
+
+.opcion-info {
+  flex: 1;
+
+  h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    line-height: 1.5;
+  }
+}
+
+.opcion-button {
+  margin: 15px 0 0 -10px;
+}
+
+
+/* =============================== */
+/* SECCIONES */
+/* =============================== */
+
+.solicitudes-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.solicitudes-section {
+  margin-top: 0;
+  min-width: 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  h2 {
+    margin: 0 0 4px;
+    font-size: 21px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-medium);
+    font-size: 14px;
+  }
+}
+
+
+/* =============================== */
+/* LISTA */
+/* =============================== */
+
+.solicitudes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.solicitud-card {
+  margin: 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  ion-card-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 18px;
+  }
+}
+
+.solicitud-icon {
+  min-width: 44px;
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: rgba(var(--ion-color-primary-rgb), 0.1);
+  color: var(--ion-color-primary);
+
+  ion-icon {
+    font-size: 23px;
+  }
+
+  &.recibida {
+    background: rgba(var(--ion-color-warning-rgb), 0.12);
+    color: var(--ion-color-warning);
+  }
+}
+
+.solicitud-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.solicitud-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+
+.solicitud-info > p {
+  margin: 5px 0;
+  color: var(--ion-color-medium);
+  font-size: 14px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.solicitud-meta {
+  display: flex;
+  gap: 18px;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    color: var(--ion-color-medium);
+    font-size: 12px;
+  }
+
+  ion-icon {
+    font-size: 14px;
+  }
+}
+
+.solicitud-arrow {
+  color: var(--ion-color-medium);
+  font-size: 20px;
+}
+
+
+/* =============================== */
+/* ESTADOS */
+/* =============================== */
+
+ion-badge {
+  font-size: 11px;
+  padding: 5px 8px;
+}
+
+
+/* =============================== */
+/* SIN DATOS */
+/* =============================== */
+
+.empty-state {
+  text-align: center;
+  padding: 30px 20px;
+
+  ion-icon {
+    font-size: 42px;
+    color: var(--ion-color-medium);
+  }
+
+  h3 {
+    margin: 10px 0 5px;
+    font-size: 16px;
+  }
+
+  p {
+    margin: 0 0 15px;
+    color: var(--ion-color-medium);
+    font-size: 14px;
+  }
+}
+
+
+/* =============================== */
+/* RESPONSIVE */
+/* =============================== */
+
+@media (max-width: 768px) {
+
+  .panel-container {
+    padding: 20px 15px;
+  }
+
+  .panel-header {
+    margin-bottom: 18px;
+
+    h1 {
+      font-size: 24px;
+    }
+  }
+
+  .opciones-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .opcion-card {
+    ion-card-content {
+      padding: 18px;
+    }
+  }
+
+  .solicitudes-container {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .solicitudes-section {
+    margin-top: 0;
+  }
+
+  .section-header {
+    h2 {
+      font-size: 19px;
+    }
+
+    ion-button {
+      margin-right: -8px;
+    }
+  }
+
+  .solicitud-card {
+    ion-card-content {
+      padding: 14px;
+      gap: 12px;
+    }
+  }
+
+  .solicitud-title {
+    h3 {
+      font-size: 14px;
+    }
+  }
+
+  .solicitud-meta {
+    gap: 10px;
+
+    span {
+      font-size: 11px;
+    }
+  }
+}

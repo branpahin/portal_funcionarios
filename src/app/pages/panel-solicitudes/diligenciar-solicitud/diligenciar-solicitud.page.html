@@ -1,0 +1,743 @@
+<ion-header>
+  <ion-toolbar color="primary">
+
+    <ion-title>
+      <div class="responsive-title">Realizar solicitud</div>
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="volver()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+
+<div>
+
+  <div class="realizar-container">
+
+    <div class="page-header">
+
+      <div>
+        <h1>Realizar solicitud</h1>
+
+        <p>
+          Selecciona un tipo de solicitud y completa
+          la información requerida.
+        </p>
+      </div>
+
+    </div>
+
+    <ion-card class="selector-card">
+
+      <ion-card-content>
+
+        <ion-item lines="none">
+
+          <ion-icon
+            color="primary"
+            slot="start"
+            name="document-text-outline">
+          </ion-icon>
+
+          <ion-select
+            label="Tipo de solicitud"
+            labelPlacement="stacked"
+            placeholder="Selecciona un tipo de solicitud"
+            [value]="tipoSolicitudSeleccionado?.id"
+            (ionChange)="seleccionarTipoPorId($event.detail.value)"
+            interface="action-sheet">
+
+            <ion-select-option
+              *ngFor="let tipo of tiposSolicitud"
+              [value]="tipo.id">
+
+              {{ tipo.nombre }}
+
+            </ion-select-option>
+
+          </ion-select>
+
+        </ion-item>
+
+      </ion-card-content>
+
+    </ion-card>
+
+    <div
+      class="loading-container"
+      *ngIf="cargando">
+
+      <ion-spinner
+        name="crescent">
+      </ion-spinner>
+
+      <p>
+        Cargando tipos de solicitud...
+      </p>
+
+    </div>
+
+    <div
+      class="solicitud-container"
+      *ngIf="
+        tipoSolicitudSeleccionado &&
+        !cargando
+      ">
+
+      <div class="solicitud-header">
+
+        <div>
+
+          <h2>
+            {{ tipoSolicitudSeleccionado.nombre }}
+          </h2>
+
+          <p>
+            {{ tipoSolicitudSeleccionado.descripcion }}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <form
+        [formGroup]="formSolicitud"
+        (ngSubmit)="realizarSolicitud()">
+
+        <ion-card class="documento-card">
+
+          <ion-card-content>
+
+            <div class="documento">
+
+              <ng-container
+                *ngFor="let elemento of elementosHtml"
+              >
+
+                <ng-container
+                  *ngIf="elemento.tipo === 'elemento'"
+                >
+
+                  <ng-container
+                    [ngSwitch]="elemento.tag"
+                  >
+
+                    <p *ngSwitchCase="'p'">
+
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: {
+                            hijos: elemento.hijos
+                          }
+                        "
+                      ></ng-container>
+
+                    </p>
+
+                    <span *ngSwitchCase="'span'">
+
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: {
+                            hijos: elemento.hijos
+                          }
+                        "
+                      ></ng-container>
+
+                    </span>
+
+                    <strong *ngSwitchCase="'strong'">
+
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: {
+                            hijos: elemento.hijos
+                          }
+                        "
+                      ></ng-container>
+
+                    </strong>
+
+                    <div *ngSwitchCase="'div'">
+
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: {
+                            hijos: elemento.hijos
+                          }
+                        "
+                      ></ng-container>
+
+                    </div>
+
+                    <br *ngSwitchCase="'br'">
+
+                    <ng-container *ngSwitchDefault>
+
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: {
+                            hijos: elemento.hijos
+                          }
+                        "
+                      ></ng-container>
+
+                    </ng-container>
+
+                  </ng-container>
+
+                </ng-container>
+
+                <ng-container
+                  *ngIf="elemento.tipo === 'texto'"
+                >
+
+                  {{ elemento.contenido }}
+
+                </ng-container>
+
+                <ng-container
+                  *ngIf="esTipoCampo(elemento)"
+                >
+
+                  <div
+                    *ngIf="esCampoFirma(elemento.campo)"
+                    class="firma-container"
+                  >
+
+                    <div class="firma-titulo">
+                      {{ obtenerPlaceholder(elemento.campo) }}
+                    </div>
+
+                    <canvas
+                      #canvasFirma
+                      [attr.data-campo]="elemento.campo.nombrE_JSON"
+                      class="firma-canvas"
+                    ></canvas>
+
+                    <div class="firma-acciones">
+
+                      <ion-button
+                        type="button"
+                        fill="outline"
+                        size="small"
+                        (click)="limpiarFirma(elemento.campo)"
+                      >
+                        <ion-icon
+                          name="trash-outline"
+                          slot="start"
+                        ></ion-icon>
+
+                        Limpiar
+                      </ion-button>
+
+                      <ion-button
+                        type="button"
+                        fill="outline"
+                        size="small"
+                        (click)="seleccionarImagenFirma(elemento.campo)"
+                      >
+                        <ion-icon
+                          name="image-outline"
+                          slot="start"
+                        ></ion-icon>
+
+                        Cargar imagen
+                      </ion-button>
+
+                      <ion-button
+                        type="button"
+                        size="small"
+                        (click)="guardarFirma(elemento.campo)"
+                      >
+                        <ion-icon
+                          name="checkmark-outline"
+                          slot="start"
+                        ></ion-icon>
+
+                        Usar firma
+                      </ion-button>
+
+                    </div>
+
+                  </div>
+
+                  <ion-input
+                    *ngIf="
+                      !esCampoFirma(elemento.campo) &&
+                      elemento.campo.tipO_DATO
+                        ?.toUpperCase() === 'STRING'
+                    "
+                    class="campo-inline"
+                    fill="outline"
+                    [formControlName]="
+                      elemento.campo.nombrE_JSON
+                    "
+                    [placeholder]="
+                      obtenerPlaceholder(elemento.campo)
+                    "
+                  >
+                  </ion-input>
+
+                  <ion-input
+                    *ngIf="
+                      elemento.campo.tipO_DATO
+                        ?.toUpperCase() === 'NUMBER'
+                    "
+                    class="campo-inline campo-number"
+                    type="number"
+                    fill="outline"
+                    [formControlName]="
+                      elemento.campo.nombrE_JSON
+                    "
+                    [placeholder]="
+                      obtenerPlaceholder(elemento.campo)
+                    "
+                  >
+                  </ion-input>
+
+                  <span
+                    *ngIf="
+                      elemento.campo.tipO_DATO
+                        ?.toUpperCase() === 'BOOLEAN'
+                    "
+                    class="campo-check"
+                  >
+
+                    <ion-checkbox
+                      class="checkbox-documento"
+                      [checked]="
+                        obtenerControl(elemento.campo)?.value === true
+                      "
+                      (ionChange)="
+                        obtenerControl(elemento.campo)
+                          ?.setValue($event.detail.checked)
+                      "
+                    >
+                    </ion-checkbox>
+
+                  </span>
+
+                  <ion-select
+                    *ngIf="
+                      elemento.campo.tipO_DATO
+                        ?.toUpperCase() === 'SELECT'
+                    "
+                    class="campo-inline"
+                    fill="outline"
+                    interface="popover"
+                    placeholder="Seleccione"
+                    [formControlName]="
+                      elemento.campo.nombrE_JSON
+                    "
+                    (ionChange)="
+                      cambioSelect(elemento.campo)
+                    "
+                  >
+
+                    <ion-select-option
+                      *ngFor="
+                        let opcion of
+                        obtenerOpciones(elemento.campo)
+                      "
+                      [value]="opcion.valor"
+                    >
+
+                      {{ opcion.nombre }}
+
+                    </ion-select-option>
+
+                  </ion-select>
+
+                  <span
+                    *ngIf="
+                      elemento.campo.tipO_DATO
+                        ?.toUpperCase() === 'ITEM'
+                    "
+                    class="campo-check"
+                  >
+
+                    <ion-checkbox
+                      class="checkbox-documento"
+                      [checked]="
+                        obtenerControl(elemento.campo)?.value === true
+                      "
+                      (ionChange)="
+                        obtenerControl(elemento.campo)
+                          ?.setValue($event.detail.checked)
+                      "
+                    >
+                    </ion-checkbox>
+
+                  </span>
+
+                </ng-container>
+
+              </ng-container>
+
+            </div>
+            <ng-template
+              #contenidoHtml
+              let-hijos="hijos"
+            >
+
+              <ng-container
+                *ngFor="let hijo of hijos"
+              >
+
+                <ng-container
+                  *ngIf="hijo.tipo === 'texto'"
+                >
+
+                  {{ hijo.contenido }}
+
+                </ng-container>
+
+                <ng-container
+                  *ngIf="esTipoCampo(hijo)"
+                >
+
+                  <div
+                    *ngIf="esCampoFirma(hijo.campo)"
+                    class="firma-container"
+                  >
+
+                    <div class="firma-titulo">
+                      {{ obtenerPlaceholder(hijo.campo) }}
+                    </div>
+
+                    <canvas
+                      #canvasFirma
+                      [attr.data-campo]="hijo.campo.nombrE_JSON"
+                      class="firma-canvas"
+                    ></canvas>
+
+                    <div class="firma-acciones">
+
+                      <ion-button
+                        type="button"
+                        fill="outline"
+                        size="small"
+                        (click)="limpiarFirma(hijo.campo)"
+                      >
+                        <ion-icon
+                          name="trash-outline"
+                          slot="start"
+                        ></ion-icon>
+
+                        Limpiar
+                      </ion-button>
+
+                      <ion-button
+                        type="button"
+                        fill="outline"
+                        size="small"
+                        (click)="seleccionarImagenFirma(hijo.campo)"
+                      >
+                        <ion-icon
+                          name="image-outline"
+                          slot="start"
+                        ></ion-icon>
+
+                        Cargar imagen
+                      </ion-button>
+
+                      <ion-button
+                        type="button"
+                        size="small"
+                        (click)="guardarFirma(hijo.campo)"
+                      >
+                        <ion-icon
+                          name="checkmark-outline"
+                          slot="start"
+                        ></ion-icon>
+
+                        Usar firma
+                      </ion-button>
+
+                    </div>
+
+                  </div>
+
+                  <ion-input
+                    *ngIf="
+                      !esCampoFirma(hijo.campo) &&
+                      hijo.campo.tipO_DATO
+                        ?.toUpperCase() === 'STRING'
+                    "
+                    class="campo-inline"
+                    fill="outline"
+                    [formControlName]="
+                      hijo.campo.nombrE_JSON
+                    "
+                    [placeholder]="
+                      obtenerPlaceholder(hijo.campo)
+                    "
+                  >
+                  </ion-input>
+
+                  <ion-input
+                    *ngIf="
+                      hijo.campo.tipO_DATO
+                        ?.toUpperCase() === 'NUMBER'
+                    "
+                    class="campo-inline campo-number"
+                    type="number"
+                    fill="outline"
+                    [formControlName]="
+                      hijo.campo.nombrE_JSON
+                    "
+                    [placeholder]="
+                      obtenerPlaceholder(hijo.campo)
+                    "
+                  >
+                  </ion-input>
+
+                  <span
+                    *ngIf="
+                      hijo.campo.tipO_DATO
+                        ?.toUpperCase() === 'BOOLEAN'
+                    "
+                    class="campo-check"
+                  >
+
+                    <ion-checkbox
+                      class="checkbox-documento"
+                      [checked]="
+                        obtenerControl(hijo.campo)?.value === true
+                      "
+                      (ionChange)="
+                        obtenerControl(hijo.campo)
+                          ?.setValue($event.detail.checked)
+                      "
+                    >
+                    </ion-checkbox>
+
+                  </span>
+
+                  <ion-select
+                    *ngIf="
+                      hijo.campo.tipO_DATO
+                        ?.toUpperCase() === 'SELECT'
+                    "
+                    class="campo-inline"
+                    fill="outline"
+                    interface="popover"
+                    placeholder="Seleccione"
+                    [formControlName]="
+                      hijo.campo.nombrE_JSON
+                    "
+                    (ionChange)="
+                      cambioSelect(hijo.campo)
+                    "
+                  >
+
+                    <ion-select-option
+                      *ngFor="
+                        let opcion of
+                        obtenerOpciones(hijo.campo)
+                      "
+                      [value]="opcion.valor"
+                    >
+
+                      {{ opcion.nombre }}
+
+                    </ion-select-option>
+
+                  </ion-select>
+
+                  <span
+                    *ngIf="
+                      hijo.campo.tipO_DATO
+                        ?.toUpperCase() === 'ITEM'
+                    "
+                    class="campo-check"
+                  >
+
+                    <ion-checkbox
+                      class="checkbox-documento"
+                      [checked]="
+                        obtenerControl(hijo.campo)?.value === true
+                      "
+                      (ionChange)="
+                        obtenerControl(hijo.campo)
+                          ?.setValue($event.detail.checked)
+                      "
+                    >
+                    </ion-checkbox>
+
+                  </span>
+
+                </ng-container>
+
+                <ng-container
+                  *ngIf="hijo.tipo === 'elemento'"
+                >
+
+                  <ng-container
+                    [ngSwitch]="hijo.tag"
+                  >
+
+                    <span *ngSwitchCase="'span'">
+
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: {
+                            hijos: hijo.hijos
+                          }
+                        "
+                      ></ng-container>
+
+                    </span>
+
+
+                    <strong *ngSwitchCase="'strong'">
+
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: {
+                            hijos: hijo.hijos
+                          }
+                        "
+                      ></ng-container>
+
+                    </strong>
+
+
+                    <p *ngSwitchCase="'p'">
+
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: {
+                            hijos: hijo.hijos
+                          }
+                        "
+                      ></ng-container>
+
+                    </p>
+
+
+                    <div *ngSwitchCase="'div'">
+
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: {
+                            hijos: hijo.hijos
+                          }
+                        "
+                      ></ng-container>
+
+                    </div>
+
+
+                    <br *ngSwitchCase="'br'">
+
+
+                    <ng-container *ngSwitchDefault>
+
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: {
+                            hijos: hijo.hijos
+                          }
+                        "
+                      ></ng-container>
+
+                    </ng-container>
+
+                  </ng-container>
+
+                </ng-container>
+
+              </ng-container>
+
+            </ng-template>
+
+          </ion-card-content>
+
+        </ion-card>
+        <input
+          #inputImagenFirma
+          type="file"
+          accept="image/png,image/jpeg,image/jpg"
+          hidden
+          (change)="imagenFirmaSeleccionada($event)"
+        />
+
+        <div class="acciones">
+
+          <ion-button
+            type="button"
+            fill="outline"
+            (click)="volver()">
+
+            Cancelar
+
+          </ion-button>
+
+
+          <ion-button
+            type="submit"
+            [disabled]="
+              formSolicitud.invalid ||
+              guardando
+            ">
+
+            <ion-spinner
+              *ngIf="guardando"
+              name="crescent">
+            </ion-spinner>
+
+            <span *ngIf="!guardando">
+              Realizar solicitud
+            </span>
+
+          </ion-button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+    <div
+      class="empty-state"
+      *ngIf="
+        !tipoSolicitudSeleccionado &&
+        !cargando
+      ">
+
+      <ion-icon
+        name="document-text-outline">
+      </ion-icon>
+
+      <h2>
+        Selecciona un tipo de solicitud
+      </h2>
+
+      <p>
+        Selecciona un tipo de solicitud
+        para comenzar a diligenciarla.
+      </p>
+
+    </div>
+
+  </div>
+
+</div>

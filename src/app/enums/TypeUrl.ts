@@ -48,4 +48,7 @@ export enum TypeServicio{
     AprobarRechazarColaborador='Colaboradores/AprobarRechazarColaborador',
     GetAplicativos='Colaboradores/GetAplicativos',
     GetMenu='Menu/ConsultarMenuPerfil',
+    GetEmpresasFuncionario='TipoSolicitud/GetEmpresasFuncionario',
+    GetTipoSolicitudesFuncionario='TipoSolicitud/GetTipoSolicitudesFuncionario',
+    CrearTipoSolicitud='TipoSolicitud/CreateTipoSolicitud',
 }

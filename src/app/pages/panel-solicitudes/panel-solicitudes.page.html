@@ -1,0 +1,354 @@
+<main>
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>
+        <div class="responsive-title">Panel de Solicitudes</div>
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div class="panel-solicitudes">
+
+    <div class="panel-container">
+
+      <!-- =============================== -->
+      <!-- ENCABEZADO -->
+      <!-- =============================== -->
+
+      <div class="panel-header">
+        <div>
+          <h1>Solicitudes</h1>
+          <p>
+            Gestiona tus solicitudes y consulta su estado.
+          </p>
+        </div>
+      </div>
+
+
+      <!-- =============================== -->
+      <!-- ACCIONES -->
+      <!-- =============================== -->
+
+      <div class="opciones-container">
+
+        <!-- Crear solicitud -->
+        <ion-card
+          class="opcion-card"
+          button
+          (click)="crearSolicitud()"
+        >
+          <ion-card-content>
+
+            <div class="icon-container crear">
+              <ion-icon name="create-outline"></ion-icon>
+            </div>
+
+            <div class="opcion-info">
+
+              <h2>Crear solicitud</h2>
+
+              <p>
+                Crea y personaliza un nuevo tipo de solicitud
+                definiendo los campos de su formulario.
+              </p>
+
+              <ion-button
+                fill="clear"
+                class="opcion-button"
+              >
+                Crear
+                <ion-icon
+                  slot="end"
+                  name="arrow-forward-outline"
+                ></ion-icon>
+              </ion-button>
+
+            </div>
+
+          </ion-card-content>
+        </ion-card>
+
+
+        <!-- Realizar solicitud -->
+        <ion-card
+          class="opcion-card"
+          button
+          (click)="realizarSolicitud()"
+        >
+          <ion-card-content>
+
+            <div class="icon-container realizar">
+              <ion-icon name="document-text-outline"></ion-icon>
+            </div>
+
+            <div class="opcion-info">
+
+              <h2>Realizar solicitud</h2>
+
+              <p>
+                Selecciona un formulario existente y
+                diligencia una nueva solicitud.
+              </p>
+
+              <ion-button
+                fill="clear"
+                class="opcion-button"
+              >
+                Realizar
+                <ion-icon
+                  slot="end"
+                  name="arrow-forward-outline"
+                ></ion-icon>
+              </ion-button>
+
+            </div>
+
+          </ion-card-content>
+        </ion-card>
+
+      </div>
+
+
+      <div class="solicitudes-container">
+
+      <!-- =============================== -->
+      <!-- MIS SOLICITUDES -->
+      <!-- =============================== -->
+
+      <div class="solicitudes-section">
+
+        <div class="section-header">
+
+          <div>
+            <h2>Mis solicitudes</h2>
+            <p>
+              Solicitudes que has realizado.
+            </p>
+          </div>
+
+          <ion-button
+            fill="clear"
+            size="small"
+            (click)="verTodasMisSolicitudes()"
+          >
+            Ver todas
+            <ion-icon
+              slot="end"
+              name="arrow-forward-outline"
+            ></ion-icon>
+          </ion-button>
+
+        </div>
+
+
+        <div class="solicitudes-list">
+
+          <ion-card
+            class="solicitud-card"
+            *ngFor="let solicitud of misSolicitudes"
+            button
+            (click)="verSolicitud(solicitud)"
+          >
+
+            <ion-card-content>
+
+              <div class="solicitud-icon">
+                <ion-icon name="document-text-outline"></ion-icon>
+              </div>
+
+              <div class="solicitud-info">
+
+                <div class="solicitud-title">
+
+                  <h3>
+                    {{ solicitud.nombre }}
+                  </h3>
+
+                  <ion-badge
+                    [ngClass]="obtenerClaseEstado(solicitud.estado)"
+                  >
+                    {{ solicitud.estado }}
+                  </ion-badge>
+
+                </div>
+
+                <p>
+                  {{ solicitud.descripcion }}
+                </p>
+
+                <div class="solicitud-meta">
+
+                  <span>
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    {{ solicitud.fecha | date:'dd/MM/yyyy' }}
+                  </span>
+
+                  <span>
+                    <ion-icon name="person"></ion-icon>
+                    {{ solicitud.destinatario }}
+                  </span>
+
+                </div>
+
+              </div>
+
+              <ion-icon
+                class="solicitud-arrow"
+                name="chevron-forward-outline"
+              ></ion-icon>
+
+            </ion-card-content>
+
+          </ion-card>
+
+
+          <!-- Sin solicitudes -->
+
+          <div
+            class="empty-state"
+            *ngIf="!misSolicitudes?.length"
+          >
+
+            <ion-icon name="documents-outline"></ion-icon>
+
+            <h3>No tienes solicitudes</h3>
+
+            <p>
+              Las solicitudes que realices aparecerán aquí.
+            </p>
+
+            <ion-button
+              size="small"
+              (click)="realizarSolicitud()"
+            >
+              Realizar solicitud
+            </ion-button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =============================== -->
+      <!-- SOLICITUDES RECIBIDAS -->
+      <!-- =============================== -->
+
+      <div
+        class="solicitudes-section"
+        *ngIf="esAdministrador"
+      >
+
+        <div class="section-header">
+
+          <div>
+            <h2>Solicitudes recibidas</h2>
+            <p>
+              Solicitudes que requieren tu atención.
+            </p>
+          </div>
+
+          <ion-button
+            fill="clear"
+            size="small"
+            (click)="verSolicitudesRecibidas()"
+          >
+            Ver todas
+            <ion-icon
+              slot="end"
+              name="arrow-forward-outline"
+            ></ion-icon>
+          </ion-button>
+
+        </div>
+
+
+        <div class="solicitudes-list">
+
+          <ion-card
+            class="solicitud-card"
+            *ngFor="let solicitud of solicitudesRecibidas"
+            button
+            (click)="verSolicitud(solicitud)"
+          >
+
+            <ion-card-content>
+
+              <div class="solicitud-icon recibida">
+                <ion-icon name="mail-unread-outline"></ion-icon>
+              </div>
+
+              <div class="solicitud-info">
+
+                <div class="solicitud-title">
+
+                  <h3>
+                    {{ solicitud.nombre }}
+                  </h3>
+
+                  <ion-badge
+                    [ngClass]="obtenerClaseEstado(solicitud.estado)"
+                  >
+                    {{ solicitud.estado }}
+                  </ion-badge>
+
+                </div>
+
+                <p>
+                  {{ solicitud.descripcion }}
+                </p>
+
+                <div class="solicitud-meta">
+
+                  <span>
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    {{ solicitud.fecha | date:'dd/MM/yyyy' }}
+                  </span>
+
+                  <span>
+                    <ion-icon name="person"></ion-icon>
+                    {{ solicitud.solicitante }}
+                  </span>
+
+                </div>
+
+              </div>
+
+              <ion-icon
+                class="solicitud-arrow"
+                name="chevron-forward-outline"
+              ></ion-icon>
+
+            </ion-card-content>
+
+          </ion-card>
+
+
+          <!-- Sin solicitudes recibidas -->
+
+          <div
+            class="empty-state"
+            *ngIf="!solicitudesRecibidas?.length"
+          >
+
+            <ion-icon name="mail-open-outline"></ion-icon>
+
+            <h3>No tienes solicitudes pendientes</h3>
+
+            <p>
+              Las solicitudes recibidas aparecerán aquí.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    </div>
+
+  </div>
+</main>

@@ -1,0 +1,468 @@
+<ion-header>
+  <ion-toolbar>
+
+    <ion-title>
+      <div class="responsive-title">
+        Crear Solicitud
+      </div>
+    </ion-title>
+
+    <ion-buttons slot="end">
+
+      <ion-button
+        (click)="cerrarModal()">
+
+        <ion-icon
+          name="close-outline">
+        </ion-icon>
+
+      </ion-button>
+
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-padding">
+
+  <form
+    [formGroup]="formSolicitud"
+    (ngSubmit)="crearSolicitud()">
+
+    <ion-item lines="full">
+
+      <ion-icon
+        color="primary"
+        slot="start"
+        name="document-text">
+      </ion-icon>
+
+      <ion-input
+        label="Nombre"
+        labelPlacement="stacked"
+        placeholder="Ej. Solicitud de vacaciones"
+        formControlName="nombre">
+      </ion-input>
+
+    </ion-item>
+
+
+    <div
+      class="error-message"
+      *ngIf="
+        formSolicitud.get('nombre')?.touched &&
+        formSolicitud.get('nombre')?.invalid
+      ">
+
+      El nombre es obligatorio.
+
+    </div>
+
+    <ion-item
+      lines="full"
+      class="descripcion-item">
+
+      <ion-textarea
+        label="Descripción"
+        labelPlacement="stacked"
+        placeholder="Describe el tipo de solicitud..."
+        [autoGrow]="true"
+        rows="4"
+        formControlName="descripcion">
+      </ion-textarea>
+
+    </ion-item>
+
+
+    <div
+      class="error-message"
+      *ngIf="
+        formSolicitud.get('descripcion')?.touched &&
+        formSolicitud.get('descripcion')?.invalid
+      ">
+
+      La descripción es obligatoria.
+
+    </div>
+
+    <ion-item lines="full">
+
+      <ion-icon
+        color="primary"
+        slot="start"
+        name="business-outline">
+      </ion-icon>
+
+      <ion-select
+        label="Empresas"
+        labelPlacement="stacked"
+        placeholder="Selecciona las empresas"
+        formControlName="empresas"
+        [multiple]="true"
+        interface="alert">
+
+        <ion-select-option
+          *ngFor="let empresa of empresas"
+          [value]="empresa.id">
+
+          {{ empresa.nombre }}
+
+        </ion-select-option>
+
+      </ion-select>
+
+    </ion-item>
+
+
+    <div
+      class="error-message"
+      *ngIf="
+        formSolicitud.get('empresas')?.touched &&
+        formSolicitud.get('empresas')?.invalid
+      ">
+
+      Debes seleccionar al menos una empresa.
+
+    </div>
+
+
+    <div class="info-box">
+
+      <ion-icon
+        color="primary"
+        name="information-circle-outline">
+      </ion-icon>
+
+      <span>
+        Selecciona las empresas para las cuales estará
+        disponible este tipo de solicitud.
+      </span>
+
+    </div>
+
+    <div class="editor-documento">
+
+      <div class="editor-documento-header">
+
+        <div class="editor-documento-titulo">
+
+          <ion-icon color="primary" name="document-text"></ion-icon>
+
+          <div>
+            <strong>
+              Contenido de la solicitud
+            </strong>
+
+            <span>
+              Redacta la solicitud y agrega campos donde necesites información.
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="editor-toolbar">
+
+        <ion-button
+          type="button"
+          fill="clear"
+          size="small"
+          (click)="agregarParrafo()">
+
+          <ion-icon
+            color="primary"
+            slot="start"
+            name="add">
+          </ion-icon>
+
+          Párrafo
+
+        </ion-button>
+
+
+        <div class="toolbar-separador"></div>
+
+
+        <ion-button
+          type="button"
+          fill="clear"
+          size="small">
+
+          <strong>
+            B
+          </strong>
+
+        </ion-button>
+
+      </div>
+
+      <div
+        formArrayName="parrafos"
+        class="hoja-documento">
+
+
+        <div
+          *ngFor="
+            let parrafo of parrafos.controls;
+            let i = index
+          "
+          [formGroupName]="i"
+          class="parrafo">
+
+
+          <div
+            formArrayName="contenido"
+            class="contenido-parrafo">
+
+
+            <ng-container
+              *ngFor="
+                let elemento of getContenidoParrafo(i).controls;
+                let j = index
+              ">
+
+              <ng-container
+                *ngIf="
+                  elemento.get('tipo')?.value === 'texto'
+                ">
+
+                <div
+                  [formGroupName]="j"
+                  class="elemento-inline texto">
+
+                  <ion-textarea
+                    formControlName="texto"
+                    placeholder="Escribe aquí..."
+                    [autoGrow]="true"
+                    rows="1">
+                  </ion-textarea>
+
+                  <button
+                    type="button"
+                    class="quitar-inline"
+                    (click)="eliminarElemento(i, j)">
+
+                    ×
+
+                  </button>
+
+                </div>
+
+              </ng-container>
+
+              <ng-container
+                *ngIf="elemento.get('tipo')?.value === 'negrita'">
+
+                <div
+                  [formGroupName]="j"
+                  class="elemento-inline negrita">
+
+                  <ion-textarea
+                    formControlName="texto"
+                    placeholder="Escribe título..."
+                    [autoGrow]="true"
+                    rows="1">
+                  </ion-textarea>
+
+                  <button
+                    type="button"
+                    class="quitar-inline"
+                    (click)="eliminarElemento(i, j)">
+
+                    <ion-icon color="primary" name="close"></ion-icon>
+
+                  </button>
+
+                </div>
+
+              </ng-container>
+
+              <ng-container
+                *ngIf="
+                  elemento.get('tipo')?.value === 'campo'
+                ">
+
+                <div
+                  [formGroupName]="j"
+                  class="campo-inline">
+<!-- 
+
+                  <div class="campo-etiqueta">
+
+                    <ion-icon color="primary" name="code-outline"></ion-icon>
+
+                    <span>
+                      {{
+                        elemento.get('nombre')?.value ||
+                        'Nuevo campo'
+                      }}
+                    </span>
+
+                  </div> -->
+
+                  <div class="campo-edicion">
+
+                    <ion-input
+                      label="Nombre del campo"
+                      labelPlacement="stacked"
+                      placeholder="Ej. nombreSolicitante"
+                      formControlName="nombre">
+                    </ion-input>
+
+
+                    <ion-select
+                      label="Tipo"
+                      labelPlacement="stacked"
+                      formControlName="tipO_DATO">
+
+                      <ion-select-option
+                        *ngFor="let tipo of tiposDato"
+                        [value]="tipo.value">
+
+                        {{ tipo.label }}
+
+                      </ion-select-option>
+
+                    </ion-select>
+
+                  </div>
+
+
+                  <button
+                    type="button"
+                    class="quitar-campo"
+                    (click)="eliminarElemento(i, j)">
+
+                    <ion-icon color="primary" name="close"></ion-icon>
+
+                  </button>
+
+                </div>
+
+              </ng-container>
+
+
+            </ng-container>
+
+          </div>
+
+          <div class="parrafo-toolbar">
+
+            <button
+              type="button"
+              (click)="agregarTexto(i)">
+
+              <ion-icon color="primary" name="text"></ion-icon>
+
+              Texto
+
+            </button>
+
+
+            <button
+              type="button"
+              (click)="agregarNegrita(i)">
+
+              <strong>B</strong>
+
+              Negrita
+
+            </button>
+
+
+            <button
+              type="button"
+              (click)="agregarCampo(i)">
+
+              <ion-icon color="primary" name="code-outline"></ion-icon>
+
+              Campo
+
+            </button>
+
+            <button type="button" (click)="agregarSalto(i)">
+              <ion-icon name="return-down-forward-outline"></ion-icon>
+              Salto
+            </button>
+
+
+            <button
+              type="button"
+              class="eliminar-parrafo"
+              (click)="eliminarParrafo(i)">
+
+              <ion-icon color="primary" name="trash"></ion-icon>
+
+            </button>
+
+          </div>
+
+        </div>
+
+        <div
+          class="documento-vacio"
+          *ngIf="parrafos.length === 0">
+
+          <ion-icon color="primary" name="document-text"></ion-icon>
+
+          <p>
+            Comienza a redactar tu solicitud
+          </p>
+
+          <span>
+            Agrega un párrafo para comenzar.
+          </span>
+
+          <ion-button
+            type="button"
+            fill="outline"
+            size="small"
+            (click)="agregarParrafo()">
+
+            Comenzar
+
+          </ion-button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="acciones">
+
+      <ion-button
+        type="button"
+        fill="outline"
+        (click)="cerrarModal()">
+
+        Cancelar
+
+      </ion-button>
+
+
+      <ion-button
+        type="submit"
+        [disabled]="
+          formSolicitud.invalid ||
+          guardando
+        ">
+
+        <ion-spinner
+          *ngIf="guardando"
+          name="crescent">
+        </ion-spinner>
+
+        <span *ngIf="!guardando">
+          Crear solicitud
+        </span>
+
+      </ion-button>
+
+    </div>
+
+  </form>
+
+</ion-content>

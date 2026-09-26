@@ -54,6 +54,9 @@ export class PortalService {
   private GetAplicativos = TypeServicio.GetAplicativos
   private GetMenu = TypeServicio.GetMenu
   private colaborador = TypeServicio.colaborador
+  private GetEmpresasFuncionario = TypeServicio.GetEmpresasFuncionario
+  private GetTipoSolicitudesFuncionario = TypeServicio.GetTipoSolicitudesFuncionario
+  private CrearTipoSolicitud = TypeServicio.CrearTipoSolicitud
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -151,6 +154,14 @@ export class PortalService {
     return this.httpService.GetCore(this.getInfoColaboradorUsuario);
   }
 
+  getEmpresasFuncionario(): Observable<any>{
+    return this.httpService.GetCore(this.GetEmpresasFuncionario);
+  }
+
+  getTipoSolicitudesFuncionario(): Observable<any>{
+    return this.httpService.GetCore(this.GetTipoSolicitudesFuncionario);
+  }
+
   getConsultarColaboradorCedula(data: any): Observable<any>{
     return this.httpService.GetParamsCore(this.consultarColaboradorCedula+"?cedula="+data.cedula);
   }
@@ -189,6 +200,10 @@ export class PortalService {
 
   postCrearFiltroDet(data: any): Observable<any>{
     return this.httpService.PostCore(data,this.CrearFiltroDet);
+  }
+
+  postCrearSolicitud(data: any): Observable<any>{
+    return this.httpService.PostCore(data,this.CrearTipoSolicitud);
   }
 
   putActualizarColaborador(data: any): Observable<any>{

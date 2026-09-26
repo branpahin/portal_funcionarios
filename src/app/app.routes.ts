@@ -55,4 +55,17 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/creacion-usuario/creacion-usuario.page').then( m => m.CreacionUsuarioPage),
     canActivate: [authGuard]
   },
+  {
+    path: 'panel-solicitudes',
+    loadComponent: () =>
+      import('./pages/panel-solicitudes/panel-solicitudes.page')
+        .then(m => m.PanelSolicitudesPage),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'panel-solicitudes/realizar',
+    loadComponent: () =>
+      import('./pages/panel-solicitudes/diligenciar-solicitud/diligenciar-solicitud.page')
+        .then(m => m.DiligenciarSolicitudPage),
+  }
 ];
