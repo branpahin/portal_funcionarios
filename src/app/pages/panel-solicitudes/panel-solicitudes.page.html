@@ -11,10 +11,6 @@
 
     <div class="panel-container">
 
-      <!-- =============================== -->
-      <!-- ENCABEZADO -->
-      <!-- =============================== -->
-
       <div class="panel-header">
         <div>
           <h1>Solicitudes</h1>
@@ -24,14 +20,8 @@
         </div>
       </div>
 
-
-      <!-- =============================== -->
-      <!-- ACCIONES -->
-      <!-- =============================== -->
-
       <div class="opciones-container">
 
-        <!-- Crear solicitud -->
         <ion-card
           class="opcion-card"
           button
@@ -68,8 +58,6 @@
           </ion-card-content>
         </ion-card>
 
-
-        <!-- Realizar solicitud -->
         <ion-card
           class="opcion-card"
           button
@@ -110,10 +98,6 @@
 
 
       <div class="solicitudes-container">
-
-      <!-- =============================== -->
-      <!-- MIS SOLICITUDES -->
-      <!-- =============================== -->
 
       <div class="solicitudes-section">
 
@@ -201,9 +185,6 @@
 
           </ion-card>
 
-
-          <!-- Sin solicitudes -->
-
           <div
             class="empty-state"
             *ngIf="!misSolicitudes?.length"
@@ -229,11 +210,6 @@
         </div>
 
       </div>
-
-
-      <!-- =============================== -->
-      <!-- SOLICITUDES RECIBIDAS -->
-      <!-- =============================== -->
 
       <div
         class="solicitudes-section"
@@ -323,9 +299,6 @@
             </ion-card-content>
 
           </ion-card>
-
-
-          <!-- Sin solicitudes recibidas -->
 
           <div
             class="empty-state"

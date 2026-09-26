@@ -32,11 +32,6 @@ ion-header{
   }
 }
 
-
-/* =============================== */
-/* OPCIONES */
-/* =============================== */
-
 .opciones-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -103,11 +98,6 @@ ion-header{
   margin: 15px 0 0 -10px;
 }
 
-
-/* =============================== */
-/* SECCIONES */
-/* =============================== */
-
 .solicitudes-container {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -138,11 +128,6 @@ ion-header{
     font-size: 14px;
   }
 }
-
-
-/* =============================== */
-/* LISTA */
-/* =============================== */
 
 .solicitudes-list {
   display: flex;
@@ -237,20 +222,10 @@ ion-header{
   font-size: 20px;
 }
 
-
-/* =============================== */
-/* ESTADOS */
-/* =============================== */
-
 ion-badge {
   font-size: 11px;
   padding: 5px 8px;
 }
-
-
-/* =============================== */
-/* SIN DATOS */
-/* =============================== */
 
 .empty-state {
   text-align: center;
@@ -272,11 +247,6 @@ ion-badge {
     font-size: 14px;
   }
 }
-
-
-/* =============================== */
-/* RESPONSIVE */
-/* =============================== */
 
 @media (max-width: 768px) {
 
