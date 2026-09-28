@@ -227,6 +227,36 @@ ion-badge {
   padding: 5px 8px;
 }
 
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+.page-size {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.page-size ion-select {
+  min-width: 50px;
+  padding: 0;
+}
+
+.pagination ion-button {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.pagination > span {
+  white-space: nowrap;
+}
+
 .empty-state {
   text-align: center;
   padding: 30px 20px;
@@ -249,6 +279,16 @@ ion-badge {
 }
 
 @media (max-width: 768px) {
+
+  .pagination {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .page-size {
+    width: 100%;
+    justify-content: center;
+  }
 
   .panel-container {
     padding: 20px 15px;

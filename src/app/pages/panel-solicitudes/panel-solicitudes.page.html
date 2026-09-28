@@ -145,31 +145,31 @@
                 <div class="solicitud-title">
 
                   <h3>
-                    {{ solicitud.nombre }}
+                    {{ solicitud.nombreSolicitante }}
                   </h3>
 
                   <ion-badge
                     [ngClass]="obtenerClaseEstado(solicitud.estado)"
                   >
-                    {{ solicitud.estado }}
+                    {{ solicitud.estadoDescripcion }}
                   </ion-badge>
 
                 </div>
 
                 <p>
-                  {{ solicitud.descripcion }}
+                  {{ solicitud.tipoSolicitud }}
                 </p>
 
                 <div class="solicitud-meta">
 
                   <span>
                     <ion-icon name="calendar-outline"></ion-icon>
-                    {{ solicitud.fecha | date:'dd/MM/yyyy' }}
+                    {{ solicitud.fechaRegistro | date:'dd/MM/yyyy' }}
                   </span>
 
                   <span>
                     <ion-icon name="person"></ion-icon>
-                    {{ solicitud.destinatario }}
+                    {{ solicitud.numeroCedula }}
                   </span>
 
                 </div>
@@ -184,13 +184,63 @@
             </ion-card-content>
 
           </ion-card>
+          <div class="pagination" *ngIf="totalRecordsMisSolicitudes > 0">
+
+            <div class="page-size">
+
+              <ion-label>Filas:</ion-label>
+
+              <ion-select
+                interface="popover"
+                [(ngModel)]="pageSizeMisSolicitudes"
+                (ionChange)="onPageSizeChangeMisSolicitudes()"
+              >
+
+                <ion-select-option [value]="5">
+                  5
+                </ion-select-option>
+
+                <ion-select-option [value]="10">
+                  10
+                </ion-select-option>
+
+                <ion-select-option [value]="20">
+                  20
+                </ion-select-option>
+
+              </ion-select>
+
+            </div>
+
+            <ion-button
+              size="small"
+              (click)="changePageMisSolicitudes(currentPageMisSolicitudes - 1)"
+              [disabled]="currentPageMisSolicitudes === 1"
+            >
+              Anterior
+            </ion-button>
+
+            <span>
+              Página {{ currentPageMisSolicitudes }}
+              de {{ totalPagesMisSolicitudes }}
+            </span>
+
+            <ion-button
+              size="small"
+              (click)="changePageMisSolicitudes(currentPageMisSolicitudes + 1)"
+              [disabled]="currentPageMisSolicitudes === totalPagesMisSolicitudes"
+            >
+              Siguiente
+            </ion-button>
+
+          </div>
 
           <div
             class="empty-state"
             *ngIf="!misSolicitudes?.length"
           >
 
-            <ion-icon name="documents-outline"></ion-icon>
+            <ion-icon name="documents"></ion-icon>
 
             <h3>No tienes solicitudes</h3>
 

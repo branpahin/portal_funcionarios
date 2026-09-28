@@ -1,10 +1,12 @@
-import { AfterViewInit, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserInteractionService } from 'src/services/user-interaction-service.service';
 import { IONIC_COMPONENTS } from '../../../imports/ionic-imports';
 import { PortalService } from 'src/services/portal.service';
+import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
+import { ModuleService } from 'src/services/modulos/module.service';
 
 interface CampoSolicitud {
   id: number;
@@ -92,6 +94,8 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     private router: Router,
     private service:PortalService,
     private UserInteractionService: UserInteractionService,
+    private moduleService:ModuleService,
+    private cdr: ChangeDetectorRef 
   ) {}
 
   ngAfterViewInit(): void {
@@ -151,12 +155,20 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
 
     this.tipoSolicitudSeleccionado = tipo;
 
+    // Limpiar referencias de firmas de la solicitud anterior
+    this.firmas.clear();
+    this.contextoFirma.clear();
+
     this.crearFormulario(tipo.campos);
 
     this.procesarHtml(
       tipo.html,
       tipo.campos
     );
+
+    setTimeout(() => {
+      this.inicializarCanvasesFirma();
+    }, 100);
   }
 
   crearFormulario(campos: CampoSolicitud[]): void {
@@ -469,7 +481,9 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
   }
 
   inicializarCanvasesFirma(): void {
-
+    if (!this.canvasesFirma || this.canvasesFirma.length === 0) {
+      return;
+    }
     this.canvasesFirma.forEach(canvasRef => {
 
       const canvas = canvasRef.nativeElement;
@@ -735,7 +749,7 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     return this.formSolicitud.getRawValue();
   }
 
-  realizarSolicitud(): void {
+  async realizarSolicitud(): Promise<void> {
 
     if (!this.tipoSolicitudSeleccionado) {
       return;
@@ -747,7 +761,7 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
 
       return;
     }
-
+    const formData = new FormData();
     this.guardando = true;
 
     const valores =
@@ -765,9 +779,33 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
       'Solicitud a enviar:',
       request
     );
-
+    const param= await this.moduleService.getParam();
+    console.log("request.valores: ",request.valores) 
+    const data = {
+      ...request.valores,
+      ID_TIPO_SOLICITUD: this.tipoSolicitudSeleccionado.id,
+      ID_COLABORADOR: Number(param.id_Colaborador)
+    };
+    // console.log("data:" ,data)
+    // formData.append('json', data);
+    this.UserInteractionService.showLoading('Guardando...');
+    this.service.postRealizarSolicitud(data).subscribe({
+      next: async (resp) => {
+        try {
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast('Registro exitoso', TypeThemeColor.SUCCESS);
+        } catch (error) {
+          console.error("Error al procesar respuesta:", error);
+          this.UserInteractionService.dismissLoading();
+        }
+      },
+      error: (err) => {
+        console.error("Error al enviar formulario:", err);
+        this.UserInteractionService.dismissLoading();
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+      }
+    });
     
-
     this.guardando = false;
   }
 

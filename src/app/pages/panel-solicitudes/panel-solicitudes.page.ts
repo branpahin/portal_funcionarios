@@ -23,14 +23,25 @@ export class PanelSolicitudesPage implements OnInit {
   esAdministrador = true;
   misSolicitudes: any[] = [];
   solicitudesRecibidas: any[] = [];
+  currentPage = 1;
+  pageSize = 5;
+  totalRecordsMisSolicitudes = 0;
+  totalRecordsSolicitudesRecibidas = 0;
+  currentPageMisSolicitudes = 1;
+  currentPageSolicitudesRecibidas = 1;
+
+  pageSizeMisSolicitudes = 5;
+  pageSizeSolicitudesRecibidas = 5;
 
   constructor(
     private router: Router,
     private modalController: ModalController,
+    private service:PortalService,
   ) {}
 
   ngOnInit(): void {
-    this.cargarSolicitudes();
+    // this.cargarSolicitudes();
+    this.obtenerMisSolicitudes();
   }
 
   cargarSolicitudes(): void {
@@ -91,6 +102,57 @@ export class PanelSolicitudesPage implements OnInit {
     }
   }
 
+  get totalPagesMisSolicitudes(): number {
+    return Math.ceil(
+      this.totalRecordsMisSolicitudes /
+      this.pageSizeMisSolicitudes
+    );
+  }
+
+  changePageMisSolicitudes(page: number) {
+
+    if (
+      page <= 0 ||
+      page > this.totalPagesMisSolicitudes
+    ) {
+      return;
+    }
+
+    this.currentPageMisSolicitudes = page;
+
+    this.obtenerMisSolicitudes();
+  }
+
+  onPageSizeChangeMisSolicitudes() {
+
+    this.currentPageMisSolicitudes = 1;
+
+    this.obtenerMisSolicitudes();
+  }
+
+  async obtenerMisSolicitudes() {
+
+    const payload = {
+      first: (this.currentPageMisSolicitudes - 1) * this.pageSizeMisSolicitudes,
+      rows: this.pageSizeMisSolicitudes
+    };
+
+    this.service.getobtenerMisSolicitudesPag(JSON.stringify(payload)).subscribe({
+      next: (resp) => {
+
+        this.misSolicitudes =
+          resp.data.datos.listadoSolicitudes;
+
+        this.totalRecordsMisSolicitudes =
+          resp.data.totalRecords;
+      },
+
+      error: (err) => {
+        console.error('Error obteniendo mis solicitudes:', err);
+      }
+    });
+  }
+
   async crearSolicitud(): Promise<void> {
     const modal = await this.modalController.create({
       component: ModalCrearSolicitudPage,
@@ -129,27 +191,18 @@ export class PanelSolicitudesPage implements OnInit {
     this.router.navigate(['/solicitudes/recibidas']);
   }
 
-  obtenerClaseEstado(estado: string): string {
+  obtenerClaseEstado(estado: number): string {
 
-    switch (estado?.toLowerCase()) {
+    switch (estado) {
 
-      case 'pendiente':
+      case 1:
         return 'estado-pendiente';
 
-      case 'en proceso':
-        return 'estado-proceso';
-
-      case 'aprobada':
+      case 2:
         return 'estado-aprobada';
 
-      case 'rechazada':
+      case 3:
         return 'estado-rechazada';
-
-      case 'finalizada':
-        return 'estado-finalizada';
-
-      case 'borrador':
-        return 'estado-borrador';
 
       default:
         return 'estado-default';

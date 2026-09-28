@@ -57,6 +57,8 @@ export class PortalService {
   private GetEmpresasFuncionario = TypeServicio.GetEmpresasFuncionario
   private GetTipoSolicitudesFuncionario = TypeServicio.GetTipoSolicitudesFuncionario
   private CrearTipoSolicitud = TypeServicio.CrearTipoSolicitud
+  private realizarSolicitud = TypeServicio.realizarSolicitud
+  private obtenerMisSolicitudesPag = TypeServicio.obtenerMisSolicitudesPag
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -170,12 +172,20 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.GetUsuarioSistema);
   }
 
+  getobtenerMisSolicitudesPag(pag:string): Observable<any>{
+    return this.httpService.GetParamsCore(this.obtenerMisSolicitudesPag+"?ServerSide="+pag);
+  }
+
   postCrearColaborador(data: any): Observable<any>{
     return this.httpService.PostFormDataCore(data,this.CrearColaboradores);
   }
 
   postCrearColaboradorInterventor(data: any): Observable<any>{
     return this.httpService.PostFormDataCore(data,this.crearColaboradoresInterv);
+  }
+
+  postRealizarSolicitud(data: any): Observable<any>{
+    return this.httpService.PostCore(data,this.realizarSolicitud);
   }
 
   postConsultarColaborador(data: any): Observable<any>{
