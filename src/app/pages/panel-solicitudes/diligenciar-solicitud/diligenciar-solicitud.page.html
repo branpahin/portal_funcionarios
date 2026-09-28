@@ -50,7 +50,7 @@
             placeholder="Selecciona un tipo de solicitud"
             [value]="tipoSolicitudSeleccionado?.id"
             (ionChange)="seleccionarTipoPorId($event.detail.value)"
-            interface="action-sheet">
+            interface="popover">
 
             <ion-select-option
               *ngFor="let tipo of tiposSolicitud"
