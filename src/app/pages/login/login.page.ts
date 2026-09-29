@@ -46,16 +46,16 @@ export class LoginPage implements OnInit {
           this.UserInteractionService.dismissLoading()
         }catch(error){
           console.error("Respuesta Login: ", error)
-          this.UserInteractionService.dismissLoading()
           this.UserInteractionService.presentToast('problemas al ingresar')
+          this.UserInteractionService.dismissLoading()
         }
       },
       error: async (error) => {
           console.error('Error al crear la transacción:', error);
-          await this.UserInteractionService.dismissLoading();
-          
           const mensaje = error?.error?.mensaje|| 'Ocurrió un error inesperado.';
           await this.UserInteractionService.presentToast( mensaje);
+          await this.UserInteractionService.dismissLoading();
+          
       },
     })
   }
