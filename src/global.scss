@@ -124,5 +124,9 @@ body, p, td, .tabla-celda {
     }
 }
 
-
+ion-modal.modal-vista-previa {
+  --width: 85%;
+  --height: 90%;
+  --border-radius: 12px;
+}
 

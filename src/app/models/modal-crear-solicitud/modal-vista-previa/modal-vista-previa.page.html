@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+
+    <ion-title>
+      <div class="responsive-title">
+        Vista previa
+      </div>
+    </ion-title>
+
+    <ion-buttons slot="end">
+
+      <ion-button (click)="cerrar()" style="color:white">
+
+        <ion-icon
+          slot="icon-only"
+          name="close-outline">
+        </ion-icon>
+
+      </ion-button>
+
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="vista-previa-documento">
+
+    <div
+      class="preview-html"
+      [innerHTML]="html">
+    </div>
+
+  </div>
+
+</ion-content>

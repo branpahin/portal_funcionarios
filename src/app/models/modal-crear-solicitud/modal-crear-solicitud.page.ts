@@ -14,6 +14,7 @@ import { ModalController } from '@ionic/angular';
 import { PortalService } from 'src/services/portal.service';
 import { UserInteractionService } from 'src/services/user-interaction-service.service';
 import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
+import { ModalVistaPreviaPage } from './modal-vista-previa/modal-vista-previa.page';
 
 interface Empresa {
   id: number;
@@ -46,6 +47,7 @@ export class ModalCrearSolicitudPage implements OnInit {
 
   guardando = false;
   cargandoEmpresas = false;
+  mostrarVistaPrevia = false;
 
   tiposDato: TipoDato[] = [
     {
@@ -522,6 +524,21 @@ export class ModalCrearSolicitudPage implements OnInit {
 
       });
 
+  }
+
+  async abrirVistaPrevia(): Promise<void> {
+
+  const html = this.generarHtml();
+
+    const modal = await this.modalController.create({
+      component: ModalVistaPreviaPage,
+      componentProps: {
+        html
+      },
+      cssClass: 'modal-vista-previa'
+    });
+
+    await modal.present();
   }
 
   cerrarModal(): void {

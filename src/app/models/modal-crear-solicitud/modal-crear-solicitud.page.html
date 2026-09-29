@@ -9,7 +9,7 @@
 
     <ion-buttons slot="end">
 
-      <ion-button
+      <ion-button style="color:white"
         (click)="cerrarModal()">
 
         <ion-icon
@@ -161,6 +161,21 @@
 
         </div>
 
+        <ion-button
+          type="button"
+          fill="outline"
+          size="small"
+          (click)="abrirVistaPrevia()">
+
+          <ion-icon
+            slot="start"
+            [name]="mostrarVistaPrevia ? 'eye-off-outline' : 'eye-outline'">
+          </ion-icon>
+
+          {{ mostrarVistaPrevia ? 'Ocultar vista previa' : 'Vista previa' }}
+
+        </ion-button>
+
       </div>
 
       <div class="editor-toolbar">
@@ -287,20 +302,6 @@
                 <div
                   [formGroupName]="j"
                   class="campo-inline">
-<!-- 
-
-                  <div class="campo-etiqueta">
-
-                    <ion-icon color="primary" name="code-outline"></ion-icon>
-
-                    <span>
-                      {{
-                        elemento.get('nombre')?.value ||
-                        'Nuevo campo'
-                      }}
-                    </span>
-
-                  </div> -->
 
                   <div class="campo-edicion">
 
@@ -424,6 +425,40 @@
             Comenzar
 
           </ion-button>
+
+        </div>
+
+      </div>
+      <div
+        class="vista-previa-flotante"
+        *ngIf="mostrarVistaPrevia">
+
+        <div class="vista-previa-header">
+
+          <div>
+            <ion-icon name="eye-outline"></ion-icon>
+
+            <strong>
+              Vista previa
+            </strong>
+          </div>
+
+          <button
+            type="button"
+            (click)="abrirVistaPrevia()">
+
+            <ion-icon name="close"></ion-icon>
+
+          </button>
+
+        </div>
+
+        <div class="vista-previa-contenido">
+
+          <div
+            class="preview-html"
+            [innerHTML]="generarHtml()">
+          </div>
 
         </div>
 
