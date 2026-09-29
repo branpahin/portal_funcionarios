@@ -54,4 +54,6 @@ export enum TypeServicio{
     UpdateTipoSolicitud='TipoSolicitud/UpdateTipoSolicitud',
     realizarSolicitud='Solicitudes/CreateSolicitud',
     obtenerMisSolicitudesPag = 'Solicitudes/GetColaboradoresPag',
+    GetSolicitudInfoAdmin = 'Solicitudes/GetSolicitudInfoAdmin',
+    UpdateSolicitud = 'Solicitudes/UpdateSolicitud',
 }

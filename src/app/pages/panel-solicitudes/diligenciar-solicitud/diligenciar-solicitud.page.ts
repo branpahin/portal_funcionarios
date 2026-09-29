@@ -83,7 +83,7 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
   tipoSolicitudSeleccionado: TipoSolicitud | null = null;
 
   formSolicitud: FormGroup = this.fb.group({});
-
+  solicitud:any
   elementosHtml: ElementoHtml[] = [];
 
   cargando = false;
@@ -95,8 +95,15 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     private service:PortalService,
     private UserInteractionService: UserInteractionService,
     private moduleService:ModuleService,
+    private route: ActivatedRoute,
     private cdr: ChangeDetectorRef 
-  ) {}
+  ) {
+    const navigation = this.router.getCurrentNavigation();
+    let state: any = navigation?.extras?.state;
+    if (state) {
+      this.solicitud = state['solicitud'] || [];
+    }
+  }
 
   ngAfterViewInit(): void {
     this.canvasesFirma.changes.subscribe(() => {
@@ -126,6 +133,9 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
           resp?.data?.datos?.listadoTiposSolicitud ?? [];
 
         this.cargando = false;
+        if(this.solicitud){
+          this.obtenerSolicitudPorId(this.solicitud.id)
+        }
       },
 
       error: () => {
@@ -151,15 +161,24 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     this.seleccionarTipoSolicitud(tipo);
   }
 
-  seleccionarTipoSolicitud(tipo: TipoSolicitud): void {
+  seleccionarTipoSolicitud(tipo: TipoSolicitud, valores?: any): void {
 
     this.tipoSolicitudSeleccionado = tipo;
 
-    // Limpiar referencias de firmas de la solicitud anterior
     this.firmas.clear();
     this.contextoFirma.clear();
 
     this.crearFormulario(tipo.campos);
+
+    if (valores) {
+      const valoresFormulario = this.mapearValoresFormulario(
+        valores,
+        tipo.campos
+      );
+
+      this.formSolicitud.patchValue(valoresFormulario);
+    }
+
 
     this.procesarHtml(
       tipo.html,
@@ -168,8 +187,161 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
 
     setTimeout(() => {
       this.inicializarCanvasesFirma();
+      if (valores) {
+        this.cargarFirmasDesdeFormulario();
+      }
     }, 100);
   }
+
+  mapearValoresFormulario(
+    valores: any,
+    campos: CampoSolicitud[]
+  ): any {
+
+    const resultado: any = {};
+
+    campos
+      .filter(campo =>
+        campo.estado === 1 &&
+        campo.tipO_DATO?.trim().toUpperCase() !== 'ITEM'
+      )
+      .forEach(campo => {
+
+        const nombreCampo = campo.nombrE_JSON;
+
+        const claveEncontrada = Object.keys(valores).find(
+          key =>
+            key.toLowerCase() === nombreCampo.toLowerCase()
+        );
+
+        if (!claveEncontrada) {
+          return;
+        }
+
+        let valor = valores[claveEncontrada];
+
+        const tipo = campo.tipO_DATO
+          ?.trim()
+          .toUpperCase();
+
+        if (tipo === 'BOOLEAN') {
+          valor =
+            valor === true ||
+            valor === 1 ||
+            valor === '1' ||
+            valor === 'true';
+        }
+
+        resultado[nombreCampo] = valor;
+      });
+
+    return resultado;
+  }
+
+  cargarFirmasDesdeFormulario(): void {
+
+    this.canvasesFirma.forEach(canvasRef => {
+
+      const canvas = canvasRef.nativeElement;
+
+      const nombreCampo =
+        canvas.getAttribute('data-campo');
+
+      if (!nombreCampo) {
+        return;
+      }
+
+      const valor =
+        this.formSolicitud.get(nombreCampo)?.value;
+
+      if (!valor || typeof valor !== 'string') {
+        return;
+      }
+
+      if (!valor.startsWith('data:image')) {
+        return;
+      }
+
+      const imagen = new Image();
+
+      imagen.onload = () => {
+
+        const contexto = canvas.getContext('2d');
+
+        if (!contexto) {
+          return;
+        }
+
+        contexto.clearRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        contexto.drawImage(
+          imagen,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+      };
+
+      imagen.src = valor;
+    });
+  }
+
+  obtenerSolicitudPorId(id: number): void {
+
+  this.cargando = true;
+
+  this.service.obtenerSolicitudPorId(id).subscribe({
+    next: (resp: any) => {
+
+      const solicitud = resp?.data?.datos;
+
+      if (!solicitud) {
+        this.cargando = false;
+        return;
+      }
+
+      // this.modoEdicion = true;
+      // this.tipoSolicitudSeleccionado.id = solicitud.id;
+
+      
+
+      const idTipoSolicitud = Number(
+        solicitud.iD_TIPO_SOLICITUD
+      );
+
+      const tipo = this.tiposSolicitud.find(
+        x => x.id === idTipoSolicitud
+      );
+      console.log("tipo: ",tipo)
+      if (!tipo) {
+        console.error(
+          'No se encontró el tipo de solicitud:',
+          idTipoSolicitud
+        );
+
+        this.cargando = false;
+        return;
+      }
+
+      this.seleccionarTipoSolicitud(
+        tipo,
+        solicitud
+      );
+
+      this.cargando = false;
+    },
+
+    error: () => {
+      this.cargando = false;
+    }
+  });
+}
 
   crearFormulario(campos: CampoSolicitud[]): void {
 
@@ -781,32 +953,59 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     );
     const param= await this.moduleService.getParam();
     console.log("request.valores: ",request.valores) 
-    const data = {
-      ...request.valores,
-      ID_TIPO_SOLICITUD: this.tipoSolicitudSeleccionado.id,
-      ID_COLABORADOR: Number(param.id_Colaborador)
-    };
+    
     // console.log("data:" ,data)
     // formData.append('json', data);
     this.UserInteractionService.showLoading('Guardando...');
-    this.service.postRealizarSolicitud(data).subscribe({
-      next: async (resp) => {
-        try {
+    if(this.solicitud){
+      const data = {
+        ...request.valores,
+        ID_TIPO_SOLICITUD: this.tipoSolicitudSeleccionado.id,
+        ID_COLABORADOR: Number(param.id_Colaborador),
+        id: this.solicitud.id
+      };
+      this.service.putActualizarSolicitud(data).subscribe({
+        next: async (resp) => {
+          try {
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast('Registro exitoso', TypeThemeColor.SUCCESS);
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast('Registro exitoso', TypeThemeColor.SUCCESS);
-        } catch (error) {
-          console.error("Error al procesar respuesta:", error);
-          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
         }
-      },
-      error: (err) => {
-        console.error("Error al enviar formulario:", err);
-        this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
-      }
-    });
+      });
+    } else { 
+      const data = {
+        ...request.valores,
+        ID_TIPO_SOLICITUD: this.tipoSolicitudSeleccionado.id,
+        ID_COLABORADOR: Number(param.id_Colaborador)
+      };
+      this.service.postRealizarSolicitud(data).subscribe({
+        next: async (resp) => {
+          try {
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast('Registro exitoso', TypeThemeColor.SUCCESS);
+          } catch (error) {
+            console.error("Error al procesar respuesta:", error);
+            this.UserInteractionService.dismissLoading();
+          }
+        },
+        error: (err) => {
+          console.error("Error al enviar formulario:", err);
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        }
+      });
+    }
     
     this.guardando = false;
+    this.volver();
   }
 
  
@@ -822,8 +1021,12 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
 
   volver(): void {
 
-    this.router.navigate([
-      '/panel-solicitudes'
-    ]);
+    console.log('URL antes:', this.router.url);
+
+  this.router.navigateByUrl('/layout/panel-solicitudes')
+    .then(resultado => {
+      console.log('Navegación:', resultado);
+      console.log('URL después:', this.router.url);
+    });
   }
 }

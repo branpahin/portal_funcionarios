@@ -705,7 +705,7 @@
             </ion-spinner>
 
             <span *ngIf="!guardando">
-              Realizar solicitud
+               {{ solicitud ? 'Guardar cambios' : 'Realizar solicitud' }}
             </span>
 
           </ion-button>

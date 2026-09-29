@@ -60,6 +60,8 @@ export class PortalService {
   private UpdateTipoSolicitud = TypeServicio.UpdateTipoSolicitud
   private realizarSolicitud = TypeServicio.realizarSolicitud
   private obtenerMisSolicitudesPag = TypeServicio.obtenerMisSolicitudesPag
+  private GetSolicitudInfoAdmin = TypeServicio.GetSolicitudInfoAdmin
+  private UpdateSolicitud = TypeServicio.UpdateSolicitud
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -177,6 +179,10 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.obtenerMisSolicitudesPag+"?ServerSide="+pag);
   }
 
+  obtenerSolicitudPorId(id: number): Observable<any>{
+    return this.httpService.GetParamsCore(this.GetSolicitudInfoAdmin+"?id_solicitud="+id);
+  }
+
   postCrearColaborador(data: any): Observable<any>{
     return this.httpService.PostFormDataCore(data,this.CrearColaboradores);
   }
@@ -259,6 +265,10 @@ export class PortalService {
 
   putActualzarFiltroDet(data: any): Observable<any>{
     return this.httpService.PutJsonCore(data,this.ActualzarFiltroDet);
+  }
+
+  putActualizarSolicitud(data: any): Observable<any>{
+    return this.httpService.PutJsonCore(data,this.UpdateSolicitud);
   }
 
 

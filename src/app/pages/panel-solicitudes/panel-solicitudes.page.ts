@@ -173,11 +173,12 @@ export class PanelSolicitudesPage implements OnInit {
   }
 
   verSolicitud(solicitud: any): void {
+    console.log("solicitud: ", solicitud)
     this.router.navigate(
-      ['/solicitudes/detalle', solicitud.id],
+      ['/layout/panel-solicitudes/realizar'],
       {
         state: {
-          solicitud
+          solicitud:solicitud
         }
       }
     );
