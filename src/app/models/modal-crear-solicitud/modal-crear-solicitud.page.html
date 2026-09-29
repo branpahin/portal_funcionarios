@@ -8,7 +8,11 @@
     </ion-title>
 
     <ion-buttons slot="end">
+      <ion-button (click)="editar()" style="color:white">
 
+        <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+
+      </ion-button>
       <ion-button style="color:white"
         (click)="cerrarModal()">
 
@@ -29,6 +33,41 @@
   <form
     [formGroup]="formSolicitud"
     (ngSubmit)="crearSolicitud()">
+
+    <div
+      class="selector-edicion"
+      *ngIf="mostrarSelectorEdicion">
+
+      <ion-item lines="full">
+
+        <ion-icon
+          color="primary"
+          slot="start"
+          name="create-outline">
+        </ion-icon>
+
+        <ion-select
+          label="Tipo de solicitud"
+          labelPlacement="stacked"
+          placeholder="Selecciona el tipo que deseas editar"
+          interface="alert"
+          formControlName="tipoSolicitudSeleccionado"
+          (ionChange)="cargarTipoSolicitud($event.detail.value)">
+
+          <ion-select-option
+            *ngFor="let tipo of tiposSolicitud"
+            [value]="tipo">
+
+            {{ tipo.nombre }}
+
+          </ion-select-option>
+
+        </ion-select>
+
+      </ion-item>
+
+    </div>
+
 
     <ion-item lines="full">
 
@@ -491,7 +530,7 @@
         </ion-spinner>
 
         <span *ngIf="!guardando">
-          Crear solicitud
+          {{ modoEdicion ? 'Guardar cambios' : 'Crear solicitud' }}
         </span>
 
       </ion-button>

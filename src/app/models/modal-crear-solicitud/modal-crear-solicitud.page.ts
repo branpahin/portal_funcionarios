@@ -48,6 +48,10 @@ export class ModalCrearSolicitudPage implements OnInit {
   guardando = false;
   cargandoEmpresas = false;
   mostrarVistaPrevia = false;
+  tiposSolicitud: any[] = [];
+  modoEdicion = false;
+  mostrarSelectorEdicion = false;
+  tipoSolicitudSeleccionado: any = null;
 
   tiposDato: TipoDato[] = [
     {
@@ -57,10 +61,6 @@ export class ModalCrearSolicitudPage implements OnInit {
     {
       value: 'NUMBER',
       label: 'Número'
-    },
-    {
-      value: 'STRING',
-      label: 'Fecha'
     },
     {
       value: 'ITEM',
@@ -90,6 +90,7 @@ export class ModalCrearSolicitudPage implements OnInit {
       estado: [0],
       html: [''],
       coD_USER: [''],
+      tipoSolicitudSeleccionado: [null],
       parrafos: this.fb.array([])
     });
   }
@@ -100,7 +101,8 @@ export class ModalCrearSolicitudPage implements OnInit {
 
   agregarParrafo(): void {
     const parrafo = this.fb.group({
-      contenido: this.fb.array([])
+      contenido: this.fb.array([]),
+      saltoDespues: [false]
     });
 
     this.parrafos.push(parrafo);
@@ -247,18 +249,18 @@ export class ModalCrearSolicitudPage implements OnInit {
           const texto = elemento.get('texto')?.value || '';
 
           parrafoHtml += this.escaparHtml(texto)
-            .replace(/\r\n/g, '<br/>')
-            .replace(/\n/g, '<br/>')
-            .replace(/\r/g, '<br/>');
+            .replace(/\r\n/g, '<br>')
+            .replace(/\n/g, '<br>')
+            .replace(/\r/g, '<br>');
         }
 
         if (tipo === 'negrita') {
           const texto = elemento.get('texto')?.value || '';
 
           parrafoHtml += `<strong>${this.escaparHtml(texto)
-            .replace(/\r\n/g, '<br/>')
-            .replace(/\n/g, '<br/>')
-            .replace(/\r/g, '<br/>')}</strong>`;
+            .replace(/\r\n/g, '<br>')
+            .replace(/\n/g, '<br>')
+            .replace(/\r/g, '<br>')}</strong>`;
         }
 
         if (tipo === 'campo') {
@@ -275,7 +277,7 @@ export class ModalCrearSolicitudPage implements OnInit {
       }
 
       if (parrafo.get('saltoDespues')?.value) {
-        contenidoHtml += '<br/>';
+        contenidoHtml += '<br>';
       }
     });
 
@@ -419,63 +421,117 @@ export class ModalCrearSolicitudPage implements OnInit {
       )
     );
 
-
-    this.guardando = true;
-
     console.log("request: ",request)
-    this.service
-      .postCrearSolicitud(request)
-      .subscribe({
+    this.guardando = true;
+    if(!this.modoEdicion){
+      this.service
+        .postCrearSolicitud(request)
+        .subscribe({
 
-        next: async (resp) => {
+          next: async (resp) => {
 
-          this.guardando = false;
+            this.guardando = false;
 
-          this.UserInteractionService
-            .dismissLoading();
+            this.UserInteractionService
+              .dismissLoading();
 
 
-          this.UserInteractionService
-            .presentToast(
-              'Solicitud creada correctamente',
-              TypeThemeColor.SUCCESS
+            this.UserInteractionService
+              .presentToast(
+                'Solicitud creada correctamente',
+                TypeThemeColor.SUCCESS
+              );
+
+
+            this.modalController.dismiss({
+
+              creado: true,
+
+              data: resp.data
+
+            });
+
+          },
+
+
+          error: (err) => {
+
+            console.error(
+              'Error al enviar formulario:',
+              err
             );
 
 
-          this.modalController.dismiss({
+            this.guardando = false;
 
-            creado: true,
-
-            data: resp.data
-
-          });
-
-        },
+            this.UserInteractionService
+              .dismissLoading();
 
 
-        error: (err) => {
+            this.UserInteractionService
+              .presentToast(
+                err.error?.data?.error ||
+                'Error desconocido, por favor contactese con el area encargada'
+              );
 
-          console.error(
-            'Error al enviar formulario:',
-            err
-          );
+          }
+
+        });
+    } else {
+      this.service
+        .postUpdateSolicitud(request)
+        .subscribe({
+
+          next: async (resp) => {
+
+            this.guardando = false;
+
+            this.UserInteractionService
+              .dismissLoading();
 
 
-          this.guardando = false;
+            this.UserInteractionService
+              .presentToast(
+                'Solicitud creada correctamente',
+                TypeThemeColor.SUCCESS
+              );
 
-          this.UserInteractionService
-            .dismissLoading();
+
+            this.modalController.dismiss({
+
+              creado: true,
+
+              data: resp.data
+
+            });
+
+          },
 
 
-          this.UserInteractionService
-            .presentToast(
-              err.error?.data?.error ||
-              'Error desconocido, por favor contactese con el area encargada'
+          error: (err) => {
+
+            console.error(
+              'Error al enviar formulario:',
+              err
             );
 
-        }
 
-      });
+            this.guardando = false;
+
+            this.UserInteractionService
+              .dismissLoading();
+
+
+            this.UserInteractionService
+              .presentToast(
+                err.error?.data?.error ||
+                'Error desconocido, por favor contactese con el area encargada'
+              );
+
+          }
+
+        });
+    }
 
   }
 
@@ -539,6 +595,283 @@ export class ModalCrearSolicitudPage implements OnInit {
     });
 
     await modal.present();
+  }
+
+  cargarTipoSolicitud(tipo: any): void {
+
+     if (!tipo) {
+      return;
+    }
+
+    this.formSolicitud.patchValue({
+      id: tipo.id,
+      nombre: tipo.nombre,
+      descripcion: tipo.descripcion,
+      empresas: tipo.empresas ?? [],
+      estado: tipo.estado ?? 0,
+      html: tipo.html ?? '',
+      coD_USER: tipo.coD_USER ?? ''
+    });
+
+    this.cargarHtmlEnEditor(
+      tipo.html,
+      tipo.campos ?? []
+    );
+  }
+
+  cargarHtmlEnEditor(
+    html: string,
+    camposBackend: any[]
+  ): void {
+
+    this.parrafos.clear();
+
+    if (!html) {
+      this.agregarParrafo();
+      return;
+    }
+
+    const parser = new DOMParser();
+    const documento = parser.parseFromString(
+      html,
+      'text/html'
+    );
+
+    const elementos = documento.body.querySelectorAll(
+      'p, br'
+    );
+
+    elementos.forEach(elemento => {
+
+      if (elemento.tagName.toLowerCase() === 'br') {
+
+        if (this.parrafos.length > 0) {
+          const ultimoParrafo =
+            this.parrafos.at(
+              this.parrafos.length - 1
+            );
+
+          ultimoParrafo
+            .get('saltoDespues')
+            ?.setValue(true);
+        }
+
+        return;
+      }
+
+      const parrafo = this.fb.group({
+        contenido: this.fb.array([]),
+        saltoDespues: [false]
+      });
+
+      this.parrafos.push(parrafo);
+
+      const contenido =
+        parrafo.get('contenido') as FormArray;
+
+      this.procesarContenidoHtml(
+        elemento,
+        contenido,
+        camposBackend
+      );
+
+      if (contenido.length === 0) {
+        contenido.push(
+          this.fb.group({
+            tipo: ['texto'],
+            texto: ['']
+          })
+        );
+      }
+    });
+
+    if (this.parrafos.length === 0) {
+      this.agregarParrafo();
+    }
+  }
+
+  procesarContenidoHtml(
+    nodo: Node,
+    contenido: FormArray,
+    camposBackend: any[]
+  ): void {
+
+    nodo.childNodes.forEach((child: Node) => {
+
+      if (child.nodeType === Node.TEXT_NODE) {
+
+        const texto = child.textContent ?? '';
+
+        if (!texto) {
+          return;
+        }
+
+        const regex = /\{\{([^{}]+)\}\}/g;
+
+        let ultimoIndice = 0;
+        let match: RegExpExecArray | null;
+
+        while ((match = regex.exec(texto)) !== null) {
+
+          const textoAntes = texto.substring(
+            ultimoIndice,
+            match.index
+          );
+
+          if (textoAntes) {
+            contenido.push(
+              this.fb.group({
+                tipo: ['texto'],
+                texto: [textoAntes]
+              })
+            );
+          }
+
+          const nombreCampo = match[1].trim();
+
+          const campoBackend = camposBackend.find(
+            campo =>
+              campo.nombre?.replace(/^\{\{|\}\}$/g, '').trim() ===
+              nombreCampo
+          );
+
+          contenido.push(
+            this.fb.group({
+              tipo: ['campo'],
+              id: [campoBackend?.id ?? 0],
+              nombre: [nombreCampo, Validators.required],
+              tipO_DATO: [
+                this.convertirTipoDato(campoBackend?.tipO_DATO),
+                Validators.required
+              ],
+              estado: [campoBackend?.estado ?? 1],
+              iD_CAMPO_PADRE: [campoBackend?.iD_CAMPO_PADRE ?? 0],
+              nombrE_JSON: [campoBackend?.nombrE_JSON ?? nombreCampo.toUpperCase()]
+            })
+          );
+
+          ultimoIndice = regex.lastIndex;
+        }
+
+        const textoDespues = texto.substring(ultimoIndice);
+
+        if (textoDespues) {
+          contenido.push(
+            this.fb.group({
+              tipo: ['texto'],
+              texto: [textoDespues]
+            })
+          );
+        }
+
+        return;
+      }
+
+      if (child.nodeType === Node.ELEMENT_NODE) {
+
+        const elemento = child as HTMLElement;
+
+        const tag = elemento.tagName.toLowerCase();
+
+        if (tag === 'strong' || tag === 'b') {
+
+          const texto = elemento.textContent ?? '';
+
+          if (texto) {
+            contenido.push(
+              this.fb.group({
+                tipo: ['negrita'],
+                texto: [texto]
+              })
+            );
+          }
+
+          return;
+        }
+
+        if (tag === 'span') {
+
+          const texto = elemento.textContent?.trim() ?? '';
+
+          const match = texto.match(/^\{\{(.+?)\}\}$/);
+
+          if (match) {
+
+            const nombreCampo = match[1].trim();
+
+            const campoBackend = camposBackend.find(
+              campo =>
+                campo.nombre?.replace(/^\{\{|\}\}$/g, '').trim() ===
+                nombreCampo
+            );
+
+            contenido.push(
+              this.fb.group({
+                tipo: ['campo'],
+                id: [campoBackend?.id ?? 0],
+                nombre: [nombreCampo, Validators.required],
+                tipO_DATO: [
+                  this.convertirTipoDato(campoBackend?.tipO_DATO),
+                  Validators.required
+                ],
+                estado: [campoBackend?.estado ?? 1],
+                iD_CAMPO_PADRE: [campoBackend?.iD_CAMPO_PADRE ?? 0],
+                nombrE_JSON: [
+                  campoBackend?.nombrE_JSON ??
+                  nombreCampo.toUpperCase()
+                ]
+              })
+            );
+
+            return;
+          }
+        }
+
+        this.procesarContenidoHtml(
+          elemento,
+          contenido,
+          camposBackend
+        );
+      }
+    });
+  }
+
+  convertirTipoDato(tipo: string): string {
+
+    switch ((tipo || '').toUpperCase()) {
+
+      case 'NUMBER':
+        return 'NUMVER';
+
+      case 'BOOLEAN':
+        return 'ITEM';
+
+      case 'ITEM':
+        return 'ITEM';
+
+      case 'STRING':
+      default:
+        return 'STRING';
+    }
+  }
+
+  editar(){
+    this.obtenerTiposSolicitud();
+    this.mostrarSelectorEdicion = true;
+    this.modoEdicion = true;
+  }
+
+  obtenerTiposSolicitud(): void {
+    this.service.getTipoSolicitudesFuncionario().subscribe({
+      next: (resp: any) => {
+        this.tiposSolicitud =
+          resp?.data?.datos?.listadoTiposSolicitud ?? [];
+      },
+      error: () => {
+        this.tiposSolicitud = [];
+      }
+    });
+
   }
 
   cerrarModal(): void {

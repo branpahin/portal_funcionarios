@@ -57,6 +57,7 @@ export class PortalService {
   private GetEmpresasFuncionario = TypeServicio.GetEmpresasFuncionario
   private GetTipoSolicitudesFuncionario = TypeServicio.GetTipoSolicitudesFuncionario
   private CrearTipoSolicitud = TypeServicio.CrearTipoSolicitud
+  private UpdateTipoSolicitud = TypeServicio.UpdateTipoSolicitud
   private realizarSolicitud = TypeServicio.realizarSolicitud
   private obtenerMisSolicitudesPag = TypeServicio.obtenerMisSolicitudesPag
 
@@ -214,6 +215,10 @@ export class PortalService {
 
   postCrearSolicitud(data: any): Observable<any>{
     return this.httpService.PostCore(data,this.CrearTipoSolicitud);
+  }
+
+  postUpdateSolicitud(data: any): Observable<any>{
+    return this.httpService.PostCore(data,this.UpdateTipoSolicitud);
   }
 
   putActualizarColaborador(data: any): Observable<any>{
