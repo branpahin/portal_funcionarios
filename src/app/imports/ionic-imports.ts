@@ -3,7 +3,7 @@ import {
     IonDatetime, IonButton, IonGrid, IonRow, IonCol, 
     IonToolbar, IonTitle, IonHeader, IonContent, IonDatetimeButton, 
     IonModal, IonSearchbar, IonIcon, IonList, IonCardContent, IonCardHeader, IonSpinner, 
-    IonCard, IonText, IonInfiniteScroll,IonButtons, IonChip, IonTextarea
+    IonCard, IonText, IonInfiniteScroll,IonButtons, IonChip, IonTextarea, IonBadge, IonCardTitle, IonToast
   } from '@ionic/angular/standalone';
   
   export const IONIC_COMPONENTS = [
@@ -11,5 +11,5 @@ import {
     IonDatetime, IonButton, IonGrid, IonRow, IonCol,IonButtons,
     IonToolbar, IonTitle, IonHeader, IonContent, IonDatetimeButton, IonModal, 
     IonGrid, IonSearchbar, IonIcon, IonList, IonCardContent, IonCardHeader, IonCard, IonText, IonInfiniteScroll,
-    IonSpinner,IonChip
+    IonSpinner,IonChip, IonBadge, IonCardTitle, IonToast
   ];

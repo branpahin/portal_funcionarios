@@ -38,10 +38,10 @@
 
 
 ion-select, ion-item, ion-button, ion-datetime-button, button, ion-menu-button{
-    cursor: url('/assets/icon/seleccione.png'), auto !important;
+    cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     &::part(native) {
        
-        cursor: url('/assets/icon/seleccione.png'), auto !important;
+        cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     }
 
 
@@ -50,59 +50,59 @@ ion-select, ion-item, ion-button, ion-datetime-button, button, ion-menu-button{
 ion-modal{
     &::part(backdrop) {
        
-        cursor: url('/assets/icon/seleccione.png'), auto !important;
+        cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     }
 }
 
 ion-menu{
     &::part(backdrop) {
        
-        cursor: url('/assets/icon/seleccione.png'), auto !important;
+        cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     }
 }
 
 ion-alert{
     ion-backdrop{
        
-        cursor: url('/assets/icon/seleccione.png'), auto !important;
+        cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     }
 }
 
 .native-wrapper, input, label{
-    cursor: url('/assets/icon/texto.png'), auto !important;
+    cursor: url('../src/assets/icon/texto.png'), auto !important;
     &::part(native) {
        
-        cursor: url('/assets/icon/texto.png'), auto !important;
+        cursor: url('../src/assets/icon/texto.png'), auto !important;
     }
 }
 
 ion-datetime{
     &::part(calendar-day) {
-        cursor: url('/assets/icon/seleccione.png'), auto !important;
+        cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     }
     &::part(month-year-button){
-        cursor: url('/assets/icon/seleccione.png'), auto !important;
+        cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     }
     &::part(next-prev-button){
-        cursor: url('/assets/icon/seleccione.png'), auto !important;
+        cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     }
     &::part(wheel-item){
-        cursor: url('/assets/icon/seleccione.png'), auto !important;
+        cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     }
     &::part(native) {
        
-        cursor: url('/assets/icon/seleccione.png'), auto !important;
+        cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     }
     &::part(previous-month-button),
     &::part(next-month-button) {
-      cursor: url('/assets/icon/seleccione.png'), auto !important;
+      cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     }
 }
 
 ion-button {
     .button-native {
       /* Estilos para el elemento nativo (usar con precaución) */
-      cursor: url('/assets/icon/seleccione.png'), auto !important;
+      cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     }
   }
 

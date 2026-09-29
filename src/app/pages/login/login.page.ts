@@ -8,14 +8,15 @@ import { HttpClient } from '@angular/common/http';
 import { UserInteractionService } from 'src/services/user-interaction-service.service';
 import { Router } from '@angular/router';
 import { SecureStorageService } from 'src/services/secure-storage.service';
+import { IONIC_COMPONENTS } from 'src/app/imports/ionic-imports';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, IonicModule],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, IONIC_COMPONENTS],
+  schemas: []
   
 })
 export class LoginPage implements OnInit {

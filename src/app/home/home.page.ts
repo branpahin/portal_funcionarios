@@ -11,6 +11,7 @@ import { MenuStateService } from 'src/services/menu-state.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SecureStorageService } from 'src/services/secure-storage.service';
+import { IONIC_COMPONENTS } from '../imports/ionic-imports';
 
 interface MenuItem {
   name: string
@@ -24,7 +25,7 @@ interface MenuItem {
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [CommonModule,RouterModule, ReactiveFormsModule],
+  imports: [CommonModule,RouterModule, ReactiveFormsModule, IONIC_COMPONENTS],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class HomePage {

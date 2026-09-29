@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
+
 import {
   AlertController,
   LoadingController,
   ModalController,
-  ToastController,
-} from '@ionic/angular';
+  ToastController
+} from '@ionic/angular/standalone';
+
 import { IAlertAction, IAlertRole } from '../interfaces/IAlertOptions';
 import { TypeThemeColor } from '../app/enums/TypeThemeColor';
 
@@ -12,6 +14,7 @@ import { TypeThemeColor } from '../app/enums/TypeThemeColor';
   providedIn: 'root',
 })
 export class UserInteractionService {
+
   loaders: HTMLIonLoadingElement | null = null;
   showAlert = false;
 

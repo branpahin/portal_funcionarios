@@ -33,8 +33,7 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
-              },
-              "src/web.config"
+              }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
             "scripts": [],
@@ -108,8 +107,7 @@
                 "glob": "**/*",
                 "input": "src/assets",
                 "output": "assets"
-              },
-              "src/web.config"
+              }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
             "scripts": []
