@@ -248,6 +248,29 @@ ion-header{
   margin-top: 6px;
 }
 
+.documento {
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td, th {
+    border: 1px solid #000;
+    padding: 2px 4px;
+  }
+
+  input[type="radio"] {
+    appearance: auto;
+    -webkit-appearance: radio;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--ion-color-primary);
+    background: none;
+    cursor: pointer !important;
+  }
+}
+
 @media (max-width: 768px) {
 
   .realizar-container {

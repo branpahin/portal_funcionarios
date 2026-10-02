@@ -37,7 +37,8 @@
 @import '@ionic/angular/css/palettes/dark.system.css';
 
 
-ion-select, ion-item, ion-button, ion-datetime-button, button, ion-menu-button{
+ion-select, ion-item, ion-button, ion-datetime-button, button, ion-menu-button,
+input[type="radio"], input[type="checkbox"], ion-checkbox {
     cursor: url('../src/assets/icon/seleccione.png'), auto !important;
     &::part(native) {
        

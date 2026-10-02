@@ -43,6 +43,7 @@ interface ElementoElemento {
   tag: string;
   atributos: Record<string, string>;
   hijos: ElementoHtml[];
+  campo?: CampoSolicitud;
 }
 
 type ElementoHtml =
@@ -74,6 +75,11 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
   private firmas = new Map<string, HTMLCanvasElement>();
 
   private campoFirmaSeleccionado: CampoSolicitud | null = null;
+  private readonly ALIAS_RADIO: Record<string, string> = {
+    DEFUNCION_COMPANERO_HIJOS: 'DEFUNCION_COMPANEROS_HIJOS',
+    DEFUNCION_HIJO_30DIAS: 'DEFUNCION_HIJO_RECIEN_NACIDO',
+    DEFUNCION_CONYUGUE_PADRES_HIJOS: 'DEFUNCION_CONYUGE',
+  };
 
   tiposSolicitud: TipoSolicitud[] = [];
   private contextoFirma = new Map<
@@ -437,6 +443,9 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
 
     nodo.childNodes.forEach(child => {
 
+      // ==========================================
+      // TEXTO
+      // ==========================================
       if (child.nodeType === Node.TEXT_NODE) {
 
         const texto = child.textContent || '';
@@ -503,15 +512,71 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
         return;
       }
 
+      // ==========================================
+      // ELEMENTOS HTML
+      // ==========================================
       if (child.nodeType === Node.ELEMENT_NODE) {
 
         const elemento =
           child as HTMLElement;
 
+        const tag =
+          elemento.tagName.toLowerCase();
+
+        const atributos =
+          this.obtenerAtributos(elemento);
+
+        // Detectar inputs que vienen dentro del HTML
+        if (tag === 'input') {
+
+          let campo: CampoSolicitud | undefined;
+
+          // Primero intenta identificarlo por {{campo}}
+          const textoAtributos =
+            Object.values(atributos).join(' ');
+
+          const coincidencia =
+            textoAtributos.match(/{{\s*[\w.-]+\s*}}/);
+
+          if (coincidencia) {
+
+            const identificador =
+              coincidencia[0].trim();
+
+            campo =
+              campos.find(
+                x =>
+                  x.nombre.trim() === identificador
+              );
+          }
+
+          // Si no lo encontró, para radio intenta
+          // identificarlo por value = nombrE_JSON
+          if (!campo && atributos['type']?.toLowerCase() === 'radio') {
+
+            const valorOriginal = atributos['value']?.trim().toUpperCase();
+            const valor = (this.ALIAS_RADIO[valorOriginal] ?? valorOriginal)?.toLowerCase();
+
+            campo = campos.find(
+              x => x.nombrE_JSON?.trim().toLowerCase() === valor
+            );
+          }
+
+          elementos.push({
+            tipo: 'elemento',
+            tag,
+            atributos,
+            hijos: [],
+            campo
+          });
+
+          return;
+        }
+
         elementos.push({
           tipo: 'elemento',
-          tag: elemento.tagName.toLowerCase(),
-          atributos: this.obtenerAtributos(elemento),
+          tag,
+          atributos,
           hijos: this.procesarNodo(
             elemento,
             campos
@@ -522,6 +587,104 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     });
 
     return elementos;
+  }
+
+  obtenerValorRadio(
+    elemento: ElementoElemento
+  ): boolean {
+
+    if (!elemento.campo) {
+      return false;
+    }
+
+    return this.obtenerControl(
+      elemento.campo
+    )?.value === true;
+  }
+
+  seleccionarRadio(
+    elemento: ElementoElemento
+  ): void {
+
+    if (!elemento.campo) {
+      return;
+    }
+
+    const nombreGrupo =
+      elemento.atributos['name'];
+
+    const valorSeleccionado =
+      elemento.atributos['value'];
+
+    if (!nombreGrupo || !valorSeleccionado) {
+      return;
+    }
+
+    // Buscar todos los inputs de ese mismo grupo
+    const radios =
+      document.querySelectorAll(
+        `input[data-radio-group="${nombreGrupo}"]`
+      );
+
+    radios.forEach((radio: Element) => {
+
+      const campoNombre =
+        radio.getAttribute('data-campo');
+
+      if (!campoNombre) {
+        return;
+      }
+
+      const control =
+        this.formSolicitud.get(campoNombre);
+
+      if (!control) {
+        return;
+      }
+
+      const valor =
+        radio.getAttribute('data-radio-value');
+
+      control.setValue(
+        valor === valorSeleccionado
+      );
+
+    });
+  }
+
+  convertirBooleanosAEnteros(valores: any): any {
+
+    const resultado = { ...valores };
+
+    if (!this.tipoSolicitudSeleccionado) {
+      return resultado;
+    }
+
+    this.tipoSolicitudSeleccionado.campos.forEach(campo => {
+
+      const tipo = campo.tipO_DATO
+        ?.trim()
+        .toUpperCase();
+
+      if (
+        tipo !== 'BOOLEAN' &&
+        tipo !== 'ITEM'
+      ) {
+        return;
+      }
+
+      const nombreCampo = campo.nombrE_JSON;
+
+      if (!(nombreCampo in resultado)) {
+        return;
+      }
+
+      resultado[nombreCampo] =
+        resultado[nombreCampo] === true ? 1 : 0;
+
+    });
+
+    return resultado;
   }
 
   obtenerAtributos(
@@ -937,7 +1100,9 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     this.guardando = true;
 
     const valores =
-      this.formSolicitud.getRawValue();
+      this.convertirBooleanosAEnteros(
+        this.formSolicitud.getRawValue()
+      );
 
     const request = {
 

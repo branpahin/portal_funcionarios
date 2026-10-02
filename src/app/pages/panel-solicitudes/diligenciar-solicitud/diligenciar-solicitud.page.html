@@ -167,6 +167,124 @@
 
                     </strong>
 
+                    <table
+                      *ngSwitchCase="'table'"
+                      [attr.border]="elemento.atributos['border'] || null"
+                      [attr.style]="elemento.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: elemento.hijos }
+                        "
+                      ></ng-container>
+                    </table>
+
+                    <!-- THEAD -->
+                    <thead
+                      *ngSwitchCase="'thead'"
+                      [attr.style]="elemento.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: elemento.hijos }
+                        "
+                      ></ng-container>
+                    </thead>
+
+                    <!-- TBODY -->
+                    <tbody
+                      *ngSwitchCase="'tbody'"
+                      [attr.style]="elemento.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: elemento.hijos }
+                        "
+                      ></ng-container>
+                    </tbody>
+
+                    <!-- TFOOT -->
+                    <tfoot
+                      *ngSwitchCase="'tfoot'"
+                      [attr.style]="elemento.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: elemento.hijos }
+                        "
+                      ></ng-container>
+                    </tfoot>
+
+                    <!-- TR -->
+                    <tr
+                      *ngSwitchCase="'tr'"
+                      [attr.style]="elemento.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: elemento.hijos }
+                        "
+                      ></ng-container>
+                    </tr>
+
+                    <!-- TD -->
+                    <td
+                      *ngSwitchCase="'td'"
+                      [attr.colspan]="elemento.atributos['colspan'] || null"
+                      [attr.rowspan]="elemento.atributos['rowspan'] || null"
+                      [attr.style]="elemento.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: elemento.hijos }
+                        "
+                      ></ng-container>
+                    </td>
+
+                    <!-- TH -->
+                    <th
+                      *ngSwitchCase="'th'"
+                      [attr.colspan]="elemento.atributos['colspan'] || null"
+                      [attr.rowspan]="elemento.atributos['rowspan'] || null"
+                      [attr.style]="elemento.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: elemento.hijos }
+                        "
+                      ></ng-container>
+                    </th>
+                    <ng-container *ngSwitchCase="'input'">
+
+                      <ng-container
+                        *ngIf="
+                          elemento.campo &&
+                          elemento.atributos['type']?.toLowerCase() === 'radio'
+                        "
+                      >
+
+                        <input
+                          type="radio"
+                          [attr.name]="elemento.atributos['name']"
+                          [attr.value]="elemento.atributos['value']"
+                          [attr.data-radio-group]="elemento.atributos['name']"
+                          [attr.data-radio-value]="elemento.atributos['value']"
+                          [attr.data-campo]="elemento.campo?.nombrE_JSON"
+                          [disabled]="!elemento.campo"
+                          [checked]="elemento.campo ? obtenerControl(elemento.campo)?.value === true : false"
+                          (change)="seleccionarRadio(elemento)"
+                        >
+
+                      </ng-container>
+
+                    </ng-container>
                     <div *ngSwitchCase="'div'">
 
                       <ng-container
@@ -630,6 +748,119 @@
 
                     </p>
 
+                    <table
+                      *ngSwitchCase="'table'"
+                      [attr.border]="hijo.atributos['border'] || null"
+                      [attr.style]="hijo.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: hijo.hijos }
+                        "
+                      ></ng-container>
+                    </table>
+
+                    <thead
+                      *ngSwitchCase="'thead'"
+                      [attr.style]="hijo.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: hijo.hijos }
+                        "
+                      ></ng-container>
+                    </thead>
+
+                    <tbody
+                      *ngSwitchCase="'tbody'"
+                      [attr.style]="hijo.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: hijo.hijos }
+                        "
+                      ></ng-container>
+                    </tbody>
+
+                    <tfoot
+                      *ngSwitchCase="'tfoot'"
+                      [attr.style]="hijo.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: hijo.hijos }
+                        "
+                      ></ng-container>
+                    </tfoot>
+
+                    <tr
+                      *ngSwitchCase="'tr'"
+                      [attr.style]="hijo.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: hijo.hijos }
+                        "
+                      ></ng-container>
+                    </tr>
+
+                    <td
+                      *ngSwitchCase="'td'"
+                      [attr.colspan]="hijo.atributos['colspan'] || null"
+                      [attr.rowspan]="hijo.atributos['rowspan'] || null"
+                      [attr.style]="hijo.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: hijo.hijos }
+                        "
+                      ></ng-container>
+                    </td>
+
+                    <th
+                      *ngSwitchCase="'th'"
+                      [attr.colspan]="hijo.atributos['colspan'] || null"
+                      [attr.rowspan]="hijo.atributos['rowspan'] || null"
+                      [attr.style]="hijo.atributos['style'] || null"
+                    >
+                      <ng-container
+                        *ngTemplateOutlet="
+                          contenidoHtml;
+                          context: { hijos: hijo.hijos }
+                        "
+                      ></ng-container>
+                    </th>
+                    <!-- INPUT -->
+                   <ng-container *ngSwitchCase="'input'">
+
+                      <ng-container
+                        *ngIf="
+                          hijo.campo &&
+                          hijo.atributos['type']?.toLowerCase() === 'radio'
+                        "
+                      >
+
+                        <input
+                          type="radio"
+                          [attr.name]="hijo.atributos['name']"
+                          [attr.value]="hijo.atributos['value']"
+                          [attr.data-radio-group]="hijo.atributos['name']"
+                          [attr.data-radio-value]="hijo.atributos['value']"
+                          [attr.data-campo]="hijo.campo?.nombrE_JSON"
+                          [disabled]="!hijo.campo"
+                          [checked]="hijo.campo ? obtenerControl(hijo.campo)?.value === true : false"
+                          (change)="seleccionarRadio(hijo)"
+                        >
+
+                      </ng-container>
+
+                    </ng-container>
 
                     <div *ngSwitchCase="'div'">
 

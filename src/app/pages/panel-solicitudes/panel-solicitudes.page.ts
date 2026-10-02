@@ -9,6 +9,7 @@ import { ModalController } from '@ionic/angular';
 import { ModalCrearFiltroPage } from 'src/app/models/modal-crear-filtro/modal-crear-filtro.page';
 import { PermisosService } from 'src/services/permisos.service';
 import { ModalCrearSolicitudPage } from 'src/app/models/modal-crear-solicitud/modal-crear-solicitud.page';
+import { SecureStorageService } from 'src/services/secure-storage.service';
 
 @Component({
   selector: 'app-panel-solicitudes',
@@ -29,6 +30,7 @@ export class PanelSolicitudesPage implements OnInit {
   totalRecordsSolicitudesRecibidas = 0;
   currentPageMisSolicitudes = 1;
   currentPageSolicitudesRecibidas = 1;
+  rol:number|null = 0;
 
   pageSizeMisSolicitudes = 5;
   pageSizeSolicitudesRecibidas = 5;
@@ -37,10 +39,12 @@ export class PanelSolicitudesPage implements OnInit {
     private router: Router,
     private modalController: ModalController,
     private service:PortalService,
+    private secureStorage: SecureStorageService,
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     // this.cargarSolicitudes();
+    this.rol = await this.secureStorage.get<number>('rolSeleccionado');
     this.obtenerMisSolicitudes();
   }
 

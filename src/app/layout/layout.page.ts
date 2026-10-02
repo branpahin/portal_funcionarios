@@ -157,8 +157,13 @@ export class LayoutPage implements OnInit {
         try {
           const resp=data.data.rolesUsuario
           this.rolesSelec=resp
-          this.rolSeleccionado=resp[0].id
-          this.secureStorage.set('rolSeleccionado',String(this.rolSeleccionado))
+          const rol = await this.secureStorage.get<number>('rolSeleccionado');
+          console.log("rol: ",rol)
+          if(rol){
+            this.rolSeleccionado = Number(rol)
+          }else{
+            this.rolSeleccionado=resp[0].id
+          }
           await this.menu(this.rolSeleccionado!)
         } catch (error) {
           console.error("Error en listarUsuarios:", error);
@@ -172,6 +177,7 @@ export class LayoutPage implements OnInit {
   }
 
   async menu(rol:number){
+    this.secureStorage.set('rolSeleccionado',String(this.rolSeleccionado))
     this.service.getMenu(rol).subscribe({
       next:async(data)=>{
         try {
