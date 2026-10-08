@@ -555,7 +555,7 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
           if (!campo && atributos['type']?.toLowerCase() === 'radio') {
 
             const valorOriginal = atributos['value']?.trim().toUpperCase();
-            const valor = (this.ALIAS_RADIO[valorOriginal] ?? valorOriginal)?.toLowerCase();
+            const valor = ( valorOriginal)?.toLowerCase();
 
             campo = campos.find(
               x => x.nombrE_JSON?.trim().toLowerCase() === valor
