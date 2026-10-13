@@ -62,6 +62,7 @@ export class PortalService {
   private obtenerMisSolicitudesPag = TypeServicio.obtenerMisSolicitudesPag
   private GetSolicitudInfoAdmin = TypeServicio.GetSolicitudInfoAdmin
   private UpdateSolicitud = TypeServicio.UpdateSolicitud
+  private UpdateEstadoSolicitud = TypeServicio.UpdateEstadoSolicitud
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -269,6 +270,10 @@ export class PortalService {
 
   putActualizarSolicitud(data: any): Observable<any>{
     return this.httpService.PutJsonCore(data,this.UpdateSolicitud);
+  }
+
+  putActualizarEstadoSolicitud(data: any): Observable<any>{
+    return this.httpService.PutJsonCore(data,this.UpdateEstadoSolicitud);
   }
 
 

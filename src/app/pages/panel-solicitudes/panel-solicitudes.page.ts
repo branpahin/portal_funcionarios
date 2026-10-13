@@ -109,7 +109,7 @@ export class PanelSolicitudesPage implements OnInit {
   get totalPagesMisSolicitudes(): number {
     return Math.ceil(
       this.totalRecordsMisSolicitudes /
-      this.pageSizeMisSolicitudes
+      this.pageSizeSolicitudesRecibidas
     );
   }
 
@@ -127,6 +127,34 @@ export class PanelSolicitudesPage implements OnInit {
     this.obtenerMisSolicitudes();
   }
 
+  onPageSizeChangeSolicitudesRecibidas() {
+
+    this.currentPageMisSolicitudes = 1;
+
+    this.obtenerMisSolicitudes();
+  }
+
+  get totalPagesSolicitudesRecibidas(): number {
+    return Math.ceil(
+      this.totalRecordsSolicitudesRecibidas /
+      this.pageSizeSolicitudesRecibidas
+    );
+  }
+
+  changePageSolicitudesRecibidas(page: number) {
+
+    if (
+      page <= 0 ||
+      page > this.totalPagesSolicitudesRecibidas
+    ) {
+      return;
+    }
+
+    this.currentPageSolicitudesRecibidas = page;
+
+    this.obtenerMisSolicitudes();
+  }
+
   onPageSizeChangeMisSolicitudes() {
 
     this.currentPageMisSolicitudes = 1;
@@ -136,19 +164,32 @@ export class PanelSolicitudesPage implements OnInit {
 
   async obtenerMisSolicitudes() {
 
-    const payload = {
-      first: (this.currentPageMisSolicitudes - 1) * this.pageSizeMisSolicitudes,
-      rows: this.pageSizeMisSolicitudes
-    };
+    let payload = {};
+
+    if(this.esAdministrador){
+      payload = {
+        first: (this.currentPageSolicitudesRecibidas - 1) * this.pageSizeSolicitudesRecibidas,
+        rows: this.pageSizeSolicitudesRecibidas
+      };
+    } else {
+        payload = {
+        first: (this.currentPageMisSolicitudes - 1) * this.pageSizeMisSolicitudes,
+        rows: this.pageSizeMisSolicitudes
+      };
+    }
 
     this.service.getobtenerMisSolicitudesPag(JSON.stringify(payload)).subscribe({
       next: (resp) => {
 
-        this.misSolicitudes =
-          resp.data.datos.listadoSolicitudes;
-
-        this.totalRecordsMisSolicitudes =
-          resp.data.totalRecords;
+       
+        if(this.esAdministrador){
+          this.solicitudesRecibidas = resp.data.datos.listadoSolicitudes;
+          this.totalRecordsSolicitudesRecibidas = resp.data.totalRecords;
+        } else {
+           this.misSolicitudes = resp.data.datos.listadoSolicitudes;
+           this.totalRecordsMisSolicitudes = resp.data.totalRecords;
+        }
+        
       },
 
       error: (err) => {
@@ -182,7 +223,8 @@ export class PanelSolicitudesPage implements OnInit {
       ['/layout/panel-solicitudes/realizar'],
       {
         state: {
-          solicitud:solicitud
+          solicitud:solicitud,
+          esAdministrador:this.esAdministrador
         }
       }
     );

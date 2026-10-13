@@ -7,6 +7,7 @@ import { IONIC_COMPONENTS } from '../../../imports/ionic-imports';
 import { PortalService } from 'src/services/portal.service';
 import { TypeThemeColor } from 'src/app/enums/TypeThemeColor';
 import { ModuleService } from 'src/services/modulos/module.service';
+import { IAlertAction } from 'src/interfaces/IAlertOptions';
 
 interface CampoSolicitud {
   id: number;
@@ -90,6 +91,7 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
 
   formSolicitud: FormGroup = this.fb.group({});
   solicitud:any
+  esAdministrador = true
   elementosHtml: ElementoHtml[] = [];
 
   cargando = false;
@@ -203,13 +205,12 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     valores: any,
     campos: CampoSolicitud[]
   ): any {
-
+    console.log("valores: ",valores)
     const resultado: any = {};
 
     campos
       .filter(campo =>
-        campo.estado === 1 &&
-        campo.tipO_DATO?.trim().toUpperCase() !== 'ITEM'
+        campo.estado === 1
       )
       .forEach(campo => {
 
@@ -230,7 +231,7 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
           ?.trim()
           .toUpperCase();
 
-        if (tipo === 'BOOLEAN') {
+        if (tipo === 'BOOLEAN' || tipo === 'ITEM') {
           valor =
             valor === true ||
             valor === 1 ||
@@ -240,8 +241,50 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
 
         resultado[nombreCampo] = valor;
       });
-
+    if(this.solicitud){
+      resultado['observaciones'] = Array.isArray(valores.observaciones)
+        ? valores.observaciones
+        : [];
+      resultado['id'] = valores.id
+    }
+    
     return resultado;
+  }
+
+  get observacionesSolicitud(): any[] {
+    const observaciones = this.formSolicitud
+      ?.get('observaciones')
+      ?.value;
+
+    return Array.isArray(observaciones)
+      ? observaciones
+      : [];
+  }
+
+  obtenerNombreEstadoObservacion(estado: number): string {
+    switch (estado) {
+      case 2:
+        return 'Aprobación';
+
+      case 3:
+        return 'Cancelación';
+
+      default:
+        return `Estado ${estado}`;
+    }
+  }
+
+  obtenerColorEstadoObservacion(estado: number): string {
+    switch (estado) {
+      case 2:
+        return 'success';
+
+      case 3:
+        return 'danger';
+
+      default:
+        return 'medium';
+    }
   }
 
   cargarFirmasDesdeFormulario(): void {
@@ -367,7 +410,11 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
               : []
           );
       });
-
+    if(this.solicitud){
+      controles['observaciones'] = new FormControl([]);
+      controles['id'] = new FormControl([]);
+    }
+   
     this.formSolicitud = this.fb.group(
       controles
     );
@@ -1173,6 +1220,68 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     this.volver();
   }
 
+  aprobarRechazar(){
+    let action :IAlertAction[] =[
+      {
+        text: 'Cancelar',
+        handler: async () => {}
+      }, 
+      {
+        text: 'Rechazar',
+        handler: async (data) => {
+          await this.aprobar(data.observacion,false);
+          this.UserInteractionService.presentToast('Solicitud rechazada',TypeThemeColor.SUCCESS)
+        }
+      },
+      {
+        text: 'Aprobar',
+        handler: async (data) => {
+          await this.aprobar(data.observacion,true);
+          this.UserInteractionService.presentToast('Solicitud aprobada',TypeThemeColor.SUCCESS);
+        }
+      }
+    ]
+    this.UserInteractionService.presentAlertActions(
+      '¡Se ha realizado un cambio en el formulario!',
+      action,
+      false,
+      'Notificación',
+      [
+        {
+          name: 'observacion',
+          type: 'textarea', 
+          placeholder: 'Escriba su observación'
+        }
+      ]
+    );
+  }
+
+  aprobar(observacion:string, aprobado:boolean){
+    const datos = {
+      ID:this.formSolicitud.get('id')?.value,
+      aprobado: aprobado,
+      coD_USER: 0,
+      observacion: observacion
+    }
+    this.service.putActualizarEstadoSolicitud(datos).subscribe({
+      next: async (resp) => {
+        try {
+          this.UserInteractionService.dismissLoading();
+          this.UserInteractionService.presentToast('Registro exitoso', TypeThemeColor.SUCCESS);
+        } catch (error) {
+          console.error("Error al procesar respuesta:", error);
+          this.UserInteractionService.dismissLoading();
+        }
+      },
+      error: (err) => {
+        console.error("Error al enviar formulario:", err);
+        this.UserInteractionService.dismissLoading();
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+      }
+    });
+    this.volver();
+  }
+
  
   limpiarSolicitud(): void {
 
@@ -1187,6 +1296,7 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
   volver(): void {
 
     console.log('URL antes:', this.router.url);
+    console.log("form: ",this.formSolicitud.value)
 
   this.router.navigateByUrl('/layout/panel-solicitudes')
     .then(resultado => {

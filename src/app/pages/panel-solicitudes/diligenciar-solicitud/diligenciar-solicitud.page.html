@@ -899,6 +899,58 @@
               </ng-container>
 
             </ng-template>
+            <div
+              class="observaciones-container"
+              *ngIf="observacionesSolicitud.length > 0">
+
+              <div class="observaciones-header">
+                <div class="observaciones-titulo">
+                  <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+
+                  <h3>Historial de observaciones</h3>
+                </div>
+
+                <ion-badge color="medium">
+                  {{ observacionesSolicitud.length }}
+                </ion-badge>
+              </div>
+
+              <ion-card
+                class="observacion-card"
+                *ngFor="let item of observacionesSolicitud">
+
+                <ion-card-content>
+
+                  <div class="observacion-superior">
+
+                    <ion-badge
+                      [color]="obtenerColorEstadoObservacion(item.estado)">
+                      {{ obtenerNombreEstadoObservacion(item.estado) }}
+                    </ion-badge>
+
+                    <span class="observacion-fecha">
+                      <ion-icon name="calendar-outline"></ion-icon>
+                      {{ item.fecha || item.fechA_REGISTRO | date:'dd/MM/yyyy HH:mm' }}
+                    </span>
+
+                  </div>
+
+                  <div class="observacion-texto">
+                    <ion-icon name="chatbubble-outline"></ion-icon>
+
+                    <p>{{ item.observacion }}</p>
+                  </div>
+
+                  <div class="observacion-pie">
+                    <ion-icon name="person-outline"></ion-icon>
+                    <span>Usuario: {{ item.coD_USER }}</span>
+                  </div>
+
+                </ion-card-content>
+
+              </ion-card>
+
+            </div>
 
           </ion-card-content>
 
@@ -941,6 +993,23 @@
 
           </ion-button>
 
+          <ion-button
+            type="button"
+            color="success"
+            *ngIf="esAdministrador && solicitud"
+            (click)="aprobarRechazar()"
+            >
+
+            <ion-spinner
+              *ngIf="guardando"
+              name="crescent">
+            </ion-spinner>
+
+            <span *ngIf="!guardando">
+               Aprobar o rechazar solicitud
+            </span>
+
+          </ion-button>
         </div>
 
       </form>
