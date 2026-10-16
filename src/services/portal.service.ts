@@ -63,6 +63,7 @@ export class PortalService {
   private GetSolicitudInfoAdmin = TypeServicio.GetSolicitudInfoAdmin
   private UpdateSolicitud = TypeServicio.UpdateSolicitud
   private UpdateEstadoSolicitud = TypeServicio.UpdateEstadoSolicitud
+  private GetIDColaboradoresPag = TypeServicio.GetIDColaboradoresPag
 
   constructor(private httpService: HttpService, private http: HttpClient) { }
 
@@ -103,6 +104,9 @@ export class PortalService {
 
   getColaboradoresInterventorPag(pag:string): Observable<any>{
     return this.httpService.GetParamsCore(this.colaboradoresInterventorPag+"?ServerSide="+pag);
+  }
+  getIDColaboradoresPag(pag:string): Observable<any>{
+    return this.httpService.GetParamsCore(this.GetIDColaboradoresPag+"?ServerSide="+pag);
   }
 
   getCamposEstado(estado:number,rol:number): Observable<any>{

@@ -91,15 +91,61 @@
 
       <div class="solicitud-header">
 
-        <div>
+        <div class="solicitud-titulo">
+          <h2>{{ tipoSolicitudSeleccionado.nombre }}</h2>
+          <p>{{ tipoSolicitudSeleccionado.descripcion }}</p>
+        </div>
 
-          <h2>
-            {{ tipoSolicitudSeleccionado.nombre }}
-          </h2>
+        <div class="buscador-colaborador" *ngIf="!solicitud">
 
-          <p>
-            {{ tipoSolicitudSeleccionado.descripcion }}
-          </p>
+          <ion-searchbar
+            placeholder="Buscar colaborador..."
+            debounce="400"
+            [value]="terminoBusqueda"
+            (ionInput)="onBuscarColaborador($event)"
+            (ionClear)="limpiarBusqueda()"
+            [disabled]="!tipoSolicitudSeleccionado">
+          </ion-searchbar>
+
+          <ion-spinner
+            *ngIf="buscandoColaboradores"
+            name="dots"
+            class="buscador-spinner">
+          </ion-spinner>
+
+          <!-- Resultados -->
+          <ion-list
+            class="resultados-lista"
+            *ngIf="mostrarResultados && !colaboradorSeleccionado">
+
+            <ion-item
+              button
+              detail="false"
+              *ngFor="let c of resultadosColaboradores"
+              (click)="seleccionarColaborador(c)">
+
+              <ion-label>
+                <h3>{{ c.nombres }} {{c.apellidos}}</h3>
+                <p>{{ c.identificacion }}</p>
+              </ion-label>
+
+            </ion-item>
+
+            <ion-item
+              lines="none"
+              *ngIf="!buscandoColaboradores && resultadosColaboradores.length === 0">
+              <ion-label color="medium">Sin resultados</ion-label>
+            </ion-item>
+
+          </ion-list>
+
+          <!-- Seleccionado -->
+          <ion-chip
+            *ngIf="colaboradorSeleccionado"
+            color="primary">
+            <ion-label>{{ colaboradorSeleccionado.nombres }}</ion-label>
+            <ion-icon name="close-circle" (click)="quitarColaborador()"></ion-icon>
+          </ion-chip>
 
         </div>
 
@@ -943,7 +989,7 @@
 
                   <div class="observacion-pie">
                     <ion-icon name="person-outline"></ion-icon>
-                    <span>Usuario: {{ item.coD_USER }}</span>
+                    <span>Usuario: {{ item.nombre }}</span>
                   </div>
 
                 </ion-card-content>
@@ -996,7 +1042,7 @@
           <ion-button
             type="button"
             color="success"
-            *ngIf="esAdministrador && solicitud"
+            *ngIf="esAdministrador && solicitud" 
             (click)="aprobarRechazar()"
             >
 

@@ -324,7 +324,8 @@ export class ModalCrearSolicitudPage implements OnInit {
         nombresCampos.add(nombre);
 
         campos.push({
-          id: elemento.get('id')?.value || 0,
+          // id: elemento.get('id')?.value || 0,
+          id: 0,
           nombre: nombre,
           tipO_DATO:
             elemento.get('tipO_DATO')?.value || 'texto',

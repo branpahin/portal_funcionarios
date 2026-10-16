@@ -49,6 +49,10 @@ ion-header{
 }
 
 .solicitud-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 15px;
 
   h2 {
@@ -63,6 +67,42 @@ ion-header{
     font-size: 14px;
   }
 }
+
+.solicitud-titulo {
+  flex: 1;
+  min-width: 0;
+}
+
+.buscador-colaborador {
+  position: relative;
+  width: 360px;
+  max-width: 100%;
+
+  ion-searchbar {
+    padding: 0;
+  }
+
+  .buscador-spinner {
+    position: absolute;
+    right: 44px;
+    top: 14px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .resultados-lista {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    max-height: 280px;
+    overflow-y: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  }
+}
+
 
 .documento-card {
   margin: 0;
@@ -363,6 +403,14 @@ ion-header{
 
 
 @media (max-width: 768px) {
+
+  .solicitud-header {
+    flex-direction: column;
+  }
+
+  .buscador-colaborador {
+    width: 100%;
+  }
 
   .realizar-container {
     padding: 15px 10px;

@@ -46,11 +46,19 @@ export class ModalSearchPage implements OnInit {
   }
   
   filtrarCedulas(event: any) {
-    const valor = event.detail.value?.toLowerCase() || '';
-    this.cedulasFiltradas = this.funcionarios.filter(cedula =>
-      cedula.toLowerCase().includes(valor)
-    );
+  const valor = (event.detail.value || '').toLowerCase().trim();
+
+  if (!valor) {
+    this.cedulasFiltradas = [...this.funcionarios];
+    return;
   }
+
+  this.cedulasFiltradas = this.funcionarios.filter(f =>
+    `${f.nombres} ${f.apellidos} ${f.identificacion}`
+      .toLowerCase()
+      .includes(valor)
+  );
+}
 
   seleccionar(data: any) {
     this.modalCtrl.dismiss(data);

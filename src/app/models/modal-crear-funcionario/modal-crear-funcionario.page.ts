@@ -454,14 +454,12 @@ export class ModalCrearFuncionarioPage implements OnInit {
           } catch (error) {
             console.error("Error al procesar respuesta:", error);
             this.UserInteractionService.dismissLoading();
-            this.cerrarModal();
           }
         },
         error: (err) => {
           console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
           this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
-          this.cerrarModal();
         }
       });
     }

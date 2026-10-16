@@ -187,6 +187,7 @@ export class CreacionUsuarioPage implements OnInit {
     if(this.empleadoForm.valid){
       this.UserInteractionService.showLoading('Guardando...');
       const formValue = this.empleadoForm.value;
+      formValue.ID_EMPRESA = String(formValue.ID_EMPRESA) 
       const payload = {
         ...formValue,
         CIUDAD: String(formValue.CIUDAD.join(',')),

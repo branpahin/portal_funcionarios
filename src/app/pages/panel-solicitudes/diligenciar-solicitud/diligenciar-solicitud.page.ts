@@ -97,6 +97,13 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
   cargando = false;
   guardando = false;
 
+  terminoBusqueda = '';
+  resultadosColaboradores: any[] = [];
+  buscandoColaboradores = false;
+  mostrarResultados = false;
+  colaboradorSeleccionado: any = null;
+  private busquedaSeq = 0; 
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -133,13 +140,13 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
 
     this.cargando = true;
 
-  
+    this.UserInteractionService.showLoading('Guardando...');
     this.service.getTipoSolicitudesFuncionario().subscribe({
       next: (resp: any) => {
 
         this.tiposSolicitud =
           resp?.data?.datos?.listadoTiposSolicitud ?? [];
-
+        this.UserInteractionService.dismissLoading();
         this.cargando = false;
         if(this.solicitud){
           this.obtenerSolicitudPorId(this.solicitud.id)
@@ -149,10 +156,12 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
       error: () => {
         this.tiposSolicitud = [];
         this.cargando = false;
+        this.UserInteractionService.dismissLoading();
       }
     });
 
     this.cargando = false;
+    this.UserInteractionService.dismissLoading();
   }
 
   seleccionarTipoPorId(id: number): void {
@@ -1131,6 +1140,82 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     return this.formSolicitud.getRawValue();
   }
 
+  onBuscarColaborador(event: any) {
+    const termino = (event.detail.value || '').trim();
+    this.terminoBusqueda = termino;
+
+    if (termino.length < 2) {
+      this.resultadosColaboradores = [];
+      this.mostrarResultados = false;
+      return;
+    }
+
+    this.buscarColaboradores(termino);
+  }
+
+  async buscarColaboradores(termino: string) {
+    const seq = ++this.busquedaSeq;
+    this.buscandoColaboradores = true;
+    this.mostrarResultados = true;
+
+    const esNumero = /^\d+$/.test(termino);
+    const campos = esNumero ? ['identificacion'] : ['nombres', 'apellidos'];
+    let pendientes = campos.length;
+    const unicos = new Map<any, any>();
+
+    const terminar = () => {
+      pendientes--;
+      if (pendientes === 0 && seq === this.busquedaSeq) {
+        this.resultadosColaboradores = Array.from(unicos.values()).slice(0, 10);
+        this.buscandoColaboradores = false;
+      }
+    };
+
+    if (this.esAdministrador) {
+      campos.forEach(campo => {
+        const payload = {
+          first: 0,
+          rows: 10,
+          sortField: 'nombres',
+          sortOrder: 1,
+          filters: {
+            [campo]: [{ value: termino, matchMode: 'contains', operator: 'and' }]
+          }
+        };
+
+        this.service.getIDColaboradoresPag(JSON.stringify(payload)).subscribe({
+          next: (resp) => {
+            if (seq !== this.busquedaSeq) return;
+            (resp.data.datos.listadoColaboradores || []).forEach((c: any) =>
+              unicos.set(c.identificacion, c)
+            );
+            terminar();
+          },
+          error: () => {
+            if (seq !== this.busquedaSeq) return;
+            terminar();
+          }
+        });
+      });
+    }
+  }
+
+  seleccionarColaborador(c: any) {
+    this.colaboradorSeleccionado = c;
+    this.mostrarResultados = false;
+    this.terminoBusqueda = '';
+  }
+
+  quitarColaborador() {
+    this.colaboradorSeleccionado = null;
+  }
+
+  limpiarBusqueda() {
+    this.terminoBusqueda = '';
+    this.resultadosColaboradores = [];
+    this.mostrarResultados = false;
+  }
+
   async realizarSolicitud(): Promise<void> {
 
     if (!this.tipoSolicitudSeleccionado) {
@@ -1173,7 +1258,7 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
       const data = {
         ...request.valores,
         ID_TIPO_SOLICITUD: this.tipoSolicitudSeleccionado.id,
-        ID_COLABORADOR: Number(param.id_Colaborador),
+        ID_COLABORADOR: this.colaboradorSeleccionado.id ?? Number(param.id_Colaborador),
         id: this.solicitud.id
       };
       this.service.putActualizarSolicitud(data).subscribe({
@@ -1229,15 +1314,20 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
       {
         text: 'Rechazar',
         handler: async (data) => {
-          await this.aprobar(data.observacion,false);
-          this.UserInteractionService.presentToast('Solicitud rechazada',TypeThemeColor.SUCCESS)
+          if(data.observacion){
+            await this.aprobar(data.observacion,false);
+            this.UserInteractionService.presentToast('Solicitud rechazada',TypeThemeColor.SUCCESS)
+          }
+          
         }
       },
       {
         text: 'Aprobar',
         handler: async (data) => {
-          await this.aprobar(data.observacion,true);
-          this.UserInteractionService.presentToast('Solicitud aprobada',TypeThemeColor.SUCCESS);
+          if(data.observacion){
+            await this.aprobar(data.observacion,true);
+            this.UserInteractionService.presentToast('Solicitud aprobada',TypeThemeColor.SUCCESS);
+          }
         }
       }
     ]
@@ -1298,10 +1388,6 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     console.log('URL antes:', this.router.url);
     console.log("form: ",this.formSolicitud.value)
 
-  this.router.navigateByUrl('/layout/panel-solicitudes')
-    .then(resultado => {
-      console.log('Navegación:', resultado);
-      console.log('URL después:', this.router.url);
-    });
+  this.router.navigate(['/layout/panel-solicitudes']);
   }
 }

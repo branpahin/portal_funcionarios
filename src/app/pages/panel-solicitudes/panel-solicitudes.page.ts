@@ -45,65 +45,12 @@ export class PanelSolicitudesPage implements OnInit {
   async ngOnInit(): Promise<void> {
     // this.cargarSolicitudes();
     this.rol = await this.secureStorage.get<number>('rolSeleccionado');
-    this.obtenerMisSolicitudes();
-  }
-
-  cargarSolicitudes(): void {
-
-    this.misSolicitudes = [
-      {
-        id: 1,
-        nombre: 'Solicitud de vacaciones',
-        descripcion: 'Solicitud de vacaciones correspondiente al periodo 2026.',
-        estado: 'Pendiente',
-        fecha: '2026-09-24',
-        destinatario: 'Recursos Humanos'
-      },
-      {
-        id: 2,
-        nombre: 'Solicitud de equipo',
-        descripcion: 'Solicitud de equipo de cómputo para labores administrativas.',
-        estado: 'Aprobada',
-        fecha: '2026-09-22',
-        destinatario: 'Tecnología'
-      },
-      {
-        id: 3,
-        nombre: 'Solicitud de acceso',
-        descripcion: 'Solicitud de acceso a sistemas internos.',
-        estado: 'En proceso',
-        fecha: '2026-09-20',
-        destinatario: 'Tecnología'
-      }
-    ];
-
-
-    if (this.esAdministrador) {
-
-      this.solicitudesRecibidas = [
-        {
-          id: 101,
-          nombre: 'Solicitud de acceso',
-          descripcion: 'Solicitud de acceso al sistema administrativo.',
-          estado: 'Pendiente',
-          fecha: '2026-09-24',
-          solicitante: 'Juan Pérez'
-        },
-        {
-          id: 102,
-          nombre: 'Solicitud de vacaciones',
-          descripcion: 'Solicitud de vacaciones para el próximo periodo.',
-          estado: 'En proceso',
-          fecha: '2026-09-23',
-          solicitante: 'María Rodríguez'
-        }
-      ];
-
-    } else {
-
-      this.solicitudesRecibidas = [];
-
+    if(this.rol!=236){
+      this.esAdministrador = true
+    }else{
+      this.esAdministrador = false
     }
+    this.obtenerMisSolicitudes();
   }
 
   get totalPagesMisSolicitudes(): number {
@@ -209,7 +156,7 @@ export class PanelSolicitudesPage implements OnInit {
     const { data } = await modal.onWillDismiss();
 
     if (data?.creado) {
-      this.cargarSolicitudes();
+      this.obtenerMisSolicitudes();
     }
   }
 

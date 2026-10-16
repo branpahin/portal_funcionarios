@@ -39,7 +39,7 @@ const routes: Routes = [
         loadComponent: () =>
           import('../pages/panel-solicitudes/panel-solicitudes.page')
             .then(m => m.PanelSolicitudesPage),
-        canActivate: [authGuard]
+        // canActivate: [authGuard]
       },
 
       {
