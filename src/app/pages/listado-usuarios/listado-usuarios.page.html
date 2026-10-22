@@ -118,8 +118,9 @@
         <ion-col>{{datos.estadO_PROCESO_DESCRIPCIONES}}</ion-col>
         <ion-col> 
           <ion-button *ngIf="permisosService.puedeEditar()" class="btn-accion" color="medium" (click)="abrirModalEditar(datos, true)"><ion-icon name="pencil"></ion-icon></ion-button>
-          <ion-button *ngIf="permisosService.puedeEditar()" class="btn-accion" (click)="abrirModalClave(datos)" color="primary"><ion-icon name="key"></ion-icon></ion-button>
-          <ion-button *ngIf="permisosService.puedeBorrar()" class="btn-accion" color="danger" ><ion-icon name="close"></ion-icon></ion-button>
+          <!-- <ion-button *ngIf="permisosService.puedeEditar()" class="btn-accion" (click)="abrirModalClave(datos)" color="primary"><ion-icon name="key"></ion-icon></ion-button> -->
+          <ion-button *ngIf="permisosService.puedeBorrar()" class="btn-accion" color="danger" (click)="inactivar(datos)"><ion-icon name="close"></ion-icon></ion-button>
+          <ion-button *ngIf="permisosService.puedeBorrar()" class="btn-accion" color="danger" (click)="activar(datos)"><ion-icon name="close"></ion-icon></ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -144,8 +145,9 @@
         <ion-item-options side="end" >
           <div class="botones_opcion">
             <ion-button *ngIf="permisosService.puedeEditar()" class="btn-accion" color="medium" (click)="abrirModalEditar(datos,true)"><ion-icon name="pencil"></ion-icon></ion-button>
-            <ion-button *ngIf="permisosService.puedeEditar()" class="btn-accion" (click)="abrirModalClave(datos)" color="primary"><ion-icon name="key"></ion-icon></ion-button>
-            <ion-button *ngIf="permisosService.puedeBorrar()" class="btn-accion" color="danger"><ion-icon name="close"></ion-icon></ion-button>
+            <!-- <ion-button *ngIf="permisosService.puedeEditar()" class="btn-accion" (click)="abrirModalClave(datos)" color="primary"><ion-icon name="key"></ion-icon></ion-button> -->
+             <ion-button *ngIf="permisosService.puedeBorrar()" class="btn-accion" color="danger" (click)="inactivar(datos)"><ion-icon name="close"></ion-icon></ion-button>
+            <ion-button *ngIf="permisosService.puedeBorrar()" class="btn-accion" color="danger" (click)="activar(datos)"><ion-icon name="close"></ion-icon></ion-button>
           </div>
         </ion-item-options>
       </ion-item-sliding>

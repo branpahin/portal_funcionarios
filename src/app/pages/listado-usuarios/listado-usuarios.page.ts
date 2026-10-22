@@ -309,4 +309,60 @@ export class ListadoUsuariosPage implements OnInit {
     }
   }
 
+  inactivar(usuario:any){
+    const data = {
+      iD_EMPRESA: usuario.empresa,
+      identificacion: usuario.identificacion,
+      ciudad: usuario.ciudad,
+      rol: usuario.rol,
+      estado: "0",
+      estadO_PROCESO: usuario.estadO_PROCESO
+    }
+
+    this.service.putActualizarUsuario(data).subscribe({
+      next: async (resp) => {
+        try {
+          this.UserInteractionService.dismissLoading()
+          this.UserInteractionService.presentToast('Actualización realizada',TypeThemeColor.SUCCESS)
+        } catch (error) {
+          console.error("Error al procesar respuesta:", error);
+          this.UserInteractionService.dismissLoading()
+        }
+      },
+      error: (err) => {
+        console.error("Error al enviar formulario:", err);
+        this.UserInteractionService.dismissLoading()
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+      }
+    });
+  }
+
+  activar(usuario:any){
+    const data = {
+      iD_EMPRESA: usuario.empresa,
+      identificacion: usuario.identificacion,
+      ciudad: usuario.ciudad,
+      rol: usuario.rol,
+      estado: "1",
+      estadO_PROCESO: usuario.estadO_PROCESO
+    }
+
+    this.service.putActualizarUsuario(data).subscribe({
+      next: async (resp) => {
+        try {
+          this.UserInteractionService.dismissLoading()
+          this.UserInteractionService.presentToast('Actualización realizada',TypeThemeColor.SUCCESS)
+        } catch (error) {
+          console.error("Error al procesar respuesta:", error);
+          this.UserInteractionService.dismissLoading()
+        }
+      },
+      error: (err) => {
+        console.error("Error al enviar formulario:", err);
+        this.UserInteractionService.dismissLoading()
+        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+      }
+    });
+  }
+
 }

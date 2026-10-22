@@ -133,8 +133,12 @@ export class PortalService {
     return this.httpService.GetParamsCore(this.GetRolesUsuario);
   }
 
-  getGetAplicativos(): Observable<any>{
-    return this.httpService.GetCore(this.GetAplicativos);
+  getGetAplicativos(id?:number): Observable<any>{
+    if (id){
+      return this.httpService.GetParamsCore(this.GetAplicativos+"?id_aplicativo="+id);
+    }else{
+      return this.httpService.GetCore(this.GetAplicativos);
+    }
   }
 
   getGenerarReporte(pag:string): Observable<any>{

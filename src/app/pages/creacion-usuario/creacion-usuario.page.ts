@@ -83,7 +83,7 @@ export class CreacionUsuarioPage implements OnInit {
       IDENTIFICACION: [null, Validators.required], // NUMBER
       CIUDAD: ['', Validators.required],
       ROL: ['', [Validators.required, Validators.maxLength(30)]],
-      CLAVE: ['', [Validators.required]],
+      CLAVE: ['', this.editar ? [] : [Validators.required]],
       ESTADO_PROCESO: ['', [Validators.required, Validators.maxLength(30)]], // VARCHAR2(30 BYTE)
     });
   }
@@ -153,9 +153,9 @@ export class CreacionUsuarioPage implements OnInit {
       next:async(data)=>{
         try {
           this.clave = data.data.clave
-          this.empleadoForm.patchValue({
-            CLAVE:this.clave
-          })
+          // this.empleadoForm.patchValue({
+          //   ESTADO:data.data.estado
+          // })
 
         } catch (error) {
           console.error("Error en listarUsuarios:", error);

@@ -8,7 +8,13 @@ import { provideHttpClient } from '@angular/common/http';
 import { IonicModule } from '@ionic/angular';
 import { importProvidersFrom } from '@angular/core';
 import { addIcons } from 'ionicons';
-import { close, card, cog, desktopOutline, documentText, eye, home, lockClosed, logOut, moon, person, phonePortraitOutline, receiptOutline, search, sunny, helpCircle, call, mail, closeCircleOutline, checkmarkCircleOutline, refreshOutline, hourglassOutline, checkmarkOutline, pencil, add, swapVertical, swapVerticalOutline, funnelOutline, chevronUpOutline, chevronDownOutline, checkmarkCircle, caretDownOutline, key, checkmarkDoneCircleOutline, downloadOutline, personAdd, idCardOutline, personCircleOutline, documents, createOutline, documentOutline, documentTextOutline, arrowForwardOutline, mailUnreadOutline, businessOutline, returnDownForwardOutline, calendarOutline, chevronForwardCircle, trash, text, informationCircleOutline, closeOutline, codeOutline, imageOutline, trainOutline, mailOpenOutline, eyeOutline, chatbubbleOutline, personOutline, chatboxEllipsesOutline } from 'ionicons/icons';
+import { close, card, cog, desktopOutline, documentText, eye, home, lockClosed, logOut, moon, person, phonePortraitOutline, 
+  receiptOutline, search, sunny, helpCircle, call, mail, closeCircleOutline, checkmarkCircleOutline, refreshOutline, hourglassOutline, 
+  checkmarkOutline, pencil, add, swapVertical, swapVerticalOutline, funnelOutline, chevronUpOutline, chevronDownOutline, checkmarkCircle, 
+  caretDownOutline, key, checkmarkDoneCircleOutline, downloadOutline, personAdd, idCardOutline, personCircleOutline, documents, createOutline, 
+  documentOutline, documentTextOutline, arrowForwardOutline, mailUnreadOutline, businessOutline, returnDownForwardOutline, calendarOutline, 
+  chevronForwardCircle, trash, text, informationCircleOutline, closeOutline, codeOutline, imageOutline, trainOutline, mailOpenOutline, eyeOutline, 
+  chatbubbleOutline, personOutline, chatboxEllipsesOutline, gitBranchOutline } from 'ionicons/icons';
 
 addIcons({
   'phone-portrait-outline': phonePortraitOutline,
@@ -67,7 +73,8 @@ addIcons({
   'eye-outline':eyeOutline,
   'chatbubble-outline':chatbubbleOutline,
   'person-outline':personOutline,
-  'chatbox-ellipses-outline': chatboxEllipsesOutline
+  'chatbox-ellipses-outline': chatboxEllipsesOutline,
+  'git-branch-outline': gitBranchOutline
 
 });
 

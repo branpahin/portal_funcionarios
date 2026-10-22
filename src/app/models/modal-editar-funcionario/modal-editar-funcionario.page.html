@@ -631,7 +631,7 @@
         <ion-col [attr.size]="getListaSeleccion('APLICACIONES', apis).length > 0 ? '12' : '12'"
             [attr.size-md]="getListaSeleccion('APLICACIONES', apis).length > 0 ? '6' : '3'" 
             *ngIf="getCampoConfig('APLICACIONES').visible && !editarCargo">
-          <ion-item [disabled]="!editar || !getCampoConfig('APLICACIONES').editable" (mousedown)="abrirModal('APLICACIONES', apis, 'aplicacion', true)">
+          <ion-item [disabled]="!editar || !getCampoConfig('APLICACIONES').editable" (mousedown)="abrirModal('APLICACIONES', apis, 'aplicacion', true,true)">
             <ion-input label="Aplicaciones" labelPlacement="floating" readonly
               [value]="getListaSeleccion('APLICACIONES', apis).length === 0 ? 'Seleccione...' : ''">
             </ion-input>
@@ -656,6 +656,82 @@
       </ion-row>
     </ion-grid>
   </form>
+
+  <ion-accordion-group *ngIf="observacionesSolicitud && observacionesSolicitud.length">
+    <ion-accordion value="observaciones">
+
+      <!-- Encabezado del acordeón -->
+      <ion-item slot="header" color="light">
+        <ion-icon
+          name="chatbox-ellipses-outline"
+          slot="start">
+        </ion-icon>
+
+        <ion-label>
+          <h2>Historial de observaciones</h2>
+          <p>Consulta las observaciones de la solicitud</p>
+        </ion-label>
+
+        <ion-badge
+          slot="end"
+          color="medium"
+          *ngIf="observacionesSolicitud?.length">
+          {{ observacionesSolicitud.length }}
+        </ion-badge>
+      </ion-item>
+
+      <!-- Contenido del acordeón -->
+      <div slot="content" class="ion-padding">
+
+        <div
+          class="observaciones-container"
+          *ngIf="observacionesSolicitud && observacionesSolicitud.length > 0; else sinObservaciones">
+
+          <ion-card
+            class="observacion-card"
+            *ngFor="let item of observacionesSolicitud">
+
+            <ion-card-content>
+
+              <div class="observacion-superior">
+                <ion-badge>
+                  {{ item.estado }}
+                </ion-badge>
+
+                <span class="observacion-fecha">
+                  <ion-icon name="calendar-outline"></ion-icon>
+                  {{ (item.fecha || item.fechA_REGISTRO) | date:'dd/MM/yyyy HH:mm' }}
+                </span>
+              </div>
+
+              <div class="observacion-texto">
+                <ion-icon name="chatbubble-outline"></ion-icon>
+                <p>{{ item.observacion }}</p>
+              </div>
+
+              <div class="observacion-pie">
+                <ion-icon name="person-outline"></ion-icon>
+                <span>Usuario: {{ item.nombre }}</span>
+              </div>
+
+            </ion-card-content>
+
+          </ion-card>
+
+        </div>
+
+        <!-- Mensaje cuando no hay observaciones -->
+        <ng-template #sinObservaciones>
+          <div class="sin-observaciones">
+            <ion-icon name="chatbox-outline"></ion-icon>
+            <p>No hay observaciones registradas para esta solicitud.</p>
+          </div>
+        </ng-template>
+
+      </div>
+
+    </ion-accordion>
+  </ion-accordion-group>
 </ion-content>
 
 <ion-footer>

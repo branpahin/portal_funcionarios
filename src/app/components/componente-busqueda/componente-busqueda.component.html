@@ -16,24 +16,80 @@
   <main>
 
    <ion-list>
+      <ng-container *ngFor="let item of filteredOptions">
+        <ion-item
+          button
+          (click)="toggleSelect(item)"
+          [color]="isSelected(item) ? 'primary' : ''">
+
+          <ion-label>
+            {{ item[displayProperty] }}
+          </ion-label>
+
+          <ion-icon
+            *ngIf="isSelected(item)"
+            slot="end"
+            name="checkmark-circle"
+            color="success">
+          </ion-icon>
+
+          <ion-icon
+            *ngIf="multipleLista && apisExpandidas[item.id]"
+            slot="end"
+            name="chevron-down-outline">
+          </ion-icon>
+
+        </ion-item>
+        <ng-container
+          *ngIf="multipleLista && apisExpandidas[item.id] && subApisPorId[item.id] && subApisPorId[item.id].length > 0">
+          <ion-item *ngIf="cargandoSubApis[item.id]">
+            <ion-spinner slot="start" name="crescent"></ion-spinner>
+            <ion-label>Consultando subAPI...</ion-label>
+          </ion-item>
+
           <ion-item
+            *ngFor="let subApi of (subApisPorId[item.id] || [])"
             button
-            *ngFor="let item of filteredOptions"
-            (click)="toggleSelect(item)"
-            [color]="isSelected(item) ? 'primary' : ''">
-            <ion-label>{{ item[displayProperty] }}</ion-label>
+            (click)="toggleSubApi(subApi)"
+            [color]="isSelected(subApi) ? 'primary' : ''">
+
             <ion-icon
-              *ngIf="isSelected(item)"
+              name="git-branch-outline"
+              slot="start"
+              color="medium">
+            </ion-icon>
+
+            <ion-label>
+              {{ subApi[displayProperty] || subApi.nombre || subApi.descripcion }}
+            </ion-label>
+
+            <ion-icon
+              *ngIf="isSelected(subApi)"
               slot="end"
               name="checkmark-circle"
               color="success">
             </ion-icon>
+
           </ion-item>
-        </ion-list>
+
+          <ion-item
+            *ngIf="!cargandoSubApis[item.id]
+              && subApisPorId[item.id]?.length === 0">
+
+            <ion-label color="medium">
+              No se encontraron subAPI.
+            </ion-label>
+
+          </ion-item>
+
+        </ng-container>
+
+      </ng-container>
+    </ion-list>
   </main>
 </ion-content>
 
       
-      <ion-button expand="block" (click)="confirmarSeleccion()" *ngIf="multiple">
-        Confirmar selección
-      </ion-button>
+<ion-button expand="block" (click)="confirmarSeleccion()" *ngIf="multiple">
+  Confirmar selección
+</ion-button>

@@ -68,7 +68,10 @@ export class ModalEditarFuncionarioPage implements OnInit {
   orientaciones_Sexuales: any[] = [];
   discapacidades: any[] = [];
   apis: any[] = [];
+  apis2: any[] = [];
+  seleccionados :  any[] = [];
   isModalOpen = false;
+  observacionesSolicitud:any;
   
   constructor(private cdRef: ChangeDetectorRef, private fb: FormBuilder, private moduleService:ModuleService, 
     private service:PortalService, private modalCtrl: ModalController, private UserInteractionService: UserInteractionService,
@@ -202,8 +205,12 @@ export class ModalEditarFuncionarioPage implements OnInit {
     this.cdRef.detectChanges();
   }
 
-  async abrirModal(label:string, options:any, displayProperty:string, multiple:boolean) {
-    const datos = await this.getDataSeleccion(label, options);
+  async abrirModal(label:string, options:any, displayProperty:string, multiple:boolean, multipleLista?:boolean) {
+    let datos = await this.getDataSeleccion(label, options);
+    if(multipleLista){
+      datos = this.seleccionados
+    }
+    console.log("multipleLista: ",multipleLista)
     const modal = await this.modalCtrl.create({
       component: ComponenteBusquedaComponent,
       componentProps: {
@@ -212,6 +219,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         selec:datos,
         displayProperty: displayProperty,
         multiple: multiple,
+        multipleLista: multipleLista
       },
     });
 
@@ -219,9 +227,11 @@ export class ModalEditarFuncionarioPage implements OnInit {
 
     const { data } = await modal.onWillDismiss();
     if (data) {
+      console.log("data: ",data)
       if (multiple) {
         const idsSeleccionados = data.map((item: any) => item.id);
         this.empleadoForm.get(label)?.setValue(idsSeleccionados);
+        this.seleccionados = data
       } else {
          if (label === 'RH') {
           this.empleadoForm.get(label)?.setValue(data.descripcion);
@@ -365,12 +375,16 @@ export class ModalEditarFuncionarioPage implements OnInit {
     }
   }
 
-  async aplicativos(){
+  async aplicativos(id?:number){
     this.UserInteractionService.showLoading('Consultando aplicativos...');
-    this.service.getGetAplicativos().subscribe({
+    this.service.getGetAplicativos(id).subscribe({
       next:async(resp)=>{
         try{
-          this.apis=resp.data.datos.aplicativos
+          if(id){
+            this.apis2=resp.data.datos.aplicativos
+          }else{
+            this.apis=resp.data.datos.aplicativos
+          }
           this.UserInteractionService.dismissLoading();
         }catch(error){
           this.UserInteractionService.dismissLoading();
@@ -399,6 +413,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
               datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
               datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
               datos.aplicaciones = this.convertirStringArray(datos.aplicaciones);
+              this.observacionesSolicitud = datos.observaciones
               if(datos.ciudaD_TRABAJO && datos.iD_GERENCIA && datos.iD_AREA){
                 await this.CCO(datos.ciudaD_TRABAJO,datos.iD_GERENCIA, datos.iD_AREA);
               }
@@ -472,6 +487,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
               datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
               datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
               datos.aplicaciones = this.convertirStringArray(datos.aplicaciones);
+              this.observacionesSolicitud = datos.observaciones
               if(datos.ciudaD_TRABAJO && datos.iD_GERENCIA && datos.iD_AREA){
                 await this.CCO(datos.ciudaD_TRABAJO,datos.iD_GERENCIA, datos.iD_AREA);
               }
@@ -548,6 +564,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
               datos.iD_PROFESION = this.convertirStringArray(datos.iD_PROFESION);
               datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
               datos.aplicaciones = this.convertirStringArray(datos.aplicaciones);
+              this.observacionesSolicitud = datos.observaciones
               if(datos.ciudaD_TRABAJO && datos.iD_GERENCIA && datos.iD_AREA){
                 await this.CCO(datos.ciudaD_TRABAJO,datos.iD_GERENCIA, datos.iD_AREA);
               }
