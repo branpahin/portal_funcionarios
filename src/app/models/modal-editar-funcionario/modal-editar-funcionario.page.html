@@ -160,7 +160,7 @@
         <!-- Columna de imagen -->
         <ion-col size="12" size-md="4" class="ion-text-center">
           <div class="imagen-container">
-            <img [src]="imagenPreview || 'assets/imagen-placeholder.png'" class="imagen-preview"/>
+            <img [src]="imagenPreview || 'assets/img/imagen-placeholder.png'" class="imagen-preview"/>
           </div>
       
           <div class="botones-imagen" *ngIf="editar && getCampoConfig('FOTO').visible">
@@ -513,6 +513,14 @@
           </ion-item>
           <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_CARGO')"></app-error-mensaje>
         </ion-col>
+
+        <ion-col size="12" size-md="4" *ngIf="getCampoConfig('ID_MODALIDAD_TRABAJO').visible">
+          <ion-item [disabled]="!editar || !getCampoConfig('ID_MODALIDAD_TRABAJO').editable" (mousedown)="abrirModal('ID_MODALIDAD_TRABAJO', modalidad_Trabajo, 'descripcion', false)">
+            <ion-input label="Modalidad de trabajo" labelPlacement="floating" [value]="getGeneroDescripcion('ID_MODALIDAD_TRABAJO', modalidad_Trabajo) || 'Seleccione...'" readonly></ion-input>
+            <ion-icon name="caret-down-outline" slot="end"></ion-icon>
+          </ion-item>
+          <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('ID_MODALIDAD_TRABAJO')"></app-error-mensaje>
+        </ion-col>
       </ion-row>
 
       <ion-row *ngIf="!perfil">
@@ -630,7 +638,7 @@
 
         <ion-col [attr.size]="getListaSeleccion('APLICACIONES', apis).length > 0 ? '12' : '12'"
             [attr.size-md]="getListaSeleccion('APLICACIONES', apis).length > 0 ? '6' : '3'" 
-            *ngIf="getCampoConfig('APLICACIONES').visible && !editarCargo">
+            *ngIf="getCampoConfig('APLICACIONES').visible && !editarCargo && !mostrarChecklistApps">
           <ion-item [disabled]="!editar || !getCampoConfig('APLICACIONES').editable" (mousedown)="abrirModal('APLICACIONES', apis, 'aplicacion', true,true)">
             <ion-input label="Aplicaciones" labelPlacement="floating" readonly
               [value]="getListaSeleccion('APLICACIONES', apis).length === 0 ? 'Seleccione...' : ''">
@@ -644,6 +652,27 @@
             <ion-icon name="caret-down-outline" slot="end"></ion-icon>
           </ion-item>
           <app-error-mensaje *ngIf='editar'[control]="empleadoForm.get('APLICACIONES')"></app-error-mensaje>
+        </ion-col>
+
+        <ion-col size="12" size-md="6"
+          *ngIf="getCampoConfig('APLICACIONES').visible && !editarCargo && mostrarChecklistApps">
+          <ion-list lines="full">
+            <ion-list-header>
+              <ion-label>Aplicaciones</ion-label>
+            </ion-list-header>
+
+            <ion-item *ngFor="let app of aplicacionesChecklist; trackBy: trackById">
+              <ion-checkbox
+                labelPlacement="end"
+                justify="start"
+                [checked]="app.permisO_OTORGADO === 1"
+                [disabled]="!editar || !getCampoConfig('APLICACIONES').editable"
+                (ionChange)="onTogglePermiso(app, $event)">
+                {{ app.aplicacion }}
+              </ion-checkbox>
+            </ion-item>
+          </ion-list>
+          <app-error-mensaje *ngIf="editar" [control]="empleadoForm.get('APLICACIONES')"></app-error-mensaje>
         </ion-col>
 
         <!-- <ion-col size="12" size-md="3">

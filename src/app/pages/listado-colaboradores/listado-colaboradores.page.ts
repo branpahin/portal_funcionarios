@@ -321,6 +321,7 @@ export class ListadoColaboradoresPage implements OnInit {
         // ID_AREA : [null, Validators.required],
         // ID_RUBRO : [null, Validators.required],
         ID_CARGO : [null, Validators.required],
+        // ID_MODALIDAD_TRABAJO: [null, Validators.required],
         // ID_TIPO_NOMINA : [null, Validators.required],
         // ID_ROL : [null, Validators.required],
         // ID_TIPO_DOTACION : [null, Validators.required],
@@ -368,6 +369,7 @@ export class ListadoColaboradoresPage implements OnInit {
         ID_AREA : [null, Validators.required],
         ID_RUBRO : [null, Validators.required],
         ID_CARGO : [null, Validators.required],
+        ID_MODALIDAD_TRABAJO: [null, Validators.required],
         ID_TIPO_NOMINA : [null, Validators.required],
         ID_ROL : [null, Validators.required],
         ID_TIPO_DOTACION : [null, Validators.required],
@@ -548,7 +550,7 @@ export class ListadoColaboradoresPage implements OnInit {
         error: (err) => {
           console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
       });
     }else{
@@ -567,7 +569,7 @@ export class ListadoColaboradoresPage implements OnInit {
         error: (err) => {
           console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
       });
     }
@@ -594,9 +596,9 @@ export class ListadoColaboradoresPage implements OnInit {
 
     // Primer alert: observación
     let titulo = '¡Se quiere activar el usuario!'
-    if(data.estado==8){
+    if(data.estado==9){
       titulo='Entrega activos'
-    } else if(data.estado==9){
+    } else if(data.estado==10){
       titulo='Entrega tarjeta de ingreso'
     }
     this.UserInteractionService.presentAlertActions(
@@ -680,7 +682,7 @@ export class ListadoColaboradoresPage implements OnInit {
     ];
 
     // Segundo alert: selección de estado
-    if(data.estado==10){
+    if(data.estado==11){
       this.UserInteractionService.presentAlertActions(
         'Seleccione el estado',
         actionEstados,
@@ -688,13 +690,13 @@ export class ListadoColaboradoresPage implements OnInit {
         'Estados',
         alertInputs
       );
-    } else if(data.estado==8){
+    } else if(data.estado==9){
       const datos = {
         IDENTIFICACION: Number(data.identificacion),
         RESPONSABLE: Number(this.param.identificacion),
         ID_USUARIO: data.id,
         OBSERVACION: observacion,
-        ESTADO: 9
+        ESTADO: 10
       };
       await this.activacionConfirmada(datos);
     }
@@ -719,7 +721,7 @@ export class ListadoColaboradoresPage implements OnInit {
         error: (err) => {
           console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
       });
     }else{
@@ -738,7 +740,7 @@ export class ListadoColaboradoresPage implements OnInit {
         error: (err) => {
           console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
       });
     }
@@ -812,7 +814,7 @@ export class ListadoColaboradoresPage implements OnInit {
           error: (err) => {
             console.error("Error al enviar formulario:", err);
             this.UserInteractionService.dismissLoading();
-            this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+            this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
           }
         });
     }

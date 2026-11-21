@@ -14,6 +14,7 @@ import { ModalEditarFuncionarioPage } from '../models/modal-editar-funcionario/m
 import { ModalController } from '@ionic/angular';
 import { MenuStateService } from 'src/services/menu-state.service';
 import { SecureStorageService } from 'src/services/secure-storage.service';
+import { FooterComponent } from '../components/footer/footer.component';
 
 interface MenuItem {
   name: string
@@ -28,7 +29,7 @@ interface MenuItem {
   templateUrl: './layout.page.html',
   styleUrls: ['./layout.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonSelect, IonSelectOption, IonTitle, IonToolbar, CommonModule, FormsModule, IonMenu,IonMenuButton,RouterModule,IonIcon, ReactiveFormsModule],
+  imports: [IonContent, IonHeader, IonSelect, IonSelectOption, IonTitle, IonToolbar, CommonModule, FormsModule, IonMenu,IonMenuButton,RouterModule,IonIcon, ReactiveFormsModule, FooterComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
   
 })
@@ -44,6 +45,7 @@ export class LayoutPage implements OnInit {
   version = environment.version;
   filtrosAbiertos = false;
   isHome = false;
+  isPlanBeneficios = false;
   isMobile = false;
   constructor(private service:PortalService, 
     private moduleService:ModuleService,
@@ -57,6 +59,7 @@ export class LayoutPage implements OnInit {
   ) {addIcons({ home, people, person, chevronDown, chevronUp, chevronBack, options, filter}); this.params()
     this.router.events.subscribe(() => {
         this.isHome = this.router.url === '/layout/home';
+        this.isPlanBeneficios= this.router.url === '/layout/portal-beneficios';
       });}
 
   async ngOnInit() {
@@ -99,7 +102,7 @@ export class LayoutPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
       })
     }else{
@@ -116,7 +119,7 @@ export class LayoutPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
       })
     }
@@ -171,7 +174,7 @@ export class LayoutPage implements OnInit {
       },
       error: (err) => {
         console.error("Error al obtener usuarios:", err);
-        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }
@@ -206,7 +209,7 @@ export class LayoutPage implements OnInit {
       },
       error: (err) => {
         console.error("Error al obtener usuarios:", err);
-        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }

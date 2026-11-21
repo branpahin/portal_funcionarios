@@ -4,7 +4,7 @@ import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalo
 import "@angular/compiler";
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
-import { provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { IonicModule } from '@ionic/angular';
 import { importProvidersFrom } from '@angular/core';
 import { addIcons } from 'ionicons';
@@ -14,7 +14,34 @@ import { close, card, cog, desktopOutline, documentText, eye, home, lockClosed, 
   caretDownOutline, key, checkmarkDoneCircleOutline, downloadOutline, personAdd, idCardOutline, personCircleOutline, documents, createOutline, 
   documentOutline, documentTextOutline, arrowForwardOutline, mailUnreadOutline, businessOutline, returnDownForwardOutline, calendarOutline, 
   chevronForwardCircle, trash, text, informationCircleOutline, closeOutline, codeOutline, imageOutline, trainOutline, mailOpenOutline, eyeOutline, 
-  chatbubbleOutline, personOutline, chatboxEllipsesOutline, gitBranchOutline } from 'ionicons/icons';
+  chatbubbleOutline, personOutline, chatboxEllipsesOutline, gitBranchOutline, 
+  chevronBackOutline,
+  bagHandleOutline,
+  airplaneOutline,
+  heartOutline,
+  schoolOutline,
+  logoWhatsapp,
+  caretBack,
+  caretForward,
+  sparklesOutline,
+  logoFacebook,
+  logoInstagram,
+  logoYoutube,
+  mailOutline,
+  searchOutline,
+  buildOutline,
+  bulbOutline,
+  bodyOutline,
+  cashOutline,
+  briefcaseOutline,
+  compassOutline,
+  ellipse,
+  cloudUploadOutline,
+  attachOutline,
+  closeCircle,
+  textOutline} from 'ionicons/icons';
+import { EncryptionInterceptor } from './app/interceptors/encryption.interceptor';
+import { ClientIdInterceptor } from './app/interceptors/client-id.iterceptor';
 
 addIcons({
   'phone-portrait-outline': phonePortraitOutline,
@@ -74,17 +101,44 @@ addIcons({
   'chatbubble-outline':chatbubbleOutline,
   'person-outline':personOutline,
   'chatbox-ellipses-outline': chatboxEllipsesOutline,
-  'git-branch-outline': gitBranchOutline
-
+  'ellipse':ellipse,
+  'git-branch-outline': gitBranchOutline,
+  'chevron-back-outline': chevronBackOutline,
+  'bag-handle-outline': bagHandleOutline,
+  'airplane-outline': airplaneOutline,
+  'heart-outline': heartOutline,
+  'school-outline': schoolOutline,
+  'logo-whatsapp':logoWhatsapp,
+  'caret-back': caretBack,
+  'caret-forward':caretForward,
+  'sparkles-outline':sparklesOutline,
+  'logo-facebook':logoFacebook,
+  'logo-instagram':logoInstagram,
+  'logo-youtube':logoYoutube,
+  'mail-outline':mailOutline,
+  'search-outline':searchOutline,
+  'bulb-outline':bulbOutline,
+  'body-outline':bodyOutline,
+  'cash-outline':cashOutline,
+  'briefcase-outline':briefcaseOutline,
+  'compass-outline':compassOutline,
+  'cloud-upload-outline':cloudUploadOutline,
+  'attach-outline':attachOutline,
+  'document-outline':documentOutline,
+  'close-circle':closeCircle,
+  'download-outline':downloadOutline,
+  'text-outline':textOutline
 });
 
 
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: HTTP_INTERCEPTORS, useClass: EncryptionInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ClientIdInterceptor, multi: true},
     provideIonicAngular(),
     importProvidersFrom(IonicModule),
     provideRouter(routes, withPreloading(PreloadAllModules), withHashLocation()),
-    provideHttpClient()
+    provideHttpClient(withInterceptorsFromDi())
   ],
 });

@@ -232,12 +232,12 @@
 <ion-page id="main-content">
   <ion-header color="primary">
     
-    <img *ngIf="isHome && !isMobile"
+    <img *ngIf="(isHome || isPlanBeneficios) && !isMobile"
        src="assets/icon/logoEEP_dynamic.svg"
        alt="Logo"
        class="logo-home" />
     <ion-toolbar color="primary">
-      <img *ngIf="!isHome || isMobile"
+      <img *ngIf="!isHome || isPlanBeneficios || isMobile"
           slot="start"
           [src]="isMobile ? 'assets/img/logo_blanco.png' : 'assets/icon/logoEEP_static.png'"
           alt="Logo" 
@@ -256,9 +256,15 @@
   </ion-header>
 
   <ion-content class="ion-padding">
-    <router-outlet></router-outlet>  <!-- 📌 Aquí se cargan las páginas dinámicamente -->
+    
+    <div class="page-wrapper">
+      <main class="page-body">
+        <div class="ion-padding">
+          <router-outlet></router-outlet>
+        </div>
+      </main>
+      <app-footer></app-footer>
+    </div>
   </ion-content>
 </ion-page>
-
-
 </main>

@@ -1,11 +1,14 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators
 } from '@angular/forms';
 
@@ -24,6 +27,12 @@ interface Empresa {
 interface TipoDato {
   value: string;
   label: string;
+}
+
+interface TipoArchivo {
+  ext: string;
+  label: string;
+  mime: string;
 }
 
 @Component({
@@ -52,6 +61,7 @@ export class ModalCrearSolicitudPage implements OnInit {
   modoEdicion = false;
   mostrarSelectorEdicion = false;
   tipoSolicitudSeleccionado: any = null;
+  campoEditando: string | null = null; // clave "i-j" del campo abierto
 
   tiposDato: TipoDato[] = [
     {
@@ -66,6 +76,17 @@ export class ModalCrearSolicitudPage implements OnInit {
       value: 'ITEM',
       label: 'Casilla'
     }
+  ];
+
+  tiposArchivo: TipoArchivo[] = [
+    { ext: 'pdf',  label: 'PDF',   mime: 'application/pdf' },
+    { ext: 'doc',  label: 'Word (.doc)',  mime: 'application/msword' },
+    { ext: 'docx', label: 'Word (.docx)', mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' },
+    { ext: 'xls',  label: 'Excel (.xls)',  mime: 'application/vnd.ms-excel' },
+    { ext: 'xlsx', label: 'Excel (.xlsx)', mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+    { ext: 'jpg',  label: 'JPG',   mime: 'image/jpeg' },
+    { ext: 'jpeg', label: 'JPEG',  mime: 'image/jpeg' },
+    { ext: 'png',  label: 'PNG',   mime: 'image/png' }
   ];
 
   constructor(
@@ -91,7 +112,8 @@ export class ModalCrearSolicitudPage implements OnInit {
       html: [''],
       coD_USER: [''],
       tipoSolicitudSeleccionado: [null],
-      parrafos: this.fb.array([])
+      parrafos: this.fb.array([]),
+      documentos: this.fb.array([]) 
     });
   }
 
@@ -225,6 +247,126 @@ export class ModalCrearSolicitudPage implements OnInit {
       .get('tipo')
       ?.value;
 
+  }
+
+  claveCampo(i: number, j: number): string {
+    return `${i}-${j}`;
+  }
+
+  toggleCampo(i: number, j: number): void {
+    const clave = this.claveCampo(i, j);
+    this.campoEditando = this.campoEditando === clave ? null : clave;
+  }
+
+  iconoTipo(tipo: string): string {
+    switch (tipo) {
+      case 'NUMBER': return 'calculator-outline';
+      case 'ITEM':   return 'checkbox-outline';
+      default:       return 'text-outline';
+    }
+  }
+
+  setTipoCampo(i: number, j: number, valor: string): void {
+    this.getContenidoParrafo(i).at(j).get('tipO_DATO')?.setValue(valor);
+  }
+
+
+  get documentos(): FormArray {
+    return this.formSolicitud.get('documentos') as FormArray;
+  }
+
+  // Validaciones cruzadas del documento
+  private validarDocumento: ValidatorFn = (g: AbstractControl): ValidationErrors | null => {
+    const min = Number(g.get('cantidadMin')?.value);
+    const max = Number(g.get('cantidadMax')?.value);
+    const obligatorio = !!g.get('obligatorio')?.value;
+    const errores: ValidationErrors = {};
+
+    if (min > max) errores['rango'] = true;
+    if (obligatorio && min < 1) errores['minObligatorio'] = true;
+
+    return Object.keys(errores).length ? errores : null;
+  };
+
+  crearDocumentoGroup(doc?: any): FormGroup {
+    const extensiones: string[] = doc?.extensioneS_PERMITIDAS
+      ? String(doc.extensioneS_PERMITIDAS)
+          .split(/[,;\s]+/)
+          .map(e => e.replace('.', '').toLowerCase())
+          .filter(Boolean)
+      : ['pdf'];
+
+    return this.fb.group({
+      id: [doc?.id ?? 0],
+      nombre: [doc?.nombre ?? '', Validators.required],
+      descripcion: [doc?.descripcion ?? ''],
+      obligatorio: [doc ? Number(doc.obligatorio) === 1 || doc.obligatorio === true : true],
+      extensiones: [extensiones, Validators.required],
+      pesoMaxMb: [doc?.pesO_MAX_MB ?? 5, [Validators.required, Validators.min(1)]],
+      cantidadMin: [doc?.cantidaD_MIN ?? 1, [Validators.required, Validators.min(0)]],
+      cantidadMax: [doc?.cantidaD_MAX ?? 1, [Validators.required, Validators.min(1)]]
+    }, { validators: this.validarDocumento });
+  }
+
+  agregarDocumento(): void {
+    this.documentos.push(this.crearDocumentoGroup());
+  }
+
+  eliminarDocumento(i: number): void {
+    this.documentos.removeAt(i);
+  }
+
+  moverDocumento(i: number, dir: -1 | 1): void {
+    const destino = i + dir;
+    if (destino < 0 || destino >= this.documentos.length) return;
+
+    const ctrl = this.documentos.at(i);
+    this.documentos.removeAt(i);
+    this.documentos.insert(destino, ctrl);
+  }
+
+  tieneExtension(i: number, ext: string): boolean {
+    return (this.documentos.at(i).get('extensiones')?.value as string[]).includes(ext);
+  }
+
+  toggleExtension(i: number, ext: string): void {
+    const ctrl = this.documentos.at(i).get('extensiones')!;
+    const actuales: string[] = ctrl.value;
+
+    ctrl.setValue(
+      actuales.includes(ext)
+        ? actuales.filter(e => e !== ext)
+        : [...actuales, ext]
+    );
+    ctrl.markAsTouched();
+  }
+
+  // Convierte el FormArray al formato que espera el back
+  obtenerDocumentosRequest(): any[] {
+    return this.documentos.controls.map((g, index) => {
+      const v = g.getRawValue();
+      const seleccion = this.tiposArchivo.filter(t => v.extensiones.includes(t.ext));
+
+      return {
+        id: String(v.id ?? 0),
+        nombre: String(v.nombre ?? '').trim(),
+        descripcion: String(v.descripcion ?? '').trim(),
+        obligatorio: v.obligatorio ? '1' : '0',
+        extensioneS_PERMITIDAS: seleccion.map(t => t.ext).join(','),
+        tipoS_MIME_PERMITIDOS: [...new Set(seleccion.map(t => t.mime))].join(','),
+        pesO_MAX_MB: String(v.pesoMaxMb),
+        cantidaD_MIN: String(v.cantidadMin),
+        cantidaD_MAX: String(v.cantidadMax),
+        orden: String(index + 1)
+      };
+    });
+  }
+
+  cargarDocumentos(docs: any[]): void {
+    this.documentos.clear();
+    [...docs]
+      .sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0))
+      .forEach(d => this.documentos.push(this.crearDocumentoGroup(d)));
   }
 
   agregarSalto(parrafoIndex: number): void {
@@ -402,7 +544,9 @@ export class ModalCrearSolicitudPage implements OnInit {
 
       coD_USER: valores.coD_USER,
 
-      campos: camposRequest
+      campos: camposRequest,
+
+      documentos: this.obtenerDocumentosRequest()
 
     };
 
@@ -618,6 +762,7 @@ export class ModalCrearSolicitudPage implements OnInit {
       tipo.html,
       tipo.campos ?? []
     );
+    this.cargarDocumentos(tipo.documentos ?? []);
   }
 
   cargarHtmlEnEditor(
@@ -842,7 +987,7 @@ export class ModalCrearSolicitudPage implements OnInit {
     switch ((tipo || '').toUpperCase()) {
 
       case 'NUMBER':
-        return 'NUMVER';
+        return 'NUMBER';
 
       case 'BOOLEAN':
         return 'ITEM';

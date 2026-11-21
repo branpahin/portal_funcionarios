@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -53,21 +53,31 @@ export class HttpService {
 		return this.http.get<any>(APIREST, this.getHttpOptions()).pipe(tap((resp) => {of(resp)}))
 	}
 
-	GetFile(rutaApi: string, alternativeUrl = false): Observable<any> {
+	GetFile(rutaApi: string,params?: HttpParams,alternativeUrl = false): Observable<any> {
+		
 		const APIREST = alternativeUrl
 			? rutaApi
 			: `${this._baseApiUrl}${rutaApi}`;
 
 		return this.http.get(APIREST, {
 			...this.getHttpOptions(),
+			params,
 			observe: 'response',
 			responseType: 'blob'
 		});
 	}
+	GetParamsCore(rutaApi: string, params: HttpParams): Observable<any> {
+		const APIREST = `${this._baseApiUrl}${rutaApi}`;
 
-	GetParamsCore(rutaApi: string): Observable<any> {
-		const APIREST = `${this._baseApiUrl}${rutaApi}`
-		return this.http.get<any>(APIREST, this.getHttpOptions()).pipe(tap((resp) => {of(resp)}))
+		return this.http.get<any>(APIREST, {
+			...this.getHttpOptions(),
+			params
+		})
+		.pipe(
+			tap((resp) => {
+				of(resp);
+			})
+      	);
 	}
 
 	PutJsonCore(body: any, rutaApi: string): Observable<any> {

@@ -54,6 +54,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
   tipoDocumento: any[] = [];
   rh: any[] = [];
   ciudadTrabajo: any[] = [];
+  modalidad_Trabajo: any [] = [];
   arl: any[] = [];
   jefes: any[] = [];
   razas: any[] = [];
@@ -124,6 +125,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
   
   async abrirModal(label:string, options:any, displayProperty:string, multiple:boolean) {
     const datos = await this.getDataSeleccion(label, options);
+    console.log("options: ",options)
     const modal = await this.modalCtrl.create({
       component: ComponenteBusquedaComponent,
       componentProps: {
@@ -180,7 +182,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -200,7 +202,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -219,7 +221,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -428,7 +430,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
                   error: (err) => {
                     console.error("Error al enviar formulario:", err);
                     this.UserInteractionService.dismissLoading();
-                    this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+                    this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
                     this.cerrarModal();
                   }
                 });
@@ -459,7 +461,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
         error: (err) => {
           console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
       });
     }
@@ -532,7 +534,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
                   error: (err) => {
                     console.error("Error al enviar formulario:", err);
                     this.UserInteractionService.dismissLoading();
-                    this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+                    this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
                     this.cerrarModal();
                   }
                 });
@@ -564,7 +566,7 @@ export class ModalCrearFuncionarioPage implements OnInit {
         error: (err) => {
           console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
           this.cerrarModal();
         }
       });
@@ -596,7 +598,8 @@ export class ModalCrearFuncionarioPage implements OnInit {
       'estadoCivil',
       'arl',
       'ciudadTrabajo',
-      'razas'
+      'razas',
+      'modalidad_Trabajo'
     ];
 
     listasSimples.forEach(nombre => this.selec(nombre));
@@ -608,6 +611,8 @@ export class ModalCrearFuncionarioPage implements OnInit {
   }
 
   selec(lista:string, dato?:string){
+    
+      console.log("param: ",this.param)
     if (lista === 'nivelEducativo') {
       this.nivelesEducativos = this.param[lista] || [];
     } else if (lista === 'profesiones') {
@@ -665,8 +670,10 @@ export class ModalCrearFuncionarioPage implements OnInit {
       this.ciudadTrabajo = this.param[lista] || [];
     } else if (lista === 'rubros') {
       this.rubros = this.param[lista] || [];
-    } 
-    
+    } else if (lista === 'modalidad_Trabajo') {
+      lista = 'modalidad_Trabajo'
+      this.modalidad_Trabajo = this.param[lista] || [];
+    }  
   }
 
   triggerFileInput() {

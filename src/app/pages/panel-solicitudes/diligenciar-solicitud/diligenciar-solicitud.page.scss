@@ -401,8 +401,115 @@ ion-header{
   font-size: 12px;
 }
 
+.anexos-card {
+  margin: 16px 0 0;
+  border-radius: 14px;
+}
+
+.anexos-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  > ion-icon {
+    font-size: 26px;
+    color: var(--ion-color-primary);
+  }
+
+  h3 { margin: 0; font-size: 17px; font-weight: 600; }
+  p  { margin: 2px 0 0; font-size: 13px; color: var(--ion-color-medium); }
+}
+
+.anexo-item {
+  margin-bottom: 12px;
+  padding: 14px;
+  border: 1px solid var(--ion-color-light-shade);
+  border-left: 4px solid var(--ion-color-medium-tint);
+  border-radius: 10px;
+  background: var(--ion-color-light);
+
+  &.pendiente { border-left-color: var(--ion-color-warning); }
+  &.completo  { border-left-color: var(--ion-color-success); }
+
+  ion-button { margin: 8px 0 0; }
+}
+
+.anexo-titulo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  strong { font-size: 15px; }
+}
+
+.anexo-contador {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ion-color-medium);
+}
+
+.anexo-info {
+  p { margin: 4px 0; font-size: 13px; color: var(--ion-text-color); }
+  small { font-size: 11px; color: var(--ion-color-medium); }
+}
+
+.anexo-archivos {
+  margin-top: 10px;
+}
+
+.anexo-archivo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  background: var(--ion-background-color);
+  border: 1px solid var(--ion-color-light-shade);
+  font-size: 13px;
+
+  > ion-icon { color: var(--ion-color-primary); font-size: 18px; flex-shrink: 0; }
+
+  .anexo-nombre {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .anexo-tamano { font-size: 11px; color: var(--ion-color-medium); }
+
+  button {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: var(--ion-color-medium);
+    display: flex;
+    ion-icon { font-size: 20px; }
+    &:hover { color: var(--ion-color-danger); }
+  }
+}
+
+.anexo-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--ion-color-danger);
+}
+
+.anexo-archivo.guardado {
+  border-color: rgba(var(--ion-color-success-rgb), 0.4);
+  > ion-icon { color: var(--ion-color-success); }
+}
 
 @media (max-width: 768px) {
+  .anexo-item ion-button { width: 100%; }
 
   .solicitud-header {
     flex-direction: column;

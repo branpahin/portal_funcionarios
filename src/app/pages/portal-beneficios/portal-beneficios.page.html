@@ -1,0 +1,194 @@
+<!-- <ion-content [fullscreen]="true"> -->
+  <main>
+    <div class="portal-beneficios">
+
+    <!-- ================= HERO / SLIDER ================= -->
+    <section class="hero">
+      <div
+        class="hero-viewport"
+        (mouseenter)="detenerCarrusel()"
+        (mouseleave)="iniciarCarrusel()"
+      >
+        <div
+          class="hero-track"
+          [style.transform]="'translateX(-' + (indiceActual * 100) + '%)'"
+        >
+          <div
+            class="hero-slide"
+            *ngFor="let beneficio of beneficios"
+            (click)="verBeneficio(beneficio)"
+          >
+            <img [src]="beneficio.imagen" [alt]="beneficio.titulo" class="hero-image" />
+            <div class="hero-overlay"></div>
+
+            <h1 class="hero-title">
+              <span class="script">{{ beneficio.tituloScript }}</span>
+              <span class="bold">{{ beneficio.titulo }}</span>
+            </h1>
+          </div>
+        </div>
+
+        <!-- Buscador (esquina superior derecha) -->
+        <div class="hero-search">
+          <input type="text" [(ngModel)]="busqueda" (keyup.enter)="buscar()" />
+          <ion-icon name="search-outline" (click)="buscar()"></ion-icon>
+        </div>
+
+        <!-- Ayuda + WhatsApp (esquina inferior derecha) -->
+        <div class="hero-actions">
+          <button class="hero-btn ayuda" aria-label="Ayuda" (click)="abrirAyuda()">?</button>
+          <button class="hero-btn whatsapp" aria-label="WhatsApp" (click)="abrirWhatsapp()">
+            <ion-icon name="logo-whatsapp"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Indicadores -->
+      <div class="hero-dots">
+        <button
+          *ngFor="let beneficio of beneficios; let i = index"
+          class="dot"
+          [class.active]="indiceActual === i"
+          (click)="seleccionarSlide(i)"
+          [attr.aria-label]="'Ir al beneficio ' + (i + 1)"
+        ></button>
+      </div>
+    </section>
+
+    <div class="contenido">
+
+      <!-- ================= PLAN DE BENEFICIOS ================= -->
+      <section class="seccion">
+        <h2 class="titulo-seccion">
+          <span class="script">Plan de</span>
+          <span class="bold">beneficios</span>
+        </h2>
+
+        <div class="scroller">
+          <button class="scroller-arrow" aria-label="Anterior" (click)="desplazar(plan, -1)">
+            <ion-icon name="caret-back"></ion-icon>
+          </button>
+
+          <div class="scroller-track plan-track" #plan>
+            <button
+              class="plan-item"
+              *ngFor="let p of planBeneficios"
+              [style.--color]="p.color"
+              (click)="abrirPlan(p)"
+            >
+              <ion-icon [name]="p.icono"></ion-icon>
+              <span>{{ p.nombre }}</span>
+            </button>
+          </div>
+
+          <button class="scroller-arrow" aria-label="Siguiente" (click)="desplazar(plan, 1)">
+            <ion-icon name="caret-forward"></ion-icon>
+          </button>
+        </div>
+      </section>
+
+      <!-- Línea decorativa naranja -->
+      <svg class="onda" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true">
+        <path
+          d="M0,95 C150,95 220,20 330,40 C430,58 380,115 480,100 C600,82 640,15 760,35 C860,52 900,60 1000,30"
+          fill="none" stroke="#e8730c" stroke-width="5" stroke-linecap="round"
+        />
+      </svg>
+
+      <!-- ================= PROGRAMAS DE FORMACIÓN ================= -->
+      <section class="seccion">
+        <h2 class="titulo-seccion">
+          <span class="script">Programas de</span>
+          <span class="bold">formación</span>
+        </h2>
+
+        <div class="formacion-box">
+          <div class="formacion-grid">
+            <article
+              class="formacion-card"
+              *ngFor="let f of programas"
+              (click)="abrirPrograma(f)"
+            >
+              <div class="formacion-img" [style.background-image]="'url(' + f.imagen + ')'"></div>
+              <div class="formacion-label">{{ f.nombre }}</div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= CONVENIOS CORPORATIVOS ================= -->
+      <section class="seccion">
+        <h2 class="titulo-seccion">
+          <span class="script">Convenios</span>
+          <span class="bold">Corporativos</span>
+        </h2>
+
+        <div class="scroller">
+          <button class="scroller-arrow" aria-label="Anterior" (click)="desplazar(conv, -1)">
+            <ion-icon name="caret-back"></ion-icon>
+          </button>
+
+          <div class="scroller-track convenios-track" #conv>
+            <article
+              class="convenio-card"
+              *ngFor="let c of convenios"
+              (click)="abrirConvenio(c)"
+            >
+              <div class="convenio-logo">
+                <img [src]="c.logo" [alt]="c.nombre" />
+              </div>
+              <strong class="convenio-descuento">{{ c.descuento }}</strong>
+              <span class="convenio-de">de descuento</span>
+              <small class="convenio-detalle">{{ c.detalle }}</small>
+            </article>
+          </div>
+
+          <button class="scroller-arrow" aria-label="Siguiente" (click)="desplazar(conv, 1)">
+            <ion-icon name="caret-forward"></ion-icon>
+          </button>
+        </div>
+      </section>
+
+      <!-- ================= TESTIMONIOS ================= -->
+      <section class="testimonios-box">
+        <article
+          class="testimonio"
+          *ngFor="let t of testimonios"
+          [style.background-image]="'url(' + t.imagen + ')'"
+          (click)="abrirTestimonio(t)"
+        >
+          <div class="testimonio-overlay"></div>
+          <div class="testimonio-texto">
+            <span class="script">{{ t.nombre }}</span>
+            <p>{{ t.frase }}</p>
+          </div>
+        </article>
+      </section>
+
+      <!-- ================= BANNER PUNTUACIÓN ================= -->
+      <section class="puntuacion">
+        <button class="scroller-arrow" aria-label="Anterior" (click)="cambiarMensaje(-1)">
+          <ion-icon name="caret-back"></ion-icon>
+        </button>
+
+        <div class="puntuacion-cuerpo">
+          <ion-icon name="sparkles-outline" class="estrella"></ion-icon>
+          <p>
+            <strong>{{ mensajes[mensajeActual].titulo }}</strong><br />
+            {{ mensajes[mensajeActual].texto }}
+            <span class="resaltado">{{ mensajes[mensajeActual].resaltado }}</span>
+          </p>
+        </div>
+
+        <button class="scroller-arrow" aria-label="Siguiente" (click)="cambiarMensaje(1)">
+          <ion-icon name="caret-forward"></ion-icon>
+        </button>
+      </section>
+
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+  </div>
+  </main>
+  
+<!-- </ion-content> -->

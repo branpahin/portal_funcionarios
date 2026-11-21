@@ -6,11 +6,32 @@ ion-page {
   
 ion-content {
     flex: 1; /* Hace que el contenido se expanda y ocupe el espacio restante */
+    height: 100%;
+    --padding-bottom: 0;
 }
 
 router-outlet {
     display: flex;
     flex: 1; /* Hace que el router-outlet crezca con el contenido */
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% + 32px);
+  margin-left: -16px;
+  margin-right: -16px;
+  position: relative;
+  min-height: 100%;
+}
+
+.page-body {
+  flex: 1 0 auto; // ocupa todo el espacio sobrante y empuja el footer abajo
+}
+
+app-footer {
+  flex-shrink: 0;
+  display: block;
 }
 
 ion-icon {
@@ -104,4 +125,3 @@ img.logo{
   border-radius: 9999px; /* pill */
   min-width: 24px;
 }
-

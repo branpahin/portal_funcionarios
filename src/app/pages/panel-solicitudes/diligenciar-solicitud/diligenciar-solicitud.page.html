@@ -1001,6 +1001,86 @@
           </ion-card-content>
 
         </ion-card>
+        <ion-card class="anexos-card" *ngIf="documentosRequeridos.length > 0">
+          <ion-card-content>
+
+            <div class="anexos-header">
+              <ion-icon name="attach-outline"></ion-icon>
+              <div>
+                <h3>Documentos anexos</h3>
+                <p>Adjunta los archivos solicitados para esta solicitud.</p>
+              </div>
+            </div>
+
+            <div class="anexo-item"
+                *ngFor="let doc of documentosRequeridos"
+                [class.completo]="documentoCompleto(doc) && totalArchivos(doc) > 0"
+                [class.pendiente]="!documentoCompleto(doc)">
+
+              <div class="anexo-info">
+                <div class="anexo-titulo">
+                  <strong>{{ doc.nombre }}</strong>
+                  <ion-badge [color]="esDocObligatorio(doc) ? 'danger' : 'medium'">
+                    {{ esDocObligatorio(doc) ? 'Obligatorio' : 'Opcional' }}
+                  </ion-badge>
+                  <span class="anexo-contador">
+                    {{ totalArchivos(doc) }}/{{ maxDoc(doc) }}
+                  </span>
+                </div>
+
+                <p *ngIf="doc.descripcion">{{ doc.descripcion }}</p>
+
+                <small>
+                  Formatos: {{ extensionesDoc(doc).join(', ') | uppercase }}
+                  · Máx. {{ doc.pesO_MAX_MB }} MB por archivo
+                </small>
+              </div>
+
+              <div class="anexo-archivos" *ngIf="anexosGuardadosDe(doc).length > 0">
+                <div class="anexo-archivo guardado" *ngFor="let a of anexosGuardadosDe(doc)">
+                  <ion-icon name="checkmark-circle"></ion-icon>
+                  <span class="anexo-nombre">{{ a.nombrE_ORIGINAL }}</span>
+                  <span class="anexo-tamano">{{ formatearTamano(a.pesO_BYTES) }}</span>
+                  <button type="button" (click)="descargarAnexo(a)" title="Descargar">
+                    <ion-icon name="download-outline"></ion-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="anexo-archivos" *ngIf="archivosDe(doc).length > 0">
+                <div class="anexo-archivo" *ngFor="let f of archivosDe(doc); let i = index">
+                  <ion-icon name="document-outline"></ion-icon>
+                  <span class="anexo-nombre">{{ f.name }}</span>
+                  <span class="anexo-tamano">{{ formatearTamano(f.size) }}</span>
+                  <button type="button" (click)="quitarArchivo(doc, i)">
+                    <ion-icon name="close-circle"></ion-icon>
+                  </button>
+                </div>
+              </div>
+
+              <div class="anexo-error" *ngIf="erroresDocumento[doc.id]">
+                <ion-icon name="alert-circle-outline"></ion-icon>
+                {{ erroresDocumento[doc.id] }}
+              </div>
+
+              <ion-button
+                type="button"
+                size="small"
+                fill="outline"
+                (click)="abrirSelectorDocumento(doc)">
+                <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
+                {{ totalArchivos(doc) > 0 && maxDoc(doc) === 1 ? 'Reemplazar archivo' : 'Seleccionar archivo' }}
+              </ion-button>
+
+            </div>
+
+            <input
+              #inputArchivoDocumento
+              type="file"
+              hidden
+              (change)="archivosSeleccionados($event)" />
+
+          </ion-card-content>
+        </ion-card>
         <input
           #inputImagenFirma
           type="file"
@@ -1024,8 +1104,7 @@
           <ion-button
             type="submit"
             [disabled]="
-              formSolicitud.invalid ||
-              guardando
+              formSolicitud.invalid || !documentosValidos || guardando 
             ">
 
             <ion-spinner
@@ -1042,7 +1121,7 @@
           <ion-button
             type="button"
             color="success"
-            *ngIf="esAdministrador && solicitud" 
+            *ngIf="esAdministrador && solicitud && observacionesSolicitud.length == 0" 
             (click)="aprobarRechazar()"
             >
 

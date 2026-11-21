@@ -333,51 +333,60 @@
 
               </ng-container>
 
-              <ng-container
-                *ngIf="
-                  elemento.get('tipo')?.value === 'campo'
-                ">
+              <ng-container *ngIf="elemento.get('tipo')?.value === 'campo'">
 
-                <div
-                  [formGroupName]="j"
-                  class="campo-inline">
+                <div [formGroupName]="j" class="campo-chip-wrapper">
 
-                  <div class="campo-edicion">
-
-                    <ion-input
-                      label="Nombre del campo"
-                      labelPlacement="stacked"
-                      placeholder="Ej. nombreSolicitante"
-                      formControlName="nombre">
-                    </ion-input>
-
-
-                    <ion-select
-                      label="Tipo"
-                      labelPlacement="stacked"
-                      formControlName="tipO_DATO">
-
-                      <ion-select-option
-                        *ngFor="let tipo of tiposDato"
-                        [value]="tipo.value">
-
-                        {{ tipo.label }}
-
-                      </ion-select-option>
-
-                    </ion-select>
-
-                  </div>
-
-
+                  <!-- Chip en reposo -->
                   <button
                     type="button"
-                    class="quitar-campo"
-                    (click)="eliminarElemento(i, j)">
+                    class="campo-chip"
+                    [class.vacio]="!elemento.get('nombre')?.value"
+                    [class.activo]="campoEditando === claveCampo(i, j)"
+                    (click)="toggleCampo(i, j)">
 
-                    <ion-icon color="primary" name="close"></ion-icon>
+                    <ion-icon [name]="iconoTipo(elemento.get('tipO_DATO')?.value)"></ion-icon>
+
+                    <span>
+                      {{ elemento.get('nombre')?.value || 'Nombre del campo…' }}
+                    </span>
+
+                    <ion-icon
+                      name="close-circle"
+                      class="chip-quitar"
+                      (click)="$event.stopPropagation(); eliminarElemento(i, j)">
+                    </ion-icon>
 
                   </button>
+
+                  <!-- Popover de edición -->
+                  <div class="campo-popover" *ngIf="campoEditando === claveCampo(i, j)">
+
+                    <label class="popover-label">Nombre del campo</label>
+                    <ion-input
+                      class="popover-input"
+                      placeholder="Ej. nombreSolicitante"
+                      formControlName="nombre"
+                      [autofocus]="true">
+                    </ion-input>
+
+                    <label class="popover-label">¿Qué tipo de dato es?</label>
+                    <div class="tipo-segmentos">
+                      <button
+                        type="button"
+                        *ngFor="let tipo of tiposDato"
+                        [class.seleccionado]="elemento.get('tipO_DATO')?.value === tipo.value"
+                        (click)="setTipoCampo(i, j, tipo.value)">
+                        <ion-icon [name]="iconoTipo(tipo.value)"></ion-icon>
+                        {{ tipo.label }}
+                      </button>
+                    </div>
+
+                    <button type="button" class="popover-listo" (click)="campoEditando = null">
+                      Listo
+                    </button>
+
+                  </div>
 
                 </div>
 
@@ -501,6 +510,103 @@
 
         </div>
 
+      </div>
+
+    </div>
+
+    <div class="seccion-documentos" formArrayName="documentos">
+
+      <div class="seccion-documentos-header">
+        <div class="editor-documento-titulo">
+          <ion-icon color="primary" name="attach-outline"></ion-icon>
+          <div>
+            <strong>Documentos anexos</strong>
+            <span>Define qué archivos debe adjuntar el solicitante.</span>
+          </div>
+        </div>
+
+        <ion-button type="button" fill="outline" size="small" (click)="agregarDocumento()">
+          <ion-icon slot="start" name="add"></ion-icon>
+          Documento
+        </ion-button>
+      </div>
+
+      <div class="documento-card"
+          *ngFor="let doc of documentos.controls; let i = index"
+          [formGroupName]="i">
+
+        <div class="documento-card-top">
+          <span class="documento-orden">{{ i + 1 }}</span>
+
+          <ion-input
+            class="documento-nombre"
+            placeholder="Ej. Copia de la cédula"
+            formControlName="nombre">
+          </ion-input>
+
+          <div class="documento-acciones">
+            <button type="button" (click)="moverDocumento(i, -1)" [disabled]="i === 0">
+              <ion-icon name="chevron-up"></ion-icon>
+            </button>
+            <button type="button" (click)="moverDocumento(i, 1)" [disabled]="i === documentos.length - 1">
+              <ion-icon name="chevron-down"></ion-icon>
+            </button>
+            <button type="button" class="eliminar" (click)="eliminarDocumento(i)">
+              <ion-icon name="trash"></ion-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="error-message"
+            *ngIf="doc.get('nombre')?.touched && doc.get('nombre')?.invalid">
+          El nombre del documento es obligatorio.
+        </div>
+
+        <ion-input
+          class="documento-descripcion"
+          placeholder="Descripción o instrucción para el solicitante (opcional)"
+          formControlName="descripcion">
+        </ion-input>
+
+        <label class="popover-label">Tipos de archivo permitidos</label>
+        <div class="chips-tipos">
+          <button type="button"
+                  *ngFor="let t of tiposArchivo"
+                  [class.seleccionado]="tieneExtension(i, t.ext)"
+                  (click)="toggleExtension(i, t.ext)">
+            {{ t.label }}
+          </button>
+        </div>
+        <div class="error-message"
+            *ngIf="doc.get('extensiones')?.touched && doc.get('extensiones')?.invalid">
+          Selecciona al menos un tipo de archivo.
+        </div>
+
+        <div class="documento-numeros">
+          <ion-input label="Peso máx. (MB)" labelPlacement="stacked"
+                    type="number" min="1" formControlName="pesoMaxMb"></ion-input>
+          <ion-input label="Cantidad mín." labelPlacement="stacked"
+                    type="number" min="0" formControlName="cantidadMin"></ion-input>
+          <ion-input label="Cantidad máx." labelPlacement="stacked"
+                    type="number" min="1" formControlName="cantidadMax"></ion-input>
+        </div>
+
+        <div class="error-message" *ngIf="doc.errors?.['rango']">
+          La cantidad mínima no puede ser mayor que la máxima.
+        </div>
+        <div class="error-message" *ngIf="doc.errors?.['minObligatorio']">
+          Si el documento es obligatorio, la cantidad mínima debe ser al menos 1.
+        </div>
+
+        <ion-toggle formControlName="obligatorio" labelPlacement="end" justify="start">
+          Documento obligatorio
+        </ion-toggle>
+      </div>
+
+      <div class="documentos-vacio" *ngIf="documentos.length === 0">
+        <ion-icon name="attach-outline"></ion-icon>
+        <p>Esta solicitud no requiere anexos</p>
+        <span>Agrega un documento si el solicitante debe adjuntar archivos.</span>
       </div>
 
     </div>

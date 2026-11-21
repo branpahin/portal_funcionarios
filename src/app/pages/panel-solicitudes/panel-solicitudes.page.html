@@ -359,7 +359,7 @@
               <ion-select
                 interface="popover"
                 [(ngModel)]="pageSizeSolicitudesRecibidas"
-                (ionChange)="onPageSizeChangeMisSolicitudes()"
+                (ionChange)="onPageSizeChangeSolicitudesRecibidas()"
               >
 
                 <ion-select-option [value]="5">
@@ -380,21 +380,21 @@
 
             <ion-button
               size="small"
-              (click)="changePageMisSolicitudes(currentPageMisSolicitudes - 1)"
-              [disabled]="currentPageMisSolicitudes === 1"
+              (click)="changePageSolicitudesRecibidas(currentPageSolicitudesRecibidas - 1)"
+              [disabled]="currentPageSolicitudesRecibidas === 1"
             >
               Anterior
             </ion-button>
 
             <span>
-              Página {{ currentPageMisSolicitudes }}
-              de {{ totalPagesMisSolicitudes }}
+              Página {{ currentPageSolicitudesRecibidas}}
+              de {{ totalPagesSolicitudesRecibidas }}
             </span>
 
             <ion-button
               size="small"
-              (click)="changePageMisSolicitudes(currentPageMisSolicitudes + 1)"
-              [disabled]="currentPageMisSolicitudes === totalPagesMisSolicitudes"
+              (click)="changePageSolicitudesRecibidas(currentPageSolicitudesRecibidas + 1)"
+              [disabled]="currentPageSolicitudesRecibidas === totalPagesSolicitudesRecibidas"
             >
               Siguiente
             </ion-button>

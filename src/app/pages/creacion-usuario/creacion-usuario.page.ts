@@ -143,7 +143,7 @@ export class CreacionUsuarioPage implements OnInit {
       },
       error: (err) => {
         console.error("Error al obtener usuarios:", err);
-        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }
@@ -163,7 +163,7 @@ export class CreacionUsuarioPage implements OnInit {
       },
       error: (err) => {
         console.error("Error al obtener usuarios:", err);
-        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }
@@ -210,7 +210,7 @@ export class CreacionUsuarioPage implements OnInit {
           error: (err) => {
             console.error("Error al enviar formulario:", err);
             this.UserInteractionService.dismissLoading()
-            this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+            this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
             this.cerrarModal();
           }
         });
@@ -230,7 +230,7 @@ export class CreacionUsuarioPage implements OnInit {
           error: (err) => {
             console.error("Error al enviar formulario:", err);
             this.UserInteractionService.dismissLoading()
-            this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+            this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
             this.cerrarModal();
           }
         });

@@ -3,7 +3,7 @@ import { TypeServicio } from 'src/app/enums/TypeUrl';
 import { environment } from 'src/environments/environment';
 import { HttpService } from './http.service';
 import { Observable, of, tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +28,7 @@ export class PortalService {
   private getGetAreas = TypeServicio.getGetAreas
   private getGetCCO = TypeServicio.getGetCCO
   private generarReporteXlsx = TypeServicio.GenerarReporteXlsx
+  private descargarAnexos= TypeServicio.descargarAnexos
   private ActualizarEstadoColaborador = TypeServicio.ActualizarEstadoColaborador
   private putInfoColaborador = TypeServicio.putInfoColaborador
   private putInfoColaboradorInterv = TypeServicio.putInfoColaboradorInterv
@@ -72,57 +73,74 @@ export class PortalService {
   }
 
   getCaposFiltro(): Observable<any>{
-    return this.httpService.GetParamsCore(this.camposFiltro);
+    return this.httpService.GetCore(this.camposFiltro);
   }
 
   getNombresFiltros(): Observable<any>{
-    return this.httpService.GetParamsCore(this.GetNombresFiltros);
+    return this.httpService.GetCore(this.GetNombresFiltros);
   }
 
   getNombresFiltrosDet(filtro:string): Observable<any>{
-    return this.httpService.GetParamsCore(this.GetNombresFiltroDet+"?filtro="+filtro);
+    const params = new HttpParams()
+      .set('filtro', filtro)
+    return this.httpService.GetParamsCore(this.GetNombresFiltroDet,params);
   }
 
   getMenu(rol:number): Observable<any>{
-    return this.httpService.GetParamsCore(this.GetMenu+"?Rol="+rol);
+    const params = new HttpParams()
+      .set('Rol', rol)
+    return this.httpService.GetParamsCore(this.GetMenu,params);
   }
 
   getColaboradores(): Observable<any>{
-    return this.httpService.GetParamsCore(this.colaboradores);
+    return this.httpService.GetCore(this.colaboradores);
   }
   getColaborador(): Observable<any>{
-    return this.httpService.GetParamsCore(this.colaborador);
+    return this.httpService.GetCore(this.colaborador);
   }
 
   getColaboradoresPag(pag:string): Observable<any>{
-    return this.httpService.GetParamsCore(this.colaboradoresPag+"?ServerSide="+pag);
+    const params = new HttpParams()
+      .set('ServerSide', pag)
+    return this.httpService.GetParamsCore(this.colaboradoresPag,params);
   }
 
   getColaboradoresInterventor(idRol:number): Observable<any>{
-    return this.httpService.GetParamsCore(this.colaboradoresInterventor+"?idRol="+idRol);
+    const params = new HttpParams()
+      .set('idRol', idRol)
+    return this.httpService.GetParamsCore(this.colaboradoresInterventor,params);
   }
 
   getColaboradoresInterventorPag(pag:string): Observable<any>{
-    return this.httpService.GetParamsCore(this.colaboradoresInterventorPag+"?ServerSide="+pag);
+    const params = new HttpParams()
+      .set('ServerSide', pag)
+    return this.httpService.GetParamsCore(this.colaboradoresInterventorPag,params);
   }
   getIDColaboradoresPag(pag:string): Observable<any>{
-    return this.httpService.GetParamsCore(this.GetIDColaboradoresPag+"?ServerSide="+pag);
+    const params = new HttpParams()
+      .set('ServerSide', pag)
+    return this.httpService.GetParamsCore(this.GetIDColaboradoresPag,params);
   }
 
   getCamposEstado(estado:number,rol:number): Observable<any>{
-    return this.httpService.GetParamsCore(this.GetCamposEstado+"?estado="+estado+"&IdRol="+rol);
+    const params = new HttpParams()
+      .set('estado', estado)
+      .set('IdRol', rol)
+    return this.httpService.GetParamsCore(this.GetCamposEstado,params);
   }
 
   getConsultatUsuarios(): Observable<any>{
-    return this.httpService.GetParamsCore(this.getUsuarios);
+    return this.httpService.GetCore(this.getUsuarios);
   }
 
   getConsultaUsuariosPag(pag:string): Observable<any>{
-    return this.httpService.GetParamsCore(this.getUsuariosPag+"?ServerSide="+pag);
+    const params = new HttpParams()
+      .set('ServerSide', pag)
+    return this.httpService.GetParamsCore(this.getUsuariosPag,params);
   }
 
   getListarUsuariosAgregar(): Observable<any>{
-    return this.httpService.GetParamsCore(this.GetListarUsuariosAgregar);
+    return this.httpService.GetCore(this.GetListarUsuariosAgregar);
   }
 
   getConsultarColaboradores(): Observable<any>{
@@ -130,39 +148,56 @@ export class PortalService {
   }
 
   getRolesUsuario(): Observable<any>{
-    return this.httpService.GetParamsCore(this.GetRolesUsuario);
+    return this.httpService.GetCore(this.GetRolesUsuario);
   }
 
   getGetAplicativos(id?:number): Observable<any>{
     if (id){
-      return this.httpService.GetParamsCore(this.GetAplicativos+"?id_aplicativo="+id);
+      const params = new HttpParams()
+        .set('id_aplicativo', id)
+      return this.httpService.GetParamsCore(this.GetAplicativos,params);
     }else{
       return this.httpService.GetCore(this.GetAplicativos);
     }
   }
 
   getGenerarReporte(pag:string): Observable<any>{
-    return this.httpService.GetFile(this.generarReporteXlsx+"?ServerSide="+pag);
+    const params = new HttpParams()
+        .set('ServerSide', pag)
+    return this.httpService.GetFile(this.generarReporteXlsx,params);
   }
 
   getGerencias(idGerencia:number): Observable<any>{
-    return this.httpService.GetParamsCore(this.getGerencia+"?id_ciudad="+idGerencia);
+    const params = new HttpParams()
+      .set('id_ciudad', idGerencia)
+    return this.httpService.GetParamsCore(this.getGerencia,params);
   }
 
   getAreas(idCiudad:number, idGerencia:number, ): Observable<any>{
-    return this.httpService.GetParamsCore(this.getGetAreas+"?id_ciudad="+idCiudad+"&gerencia="+idGerencia);
+    const params = new HttpParams()
+      .set('id_ciudad', idCiudad)
+      .set('gerencia', idGerencia)
+    return this.httpService.GetParamsCore(this.getGetAreas,params);
   }
 
   getCCO(idCiudad:number, idGerencia:number, idArea:number): Observable<any>{
-    return this.httpService.GetParamsCore(this.getGetCCO+"?id_ciudad="+idCiudad+"&id_gerencia="+idGerencia+"&id_area="+idArea);
+    const params = new HttpParams()
+      .set('id_ciudad', idCiudad)
+      .set('id_gerencia', idGerencia)
+      .set('id_area', idArea)
+    return this.httpService.GetParamsCore(this.getGetCCO,params);
   }
 
   getInfoColaboradores(idColaborador:number): Observable<any>{
-    return this.httpService.GetParamsCore(this.getInfoColaborador+"?id_colaborador="+idColaborador);
+    const params = new HttpParams()
+      .set('id_colaborador', idColaborador)
+    return this.httpService.GetParamsCore(this.getInfoColaborador,params);
   }
 
   getInfoColaboradoresInterventor(idColaborador:number): Observable<any>{
-    return this.httpService.GetParamsCore(this.getInfoColaboradorIntenventor+"?id_colaborador="+idColaborador);
+    const params = new HttpParams()
+      .set('id_colaborador', idColaborador)
+    return this.httpService.GetParamsCore(this.getInfoColaboradorIntenventor,params);
   }
   getInfoColaboradoresUsuario(): Observable<any>{
     return this.httpService.GetCore(this.getInfoColaboradorUsuario);
@@ -177,19 +212,31 @@ export class PortalService {
   }
 
   getConsultarColaboradorCedula(data: any): Observable<any>{
-    return this.httpService.GetParamsCore(this.consultarColaboradorCedula+"?cedula="+data.cedula);
+    const params = new HttpParams()
+      .set('cedula', data.cedula)
+    return this.httpService.GetParamsCore(this.consultarColaboradorCedula,params);
   }
 
   getUsuariosSistema(id:number): Observable<any>{
-    return this.httpService.GetParamsCore(this.GetUsuarioSistema);
+    return this.httpService.GetCore(this.GetUsuarioSistema);
   }
 
   getobtenerMisSolicitudesPag(pag:string): Observable<any>{
-    return this.httpService.GetParamsCore(this.obtenerMisSolicitudesPag+"?ServerSide="+pag);
+    const params = new HttpParams()
+      .set('ServerSide', pag)
+    return this.httpService.GetParamsCore(this.obtenerMisSolicitudesPag,params);
   }
 
   obtenerSolicitudPorId(id: number): Observable<any>{
-    return this.httpService.GetParamsCore(this.GetSolicitudInfoAdmin+"?id_solicitud="+id);
+    const params = new HttpParams()
+      .set('id_solicitud', id)
+    return this.httpService.GetParamsCore(this.GetSolicitudInfoAdmin,params);
+  }
+
+  descargarAnexo(id:number): Observable<any>{
+    const params = new HttpParams()
+        .set('id',id)
+    return this.httpService.GetFile(this.descargarAnexos,params);
   }
 
   postCrearColaborador(data: any): Observable<any>{
@@ -201,7 +248,7 @@ export class PortalService {
   }
 
   postRealizarSolicitud(data: any): Observable<any>{
-    return this.httpService.PostCore(data,this.realizarSolicitud);
+    return this.httpService.PostFormDataCore(data,this.realizarSolicitud);
   }
 
   postConsultarColaborador(data: any): Observable<any>{
@@ -277,7 +324,7 @@ export class PortalService {
   }
 
   putActualizarSolicitud(data: any): Observable<any>{
-    return this.httpService.PutJsonCore(data,this.UpdateSolicitud);
+    return this.httpService.PutFormDataCore(data,this.UpdateSolicitud);
   }
 
   putActualizarEstadoSolicitud(data: any): Observable<any>{

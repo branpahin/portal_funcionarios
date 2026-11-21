@@ -27,6 +27,7 @@ interface TipoSolicitud {
   html: string;
   coD_USER: string | null;
   campos: CampoSolicitud[];
+  documentos?: DocumentoSolicitud[];
 }
 
 interface ElementoTexto {
@@ -45,6 +46,29 @@ interface ElementoElemento {
   atributos: Record<string, string>;
   hijos: ElementoHtml[];
   campo?: CampoSolicitud;
+}
+
+interface DocumentoSolicitud {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  obligatorio: string;
+  extensioneS_PERMITIDAS: string;
+  tipoS_MIME_PERMITIDOS: string;
+  pesO_MAX_MB: string;
+  cantidaD_MIN: string;
+  cantidaD_MAX: string;
+  orden: string;
+}
+
+interface AnexoGuardado {
+  id: number;
+  iD_DOCUMENTO_REQ: number;
+  nombrE_ORIGINAL: string;
+  extension: string;
+  tipO_MIME: string;
+  pesO_BYTES: number;
+  fechA_REGISTRO: string;
 }
 
 type ElementoHtml =
@@ -72,6 +96,16 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
 
   @ViewChild('inputImagenFirma')
   inputImagenFirma!: ElementRef<HTMLInputElement>;
+
+  @ViewChild('inputArchivoDocumento')
+  inputArchivoDocumento!: ElementRef<HTMLInputElement>;
+
+  documentosRequeridos: DocumentoSolicitud[] = [];
+  archivosDocumento: Record<string, File[]> = {};
+  erroresDocumento: Record<string, string> = {};
+  private documentoActivo: DocumentoSolicitud | null = null;
+  anexosGuardados: Record<string, AnexoGuardado[]> = {};
+  anexosAEliminar = new Set<number>(); 
 
   private firmas = new Map<string, HTMLCanvasElement>();
 
@@ -185,6 +219,20 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     this.firmas.clear();
     this.contextoFirma.clear();
 
+    this.documentosRequeridos = [...(tipo.documentos ?? [])]
+      .sort((a, b) => Number(a.orden) - Number(b.orden));
+    this.archivosDocumento = {};
+    this.erroresDocumento = {};
+    this.anexosGuardados = {};
+      (valores?.anexos ?? [])
+        .filter((a: any) => a.estado === 1)
+        .forEach((a: AnexoGuardado) => {
+          const clave = String(a.iD_DOCUMENTO_REQ);
+          (this.anexosGuardados[clave] ??= []).push(a);
+        });
+
+    this.anexosAEliminar.clear();
+
     this.crearFormulario(tipo.campos);
 
     if (valores) {
@@ -214,32 +262,35 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     valores: any,
     campos: CampoSolicitud[]
   ): any {
-    console.log("valores: ",valores)
+
     const resultado: any = {};
 
+    // Los campos ahora vienen dentro de campoS_SOLICITUD
+    const camposSolicitud = valores.campoS_SOLICITUD ?? [];
+
     campos
-      .filter(campo =>
-        campo.estado === 1
-      )
+      .filter(campo => campo.estado === 1)
       .forEach(campo => {
 
         const nombreCampo = campo.nombrE_JSON;
 
-        const claveEncontrada = Object.keys(valores).find(
-          key =>
-            key.toLowerCase() === nombreCampo.toLowerCase()
+        // Buscar el campo correspondiente por identificador
+        const campoEncontrado = camposSolicitud.find(
+          (item: any) =>
+            item.identificador?.toLowerCase() === nombreCampo.toLowerCase()
         );
 
-        if (!claveEncontrada) {
+        if (!campoEncontrado) {
           return;
         }
 
-        let valor = valores[claveEncontrada];
+        let valor = campoEncontrado.valor;
 
         const tipo = campo.tipO_DATO
           ?.trim()
           .toUpperCase();
 
+        // Convertir los valores BOOLEAN e ITEM
         if (tipo === 'BOOLEAN' || tipo === 'ITEM') {
           valor =
             valor === true ||
@@ -250,13 +301,15 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
 
         resultado[nombreCampo] = valor;
       });
-    if(this.solicitud){
+
+    if (this.solicitud) {
       resultado['observaciones'] = Array.isArray(valores.observaciones)
         ? valores.observaciones
         : [];
-      resultado['id'] = valores.id
+
+      resultado['id'] = valores.id;
     }
-    
+
     return resultado;
   }
 
@@ -352,54 +405,46 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
 
   obtenerSolicitudPorId(id: number): void {
 
-  this.cargando = true;
+    this.cargando = true;
 
-  this.service.obtenerSolicitudPorId(id).subscribe({
-    next: (resp: any) => {
+    this.service.obtenerSolicitudPorId(id).subscribe({
+      next: (resp: any) => {
 
-      const solicitud = resp?.data?.datos;
+        const solicitud = resp?.data?.datos;
 
-      if (!solicitud) {
-        this.cargando = false;
-        return;
-      }
+        if (!solicitud) {
+          this.cargando = false;
+          return;
+        }
 
-      // this.modoEdicion = true;
-      // this.tipoSolicitudSeleccionado.id = solicitud.id;
-
-      
-
-      const idTipoSolicitud = Number(
-        solicitud.iD_TIPO_SOLICITUD
-      );
-
-      const tipo = this.tiposSolicitud.find(
-        x => x.id === idTipoSolicitud
-      );
-      console.log("tipo: ",tipo)
-      if (!tipo) {
-        console.error(
-          'No se encontró el tipo de solicitud:',
-          idTipoSolicitud
+        const idTipoSolicitud = Number(
+          solicitud.iD_TIPO_SOLICITUD
         );
 
+        const tipo = this.tiposSolicitud.find(
+          x => x.id === idTipoSolicitud
+        );
+
+        if (!tipo) {
+          console.error(
+            'No se encontró el tipo de solicitud:',
+            idTipoSolicitud
+          );
+
+          this.cargando = false;
+          return;
+        }
+
+        this.seleccionarTipoSolicitud(tipo, solicitud);
+
         this.cargando = false;
-        return;
+      },
+
+      error: () => {
+        this.cargando = false;
       }
-
-      this.seleccionarTipoSolicitud(
-        tipo,
-        solicitud
-      );
-
-      this.cargando = false;
-    },
-
-    error: () => {
-      this.cargando = false;
-    }
-  });
-}
+    });
+  }
 
   crearFormulario(campos: CampoSolicitud[]): void {
 
@@ -706,6 +751,26 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
       );
 
     });
+  }
+
+  private convertirCamposSolicitudALista(valores: any): any[] {
+    return this.tipoSolicitudSeleccionado!.campos
+      .filter(campo => campo.estado === 1)
+      .map(campo => {
+
+        const identificador = campo.nombrE_JSON;
+
+        const valor = valores[identificador];
+
+        return {
+          ID: 0,
+          ID_CAMPO_SOLICITUD: campo.id,
+          IDENTIFICADOR: identificador,
+          VALOR: valor !== null && valor !== undefined
+            ? String(valor)
+            : ''
+        };
+      });
   }
 
   convertirBooleanosAEnteros(valores: any): any {
@@ -1200,6 +1265,193 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     }
   }
 
+  // ---------- Documentos anexos ----------
+
+  extensionesDoc(doc: DocumentoSolicitud): string[] {
+    return (doc.extensioneS_PERMITIDAS ?? '')
+      .split(',')
+      .map(e => e.trim().replace('.', '').toLowerCase())
+      .filter(Boolean);
+  }
+
+  mimesDoc(doc: DocumentoSolicitud): string[] {
+    return (doc.tipoS_MIME_PERMITIDOS ?? '')
+      .split(',')
+      .map(m => m.trim().toLowerCase())
+      .filter(Boolean);
+  }
+
+  aceptarDoc(doc: DocumentoSolicitud): string {
+    return this.extensionesDoc(doc).map(e => '.' + e).join(',');
+  }
+
+  esDocObligatorio(doc: DocumentoSolicitud): boolean {
+    return doc.obligatorio === '1' || doc.obligatorio?.toLowerCase() === 'true';
+  }
+
+  maxDoc(doc: DocumentoSolicitud): number {
+    return Math.max(Number(doc.cantidaD_MAX) || 1, 1);
+  }
+
+  minRequeridoDoc(doc: DocumentoSolicitud): number {
+    const min = Number(doc.cantidaD_MIN) || 0;
+    return this.esDocObligatorio(doc) ? Math.max(min, 1) : 0;
+  }
+
+  archivosDe(doc: DocumentoSolicitud): File[] {
+    return this.archivosDocumento[doc.id] ?? [];
+  }
+
+  anexosGuardadosDe(doc: DocumentoSolicitud): AnexoGuardado[] {
+    return (this.anexosGuardados[doc.id] ?? [])
+      .filter(a => !this.anexosAEliminar.has(a.id));
+  }
+
+  quitarAnexoGuardado(anexo: AnexoGuardado): void {
+    this.anexosAEliminar.add(anexo.id);
+    this.erroresDocumento[String(anexo.iD_DOCUMENTO_REQ)] = '';
+  }
+
+  totalArchivos(doc: DocumentoSolicitud): number {
+    return this.anexosGuardadosDe(doc).length + this.archivosDe(doc).length;
+  }
+
+  documentoCompleto(doc: DocumentoSolicitud): boolean {
+    return this.totalArchivos(doc) >= this.minRequeridoDoc(doc);
+  }
+
+  get documentosValidos(): boolean {
+    return this.documentosRequeridos.every(d => this.documentoCompleto(d));
+  }
+
+  formatearTamano(bytes: number): string {
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  abrirSelectorDocumento(doc: DocumentoSolicitud): void {
+    this.documentoActivo = doc;
+    this.inputArchivoDocumento.nativeElement.value = '';
+    this.inputArchivoDocumento.nativeElement.accept = this.aceptarDoc(doc);
+    this.inputArchivoDocumento.nativeElement.multiple = this.maxDoc(doc) > 1;
+    this.inputArchivoDocumento.nativeElement.click();
+  }
+
+  archivosSeleccionados(event: Event): void {
+    const doc = this.documentoActivo;
+    const input = event.target as HTMLInputElement;
+    if (!doc || !input.files?.length) return;
+
+    const extensiones = this.extensionesDoc(doc);
+    const mimes = this.mimesDoc(doc);
+    const maxBytes = (Number(doc.pesO_MAX_MB) || 5) * 1024 * 1024;
+    const max = this.maxDoc(doc);
+
+    const validos: File[] = [];
+    let error = '';
+
+    Array.from(input.files).forEach(file => {
+      const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+
+      if (!extensiones.includes(ext)) {
+        error = `"${file.name}": formato no permitido (${extensiones.join(', ')}).`;
+        return;
+      }
+      if (file.type && mimes.length && !mimes.includes(file.type.toLowerCase())) {
+        error = `"${file.name}": tipo de archivo no permitido.`;
+        return;
+      }
+      if (file.size > maxBytes) {
+        error = `"${file.name}": supera el máximo de ${doc.pesO_MAX_MB} MB.`;
+        return;
+      }
+      validos.push(file);
+    });
+
+    let actuales = this.archivosDe(doc);
+
+    if (max === 1) {
+      if (validos.length) {
+        actuales = [validos[0]];
+        // el nuevo reemplaza al guardado: se pide su eliminación al back
+        (this.anexosGuardados[doc.id] ?? []).forEach(a => this.anexosAEliminar.add(a.id));
+      }
+    } else {
+      const disponibles = max - this.totalArchivos(doc);
+      if (validos.length > disponibles) {
+        error = `Solo puedes adjuntar ${max} archivo(s) en este documento.`;
+      }
+      actuales = [...actuales, ...validos.slice(0, Math.max(disponibles, 0))];
+    }
+
+    this.archivosDocumento[doc.id] = actuales;
+    this.erroresDocumento[doc.id] = error;
+  }
+
+  quitarArchivo(doc: DocumentoSolicitud, index: number): void {
+    this.archivosDocumento[doc.id] = this.archivosDe(doc).filter((_, i) => i !== index);
+    this.erroresDocumento[doc.id] = '';
+
+    // si ya no queda ningún archivo nuevo y el máximo es 1, se restauran los guardados
+    if (this.maxDoc(doc) === 1 && this.archivosDe(doc).length === 0) {
+      (this.anexosGuardados[doc.id] ?? []).forEach(a => this.anexosAEliminar.delete(a.id));
+    }
+  }
+
+  private archivoABase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        // "data:application/pdf;base64,AAAA..." → nos quedamos solo con lo que va después de la coma
+        const resultado = reader.result as string;
+        resolve(resultado.split(',')[1] ?? '');
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  private async construirAnexos(): Promise<{ iD_DOCUMENTO_REQ: number; archivo: string }[]> {
+    const anexos: { iD_DOCUMENTO_REQ: number; archivo: string }[] = [];
+
+    for (const doc of this.documentosRequeridos) {
+      for (const file of this.archivosDe(doc)) {
+        anexos.push({
+          iD_DOCUMENTO_REQ: Number(doc.id),
+          archivo: await this.archivoABase64(file)
+        });
+      }
+    }
+    return anexos;
+  }
+
+  descargarAnexo(anexo: AnexoGuardado): void {
+    this.UserInteractionService.showLoading('Descargando...');
+
+    this.service.descargarAnexo(anexo.id).subscribe({
+      next: (resp) => {
+        this.UserInteractionService.dismissLoading();
+
+        const blob = resp.body;
+        if (!blob) return;
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = anexo.nombrE_ORIGINAL;   // nombre original guardado
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Error al descargar anexo:', err);
+        this.UserInteractionService.dismissLoading();
+        this.UserInteractionService.presentToast('No se pudo descargar el archivo');
+      }
+    });
+  }
+
   seleccionarColaborador(c: any) {
     this.colaboradorSeleccionado = c;
     this.mostrarResultados = false;
@@ -1216,93 +1468,89 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
     this.mostrarResultados = false;
   }
 
-  async realizarSolicitud(): Promise<void> {
-
-    if (!this.tipoSolicitudSeleccionado) {
-      return;
-    }
-
-    if (this.formSolicitud.invalid) {
-
-      this.formSolicitud.markAllAsTouched();
-
-      return;
-    }
+  private construirFormData(solicitud: any): FormData {
     const formData = new FormData();
-    this.guardando = true;
 
-    const valores =
-      this.convertirBooleanosAEnteros(
-        this.formSolicitud.getRawValue()
-      );
+    formData.append('SOLICITUD', JSON.stringify(solicitud));
 
-    const request = {
+    let indice = 0;
+    for (const doc of this.documentosRequeridos) {
+      for (const file of this.archivosDe(doc)) {
+        formData.append(`ANEXOS[${indice}].ID_DOCUMENTO_REQ`, String(doc.id));
+        formData.append(`ANEXOS[${indice}].ARCHIVO`, file, file.name);
+        indice++;
+      }
+    }
 
-      idTipoSolicitud:
-        this.tipoSolicitudSeleccionado.id,
-
-      valores
-    };
-
-    console.log(
-      'Solicitud a enviar:',
-      request
-    );
-    const param= await this.moduleService.getParam();
-    console.log("request.valores: ",request.valores) 
-    
-    // console.log("data:" ,data)
-    // formData.append('json', data);
-    this.UserInteractionService.showLoading('Guardando...');
-    if(this.solicitud){
-      const data = {
-        ...request.valores,
-        ID_TIPO_SOLICITUD: this.tipoSolicitudSeleccionado.id,
-        ID_COLABORADOR: this.colaboradorSeleccionado.id ?? Number(param.id_Colaborador),
-        id: this.solicitud.id
-      };
-      this.service.putActualizarSolicitud(data).subscribe({
-        next: async (resp) => {
-          try {
-            this.UserInteractionService.dismissLoading();
-            this.UserInteractionService.presentToast('Registro exitoso', TypeThemeColor.SUCCESS);
-          } catch (error) {
-            console.error("Error al procesar respuesta:", error);
-            this.UserInteractionService.dismissLoading();
-          }
-        },
-        error: (err) => {
-          console.error("Error al enviar formulario:", err);
-          this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
-        }
-      });
-    } else { 
-      const data = {
-        ...request.valores,
-        ID_TIPO_SOLICITUD: this.tipoSolicitudSeleccionado.id,
-        ID_COLABORADOR: Number(param.id_Colaborador)
-      };
-      this.service.postRealizarSolicitud(data).subscribe({
-        next: async (resp) => {
-          try {
-            this.UserInteractionService.dismissLoading();
-            this.UserInteractionService.presentToast('Registro exitoso', TypeThemeColor.SUCCESS);
-          } catch (error) {
-            console.error("Error al procesar respuesta:", error);
-            this.UserInteractionService.dismissLoading();
-          }
-        },
-        error: (err) => {
-          console.error("Error al enviar formulario:", err);
-          this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
-        }
+    // Solo aplica al PUT
+    if (this.solicitud) {
+      Array.from(this.anexosAEliminar).forEach((id, i) => {
+        formData.append(`ANEXOS_ELIMINAR[${i}]`, String(id));
       });
     }
-    
-    this.guardando = false;
-    this.volver();
+
+    return formData;
+  }
+
+  async realizarSolicitud(): Promise<void> {
+    if (!this.tipoSolicitudSeleccionado) return;
+
+      if (this.formSolicitud.invalid || !this.documentosValidos) {
+        this.formSolicitud.markAllAsTouched();
+        return;
+      }
+
+      this.guardando = true;
+      this.UserInteractionService.showLoading('Guardando...');
+
+      try {
+        const valores = this.formSolicitud.getRawValue();
+        const param = await this.moduleService.getParam();
+        const camposSolicitud = this.convertirCamposSolicitudALista(valores);
+
+        const solicitud = this.solicitud
+          ? {
+              ID: this.solicitud.id,
+              ID_TIPO_SOLICITUD: this.tipoSolicitudSeleccionado.id,
+              ID_COLABORADOR: this.colaboradorSeleccionado?.id ?? Number(param.id_Colaborador),
+              CAMPOS_SOLICITUD: camposSolicitud
+            }
+          : {
+              ID: 0,
+              ID_TIPO_SOLICITUD: this.tipoSolicitudSeleccionado.id,
+              ID_COLABORADOR: Number(param.id_Colaborador),
+              CAMPOS_SOLICITUD: camposSolicitud
+            };
+
+        const body = await this.construirFormData(solicitud);
+
+        const peticion$ = this.solicitud
+          ? this.service.putActualizarSolicitud(body)
+          : this.service.postRealizarSolicitud(body);
+
+        peticion$.subscribe({
+          next: () => {
+            this.guardando = false;
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast('Registro exitoso', TypeThemeColor.SUCCESS);
+            this.volver();
+          },
+          error: (err) => {
+            console.error('Error al enviar formulario:', err);
+            this.guardando = false;
+            this.UserInteractionService.dismissLoading();
+            this.UserInteractionService.presentToast(
+              err.error?.data?.error || 'Error desconocido, por favor contactese con el area encargada'
+            );
+          }
+        });
+
+      } catch (error) {
+        console.error('Error preparando la solicitud:', error);
+        this.guardando = false;
+        this.UserInteractionService.dismissLoading();
+        this.UserInteractionService.presentToast('No se pudieron leer los archivos adjuntos');
+      }
   }
 
   aprobarRechazar(){
@@ -1366,7 +1614,7 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
       error: (err) => {
         console.error("Error al enviar formulario:", err);
         this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
       }
     });
     this.volver();
@@ -1376,6 +1624,8 @@ export class DiligenciarSolicitudPage implements OnInit, AfterViewInit  {
   limpiarSolicitud(): void {
 
     this.tipoSolicitudSeleccionado = null;
+    this.documentosRequeridos = [];
+    this.anexosGuardados = {};
 
     this.elementosHtml = [];
 

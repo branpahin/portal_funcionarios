@@ -47,6 +47,12 @@ const routes: Routes = [
         loadComponent: () =>
           import('../pages/panel-solicitudes/diligenciar-solicitud/diligenciar-solicitud.page')
             .then(m => m.DiligenciarSolicitudPage)
+      },
+      {
+        path: 'portal-beneficios',
+        loadComponent: () =>
+          import('../pages/portal-beneficios/portal-beneficios.page')
+            .then(m => m.PortalBeneficiosPage)
       }
     ],
   }

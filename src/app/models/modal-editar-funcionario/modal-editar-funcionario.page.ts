@@ -64,6 +64,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
   jefes: any[] = [];
   razas: any[] = [];
   rubros:  any[] = [];
+  modalidad_Trabajo: any[] = [];
   sexos: any[] = [];
   orientaciones_Sexuales: any[] = [];
   discapacidades: any[] = [];
@@ -116,6 +117,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         // ID_AREA : [null, Validators.required],
         // ID_RUBRO : [null, Validators.required],
         ID_CARGO : [null, Validators.required],
+        // ID_MODALIDAD_TRABAJO: [null, Validators.required],
         // ID_TIPO_NOMINA : [null, Validators.required],
         // ID_ROL : [null, Validators.required],
         // ID_TIPO_DOTACION : [null, Validators.required],
@@ -165,6 +167,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         ID_AREA : [null, Validators.required],
         ID_RUBRO : [null, Validators.required],
         ID_CARGO : [null, Validators.required],
+        ID_MODALIDAD_TRABAJO: [null],
         ID_TIPO_NOMINA : [null, Validators.required],
         ID_ROL : [null, Validators.required],
         ID_TIPO_DOTACION : [null, Validators.required],
@@ -270,7 +273,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -290,7 +293,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -309,8 +312,8 @@ export class ModalEditarFuncionarioPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          console.error("Respuesta", err.error.data.error)
-          // this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          console.error("Respuesta", err.error.data.mensaje || err.error.data.error )
+          // this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -391,7 +394,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         }
       },error:(err)=>{
         this.UserInteractionService.dismissLoading();
-        console.error(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        console.error(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }
@@ -414,6 +417,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
               datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
               datos.aplicaciones = this.convertirStringArray(datos.aplicaciones);
               this.observacionesSolicitud = datos.observaciones
+              this.idCiudad = datos.ciudaD_TRABAJO
               if(datos.ciudaD_TRABAJO && datos.iD_GERENCIA && datos.iD_AREA){
                 await this.CCO(datos.ciudaD_TRABAJO,datos.iD_GERENCIA, datos.iD_AREA);
               }
@@ -470,7 +474,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
             }
           },error:(err)=>{
             this.UserInteractionService.dismissLoading()
-            this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+            this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
           }
         })
       } else{
@@ -488,6 +492,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
               datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
               datos.aplicaciones = this.convertirStringArray(datos.aplicaciones);
               this.observacionesSolicitud = datos.observaciones
+              this.idCiudad = datos.ciudaD_TRABAJO
               if(datos.ciudaD_TRABAJO && datos.iD_GERENCIA && datos.iD_AREA){
                 await this.CCO(datos.ciudaD_TRABAJO,datos.iD_GERENCIA, datos.iD_AREA);
               }
@@ -545,7 +550,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
             }
           },error:(err)=>{
             this.UserInteractionService.dismissLoading()
-            this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+            this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
           }
         })
       }
@@ -565,6 +570,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
               datos.iD_POSTGRADO = this.convertirStringArray(datos.iD_POSTGRADO);
               datos.aplicaciones = this.convertirStringArray(datos.aplicaciones);
               this.observacionesSolicitud = datos.observaciones
+              this.idCiudad = datos.ciudaD_TRABAJO
               if(datos.ciudaD_TRABAJO && datos.iD_GERENCIA && datos.iD_AREA){
                 await this.CCO(datos.ciudaD_TRABAJO,datos.iD_GERENCIA, datos.iD_AREA);
               }
@@ -622,7 +628,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
             }
           },error:(err)=>{
             this.UserInteractionService.dismissLoading()
-            this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+            this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
           }
         })
       // }
@@ -644,7 +650,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         }
       },error:(err)=>{
         this.UserInteractionService.dismissLoading();
-        this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+        this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
       }
     })
   }
@@ -737,6 +743,28 @@ export class ModalEditarFuncionarioPage implements OnInit {
   get fechaFechaIngresoControl(): FormControl {
     return this.empleadoForm.get('FECHA_INGRESO') as FormControl;
   }
+
+  get mostrarChecklistApps(): boolean {
+    return Number(this.empleadoForm.get('ESTADO')?.value) >= 5;
+  }
+
+  get aplicacionesChecklist(): any[] {
+    return this.empleadoForm.get('APLICACIONES')?.value ?? [];
+  }
+
+  onTogglePermiso(app: any, ev: CustomEvent) {
+    const checked = ev.detail.checked;
+    if ((app.permisO_OTORGADO === 1) === checked) return; // evita sets innecesarios
+
+    const ctrl = this.empleadoForm.get('APLICACIONES');
+    const nuevo = (ctrl?.value ?? []).map((a: any) =>
+      a.id === app.id ? { ...a, permisO_OTORGADO: checked ? 1 : 0 } : a
+    );
+    ctrl?.setValue(nuevo);
+    ctrl?.markAsDirty();
+  }
+
+  trackById = (_: number, app: any) => app.id;
 
   getFechaHijoControl(index: number): FormControl {
     const hijoFormGroup = this.HIJOS_COLABORADOR_JSON.at(index) as FormGroup;
@@ -833,6 +861,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
     } else if (lista === 'ID_RUBRO') {
       lista = 'rubros'
       this.rubros = this.param[lista] || [];
+    } else if (lista === 'ID_MODALIDAD_TRABAJO') {
+      lista = 'modalidad_Trabajo'
+      this.modalidad_Trabajo = this.param[lista] || [];
     } 
     
   }
@@ -991,9 +1022,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
           }
         },
         error: (err) => {
-          console.error("Error al enviar formulario:", err.error.data.error);
+          console.error("Error al enviar formulario:", err.error.data.mensaje || err.error.data.error );
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
           this.cerrarModal();
         }
       });
@@ -1033,9 +1064,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
           }
         },
         error: (err) => {
-          console.error("Error al enviar formulario:", err.error.data.error);
+          console.error("Error al enviar formulario:", err.error.data.mensaje || err.error.data.error );
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
           this.cerrarModal();
         }
       });
@@ -1171,7 +1202,14 @@ export class ModalEditarFuncionarioPage implements OnInit {
   async enviarColaborador(){
     const hoy = new Date();
     const fechaFormateada = hoy.toISOString().split('T')[0]; // Formato YYYY-MM-DD
-  
+    
+    const valores = this.empleadoForm.getRawValue();
+    const apps: any[] = valores.APLICACIONES ?? [];
+    const aplicacionesSeleccionadas = apps.every(app => typeof app === 'object' && app !== null)
+    ? apps
+        .filter(app => Number(app.permisO_OTORGADO) === 1)
+        .map(app => app.id)
+    : apps;
     this.empleadoForm.patchValue({
       FECHA_ACTUALIZACION: fechaFormateada
     });
@@ -1206,7 +1244,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
     postgradoSeleccionadas.forEach((id: number) => {
       formData.append('ID_POSTGRADO', id.toString());
     });
-    const aplicacionesSeleccionadas: number[] = this.empleadoForm.get('APLICACIONES')?.value || [];
+
     aplicacionesSeleccionadas.forEach((id: number) => {
       formData.append('APLICACIONES', id.toString());
     });
@@ -1368,9 +1406,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
           }
         },
         error: (err) => {
-          console.error("Error al enviar formulario:", err.error.data.error);
+          console.error("Error al enviar formulario:", err.error.data.mensaje || err.error.data.error );
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
       });
   }
@@ -1433,9 +1471,9 @@ export class ModalEditarFuncionarioPage implements OnInit {
           }
         },
         error: (err) => {
-          console.error("Error al enviar formulario:", err.error.data.error);
+          console.error("Error al enviar formulario:", err.error.data.mensaje || err.error.data.error );
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
       });
   }
@@ -1460,7 +1498,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
         error: (err) => {
           console.error("Error al enviar formulario:", err);
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
       });
   }

@@ -68,7 +68,7 @@ export class ColaboradoresPublicoPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })
@@ -95,7 +95,7 @@ export class ColaboradoresPublicoPage implements OnInit {
           }
         },error:(err)=>{
           this.UserInteractionService.dismissLoading();
-          this.UserInteractionService.presentToast(err.error.data.error || "Error desconocido, por favor contactese con el area encargada");
+          this.UserInteractionService.presentToast(err.error.data.mensaje || err.error.data.mensaje || err.error.data.error  || "Error desconocido, por favor contactese con el area encargada");
         }
 
       })

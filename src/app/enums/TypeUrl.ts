@@ -1,6 +1,7 @@
 export enum TypeUrlDev{
     portal = 'https://localhost:44326/api/',
-    portalPROD = 'http://172.25.2.2:3000/api/'
+    portalPROD = 'http://172.25.2.2:3000/api/',
+    portalPRODcifrado = 'http://172.25.2.2:4000/api/'
 }
 
 export enum TypeServicio{
@@ -58,5 +59,6 @@ export enum TypeServicio{
     UpdateSolicitud = 'Solicitudes/UpdateSolicitud',
     UpdateEstadoSolicitud = 'Solicitudes/UpdateEstadoSolicitud',
     GetIDColaboradoresPag = 'Solicitudes/GetIDColaboradoresPag',
+    descargarAnexos = 'Solicitudes/DescargarAnexo'
 
 }
