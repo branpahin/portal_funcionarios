@@ -22,7 +22,7 @@ export class ClientIdInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-
+    this.validateCrypto();
     let clientId = localStorage.getItem(this.storageKey);
 
     if (!clientId) {
@@ -45,5 +45,13 @@ export class ClientIdInterceptor implements HttpInterceptor {
         return next.handle(encryptedRequest);
       })
     );
+  }
+
+  private validateCrypto(): void {
+    if (!window.crypto?.subtle) {
+      throw new Error(
+        'Web Crypto API no está disponible. Se requiere HTTPS.'
+      );
+    }
   }
 }

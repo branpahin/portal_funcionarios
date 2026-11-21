@@ -27,9 +27,13 @@ export class CryptoService {
 
   private keyPromise?: Promise<CryptoKey>;
 
-  constructor() {
-    if (!this.canUseCrypto) {
-      throw new Error('Web Crypto API no está disponible.');
+  constructor() {}
+
+  private validateCrypto(): void {
+    if (!window.crypto?.subtle) {
+      throw new Error(
+        'Web Crypto API no está disponible. Se requiere HTTPS.'
+      );
     }
   }
 
@@ -37,7 +41,7 @@ export class CryptoService {
    * Cifra cualquier objeto/string.
    */
   async encrypt(data: unknown): Promise<EncryptedRequest> {
-    console.log("prueba")
+    this.validateCrypto();
     const text =
       typeof data === 'string'
         ? data
@@ -66,7 +70,7 @@ export class CryptoService {
    * Descifra una respuesta.
    */
   async decrypt<T>(encryptedData: string | EncryptedRequest): Promise<T> {
-    console.log("encryptedData")
+    this.validateCrypto();
     const value =
       typeof encryptedData === 'string'
         ? encryptedData
