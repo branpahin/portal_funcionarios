@@ -1,0 +1,453 @@
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.responsive-title {
+  white-space: normal;
+}
+
+ion-toolbar{
+  border-radius: 20px;
+}
+ion-header{
+  border-radius: 20px;
+}
+
+.colaboradores-page {
+  width: 100%;
+  min-height: 100%;
+  padding: 30px 4%;
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+// ======================================
+// ENCABEZADO
+// ======================================
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 25px;
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  h1 {
+    font-size: 23px;
+    font-weight: 700;
+    color: #333333;
+    margin: 0 0 6px;
+  }
+
+  p {
+    font-size: 13px;
+    color: #858585;
+    margin: 0;
+  }
+}
+
+.header-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff1e8;
+  border-radius: 10px;
+
+  ion-icon {
+    font-size: 26px;
+    color: #e2650f;
+  }
+}
+
+// ======================================
+// FILTROS
+// ======================================
+
+.filtros-container {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(280px, 1fr);
+  gap: 20px;
+  align-items: end;
+  margin-bottom: 30px;
+}
+
+.consulta-cedula {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+
+  ion-item {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    --highlight-color-focused: #e2650f;
+  }
+}
+
+.btn-consultar {
+  height: 42px;
+  min-width: 125px;
+  margin: 0;
+
+  --background: #e2650f;
+  --background-hover: #c9570b;
+  --border-radius: 7px;
+  --box-shadow: none;
+
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.busqueda-nombre {
+  width: 100%;
+}
+
+.buscador {
+  padding: 0;
+  height: 43px;
+
+  --background: #f7f7f7;
+  --border-radius: 7px;
+  --box-shadow: none;
+  --placeholder-color: #999999;
+  --icon-color: #888888;
+  --color: #333333;
+
+  border: 1px solid #e5e5e5;
+  font-size: 13px;
+}
+
+// ======================================
+// ENCABEZADO DEL LISTADO
+// ======================================
+
+.listado-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+
+  h2 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #333333;
+    margin: 0 0 5px;
+  }
+
+  p {
+    font-size: 12px;
+    color: #888888;
+    margin: 0;
+  }
+}
+
+.contador-registros {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+
+  color: #777777;
+  font-size: 12px;
+
+  ion-icon {
+    font-size: 17px;
+    color: #e2650f;
+  }
+}
+
+// ======================================
+// LISTADO
+// ======================================
+
+.listado-container {
+  width: 100%;
+  max-height: 480px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+
+  scrollbar-width: thin;
+  scrollbar-color: #bdbdbd #f5f5f5;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f5f5f5;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #bdbdbd;
+    border-radius: 10px;
+  }
+}
+
+.listado-columnas {
+  display: grid;
+  grid-template-columns: 1fr 200px 35px;
+  align-items: center;
+  gap: 10px;
+
+  padding: 13px 16px;
+  background: #f7f7f7;
+
+  position: sticky;
+  top: 0;
+  z-index: 2;
+
+  span {
+    font-size: 11px;
+    font-weight: 700;
+    color: #777777;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+}
+
+.listado-colaboradores {
+  padding: 0;
+  background: #ffffff;
+
+  ion-item {
+    --background: #ffffff;
+    --background-hover: #fff7f2;
+    --background-activated: #fff1e8;
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --inner-padding-end: 0;
+    --min-height: 60px;
+    --border-color: #eeeeee;
+
+    h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #333333;
+      margin: 0;
+    }
+
+    .identificacion {
+      width: 200px;
+      font-size: 12px;
+      color: #777777;
+    }
+
+    .icono-detalle {
+      font-size: 18px;
+      color: #e2650f;
+    }
+
+    &:hover {
+      --background: #fff7f2;
+    }
+  }
+}
+
+// ======================================
+// SIN RESULTADOS
+// ======================================
+
+.sin-resultados {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  ion-icon {
+    font-size: 42px;
+    color: #cccccc;
+  }
+
+  h3 {
+    font-size: 14px;
+    color: #555555;
+    margin: 12px 0 5px;
+  }
+
+  p {
+    font-size: 12px;
+    color: #999999;
+    margin: 0;
+  }
+}
+
+// ======================================
+// PAGINACIÓN
+// ======================================
+
+.paginacion-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 15px;
+}
+
+.total-registros {
+  font-size: 12px;
+  color: #888888;
+
+  strong {
+    color: #444444;
+  }
+}
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  ion-button {
+    --color: #e2650f;
+    --padding-start: 8px;
+    --padding-end: 8px;
+
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  ion-button[disabled] {
+    opacity: 0.4;
+  }
+}
+
+.pagina-actual {
+  font-size: 12px;
+  color: #888888;
+  white-space: nowrap;
+
+  strong {
+    color: #333333;
+  }
+}
+
+// ======================================
+// RESPONSIVE
+// ======================================
+
+@media (max-width: 768px) {
+
+  .colaboradores-page {
+    padding: 22px 18px;
+  }
+
+  .filtros-container {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .listado-columnas {
+    grid-template-columns: 1fr 125px 20px;
+  }
+
+  .listado-colaboradores ion-item .identificacion {
+    width: 125px;
+  }
+
+  .listado-header {
+    align-items: flex-start;
+  }
+
+}
+
+ @media (max-width: 576px) {
+    .responsive-title {
+      font-size: 1rem;
+    }
+    
+  }
+
+@media (max-width: 480px) {
+
+  .colaboradores-page {
+    padding: 18px 12px;
+  }
+
+  .header-info {
+    gap: 10px;
+
+    h1 {
+      font-size: 19px;
+    }
+
+    p {
+      font-size: 11px;
+      line-height: 1.5;
+    }
+  }
+
+  .header-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+
+    ion-icon {
+      font-size: 22px;
+    }
+  }
+
+  .consulta-cedula {
+    gap: 7px;
+  }
+
+  .btn-consultar {
+    min-width: 105px;
+    font-size: 10px;
+  }
+
+  .listado-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .listado-columnas {
+    grid-template-columns: 1fr 105px 15px;
+    padding: 12px 10px;
+
+    span {
+      font-size: 9px;
+    }
+  }
+
+  .listado-colaboradores ion-item {
+    --padding-start: 10px;
+    --padding-end: 10px;
+
+    h3 {
+      font-size: 11px;
+    }
+
+    .identificacion {
+      width: 105px;
+      font-size: 10px;
+    }
+  }
+
+  .paginacion-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+}
+

@@ -57,11 +57,11 @@ export class ColaboradoresPublicoPage implements OnInit {
   async buscar(credentials: any) {
     if(credentials.cedula!=null){
       this.UserInteractionService.showLoading('Consultando...');
-      this.service.postConsultarColaborador(credentials).subscribe({
+      this.service.getConsultarColaboradorCedula(credentials).subscribe({
         next:async(resp)=>{
           try{
             this.UserInteractionService.dismissLoading();
-            this.abrirModalInfoColaborador(resp.body.data.datos);
+            this.abrirModalInfoColaborador(resp.data.datos);
           }catch(error){
             console.error("Respuesta Login: ", error)
             this.UserInteractionService.dismissLoading();

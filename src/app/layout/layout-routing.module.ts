@@ -53,7 +53,13 @@ const routes: Routes = [
         loadComponent: () =>
           import('../pages/portal-beneficios/portal-beneficios.page')
             .then(m => m.PortalBeneficiosPage)
-      }
+      },
+      {
+        path: 'colaboradores-privado',
+        loadComponent: () =>
+          import('../pages/colaboradores-privado/colaboradores-privado.page').then(m => m.ColaboradoresPrivadoPage),
+          canActivate: [authGuard]
+      },
     ],
   }
 ];

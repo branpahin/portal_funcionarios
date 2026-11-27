@@ -143,8 +143,10 @@ export class PortalService {
     return this.httpService.GetCore(this.GetListarUsuariosAgregar);
   }
 
-  getConsultarColaboradores(): Observable<any>{
-    return this.httpService.GetCore(this.consultarColaboradores);
+  getConsultarColaboradores(pag:string): Observable<any>{
+    const params = new HttpParams()
+      .set('ServerSide', pag)
+    return this.httpService.GetParamsCore(this.consultarColaboradores,params);
   }
 
   getRolesUsuario(): Observable<any>{

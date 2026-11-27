@@ -1,14 +1,14 @@
 <main>
   <ion-header [translucent]="true">
-  <ion-toolbar color="primary">
-    <ion-title>
-      <div class="responsive-title">Listado Usuarios</div>
-    </ion-title>
-    <ion-button *ngIf="permisosService.puedeGrabar()" color="success" (click)="abrirModalCrearFuncionario()" slot="end" shape="round"><ion-icon name="add"></ion-icon> 
-      <span class="texto-boton">Registrar Usuario</span>
-    </ion-button>
-  </ion-toolbar>
-</ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>
+        <div class="responsive-title">Listado Usuarios</div>
+      </ion-title>
+      <ion-button *ngIf="permisosService.puedeGrabar()" color="success" (click)="abrirModalCrearFuncionario()" slot="end" shape="round"><ion-icon name="add"></ion-icon> 
+        <span class="texto-boton">Registrar Usuario</span>
+      </ion-button>
+    </ion-toolbar>
+  </ion-header>
 
   <ion-header collapse="condense" color="primary">
     <ion-toolbar>

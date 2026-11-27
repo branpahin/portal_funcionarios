@@ -39,7 +39,9 @@ import { close, card, cog, desktopOutline, documentText, eye, home, lockClosed, 
   cloudUploadOutline,
   attachOutline,
   closeCircle,
-  textOutline} from 'ionicons/icons';
+  textOutline,
+  layersOutline,
+  peopleOutline} from 'ionicons/icons';
 import { EncryptionInterceptor } from './app/interceptors/encryption.interceptor';
 import { ClientIdInterceptor } from './app/interceptors/client-id.iterceptor';
 
@@ -127,7 +129,9 @@ addIcons({
   'document-outline':documentOutline,
   'close-circle':closeCircle,
   'download-outline':downloadOutline,
-  'text-outline':textOutline
+  'text-outline':textOutline,
+  'layers-outline': layersOutline,
+  'people-outline':peopleOutline
 });
 
 

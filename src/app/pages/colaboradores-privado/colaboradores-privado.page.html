@@ -1,0 +1,173 @@
+
+<main>
+    
+  <div class="colaboradores-page" *ngIf="!url">
+
+    <!-- ENCABEZADO DE LA SECCIÓN -->
+    <ion-header [translucent]="true">
+      <ion-toolbar color="primary">
+        <ion-title>
+          <div class="responsive-title">Colaboradores</div>
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-header collapse="condense" color="primary">
+      <ion-toolbar>
+        <ion-title size="large">Listado Colaboradores</ion-title>
+        <p>Consulta la información de los colaboradores de la organización.</p>
+      </ion-toolbar>
+    </ion-header>
+
+    <!-- HERRAMIENTAS DE CONSULTA -->
+    <div class="filtros-container">
+
+      <form
+        class="consulta-cedula"
+        [formGroup]="form"
+        (ngSubmit)="buscar(form.value)">
+        <ion-item>
+          <ion-input
+            formControlName="cedula"
+            label="Consultar por cédula"
+            labelPlacement="floating"
+            placeholder="Ingrese el número de identificación"
+            type="number">
+          </ion-input>
+        </ion-item>
+
+        <ion-button
+          class="btn-consultar"
+          type="submit">
+          <ion-icon name="search-outline" slot="start"></ion-icon>
+          Consultar
+        </ion-button>
+
+      </form>
+
+      <div class="busqueda-nombre">
+
+        <ion-searchbar
+          class="buscador"
+          placeholder="Buscar por nombre o apellido..."
+          debounce="500"
+          [value]="searchText"
+          (ionInput)="filtrarColaboradores($event)">
+        </ion-searchbar>
+
+      </div>
+
+    </div>
+
+    <!-- ENCABEZADO DEL LISTADO -->
+    <div class="listado-header">
+
+      <div>
+        <h2>Listado de colaboradores</h2>
+        <p>Selecciona un colaborador para consultar su información.</p>
+      </div>
+
+      <div class="contador-registros">
+        <ion-icon name="people-outline"></ion-icon>
+        <span>{{ totalRecords }} colaboradores</span>
+      </div>
+
+    </div>
+
+    <!-- TABLA / LISTADO -->
+    <div class="listado-container">
+
+      <div class="listado-columnas">
+        <span>Nombre del colaborador</span>
+        <span>Identificación</span>
+        <span></span>
+      </div>
+
+      <ion-list class="listado-colaboradores">
+
+        <ion-item
+          button
+          detail="false"
+          *ngFor="let colaborad of colaborador"
+          (click)="seleccionarColaborador(colaborad)">
+
+          <ion-label>
+            <h3>{{ colaborad.nombres }}</h3>
+          </ion-label>
+
+          <div class="identificacion">
+            {{ colaborad.identificacion }}
+          </div>
+
+          <ion-icon
+            name="chevron-forward-outline"
+            slot="end"
+            class="icono-detalle">
+          </ion-icon>
+
+        </ion-item>
+
+        <!-- SIN RESULTADOS -->
+        <div
+          class="sin-resultados"
+          *ngIf="colaborador.length === 0">
+
+          <ion-icon name="people-outline"></ion-icon>
+
+          <h3>No se encontraron colaboradores</h3>
+
+          <p>Intenta realizar otra búsqueda.</p>
+
+        </div>
+
+      </ion-list>
+
+    </div>
+
+    <!-- PAGINACIÓN -->
+    <div class="paginacion-container" *ngIf="totalRecords > 0">
+
+      <div class="total-registros">
+        Mostrando
+        <strong>{{ colaborador.length }}</strong>
+        registros de
+        <strong>{{ totalRecords }}</strong>
+      </div>
+
+      <div class="paginacion">
+
+        <ion-button
+          fill="clear"
+          size="small"
+          [disabled]="currentPage <= 1"
+          (click)="changePage(currentPage - 1)">
+
+          <ion-icon name="chevron-back-outline" slot="start"></ion-icon>
+          Anterior
+
+        </ion-button>
+
+        <span class="pagina-actual">
+          Página <strong>{{ currentPage }}</strong> de {{ totalPages }}
+        </span>
+
+        <ion-button
+          fill="clear"
+          size="small"
+          [disabled]="currentPage >= totalPages"
+          (click)="changePage(currentPage + 1)">
+
+          Siguiente
+          <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+
+        </ion-button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+</main>
+

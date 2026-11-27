@@ -1382,7 +1382,7 @@ export class ModalEditarFuncionarioPage implements OnInit {
                 }
               }
             ]
-            if(this.empleadoForm.get("ESTADO")?.value!="7"){
+            if(this.empleadoForm.get("ESTADO")?.value!="8"){
               this.UserInteractionService.presentAlertActions(
                 '¡Se ha realizado un cambio en el formulario!',
                 action,
